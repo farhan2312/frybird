@@ -116,8 +116,8 @@ const Header = () => {
         <div className="flex items-center">
         <Link to="/dashboard" className="flex items-center gap-3">
             <img
-              src="/assets/ury/pos/ury_pos.png"
-              alt="URY POS" 
+              src="/assets/ury/pos/frybird_pos.png"
+              alt="FryBird POS" 
               className="h-10 w-auto"
             />
           </Link>

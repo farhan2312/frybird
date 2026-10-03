@@ -127,7 +127,7 @@ export function CustomerData() {
                   setQuery(s.customer_name);
                   setSuggestions([]);
                 }}
-                className="w-full text-left px-3 py-2 text-sm hover:bg-blue-50 flex items-center justify-between"
+                className="w-full text-left px-3 py-2 text-sm hover:bg-primary-50 flex items-center justify-between"
               >
                 <span>{s.customer_name}</span>
                 {s.mobile_no && <span className="text-xs text-muted-foreground">{s.mobile_no}</span>}

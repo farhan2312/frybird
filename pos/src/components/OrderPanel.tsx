@@ -175,7 +175,7 @@ const OrderPanel = () => {
         {t('cart.empty_subtitle')}
       </p>
 
-      <div className="flex items-center gap-2 text-blue-600 bg-blue-50 px-4 py-2 rounded-lg">
+      <div className="flex items-center gap-2 text-primary-600 bg-primary-50 px-4 py-2 rounded-lg">
         <Plus className="w-4 h-4" />
         <span className="text-sm font-medium">{t('cart.click_to_add')}</span>
       </div>
@@ -267,7 +267,7 @@ const OrderPanel = () => {
                       onClick={() => handleEdit(item)}
                       variant="ghost"
                       size="icon"
-                      className="text-blue-600 hover:text-blue-700"
+                      className="text-primary-600 hover:text-primary-700"
                       title={t('cart.edit_item')}
                       disabled={isInteractionDisabled}
                     >
@@ -337,7 +337,7 @@ const OrderPanel = () => {
                   size="sm"
                   className={cn(
                     "h-8 w-8 p-0",
-                    orderComment ? "text-blue-600" : "text-gray-500 hover:text-gray-700"
+                    orderComment ? "text-primary-600" : "text-gray-500 hover:text-gray-700"
                   )}
                   disabled={isInteractionDisabled}
                   title={orderComment ? t('cart.edit_comment') : t('cart.add_comment')}

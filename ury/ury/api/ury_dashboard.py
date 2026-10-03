@@ -24,7 +24,7 @@ def get_dashboard_stats(branch=None):
 				AND b.`status` IN ("Consolidated", "Paid")
 				AND (
 					((rs.`hours` IS NULL OR rs.`hours` = 0) AND b.`posting_date` = curdate())
-					OR (rs.`hours` > 0 AND TIMESTAMP(b.`posting_date`, b.`posting_time`) <= TIMESTAMP(DATE_ADD(curdate(), INTERVAL 1 DAY), CONCAT(LPAD(rs.`hours`, 2, '0'), ':00:00')) AND TIMESTAMP(b.`posting_date`, b.`posting_time`) >= TIMESTAMP(curdate(), CONCAT(LPAD(rs.`hours`, 2, '0'), ':00:00')))
+					OR (rs.`hours` > 0 AND TIMESTAMP(b.`posting_date`, b.`posting_time`) <= TIMESTAMP(DATE_ADD(DATE(DATE_SUB(NOW(), INTERVAL rs.`hours` HOUR)), INTERVAL 1 DAY), CONCAT(LPAD(rs.`hours`, 2, '0'), ':00:00')) AND TIMESTAMP(b.`posting_date`, b.`posting_time`) >= TIMESTAMP(DATE(DATE_SUB(NOW(), INTERVAL rs.`hours` HOUR)), CONCAT(LPAD(rs.`hours`, 2, '0'), ':00:00')))
 					OR (rs.`branch` IS NULL AND b.`posting_date` = curdate())
 				)
 			""",
@@ -44,7 +44,7 @@ def get_dashboard_stats(branch=None):
 				AND b.`status` IN ("Consolidated", "Paid")
 				AND (
 					((rs.`hours` IS NULL OR rs.`hours` = 0) AND b.`posting_date` = curdate())
-					OR (rs.`hours` > 0 AND TIMESTAMP(b.`posting_date`, b.`posting_time`) <= TIMESTAMP(DATE_ADD(curdate(), INTERVAL 1 DAY), CONCAT(LPAD(rs.`hours`, 2, '0'), ':00:00')) AND TIMESTAMP(b.`posting_date`, b.`posting_time`) >= TIMESTAMP(curdate(), CONCAT(LPAD(rs.`hours`, 2, '0'), ':00:00')))
+					OR (rs.`hours` > 0 AND TIMESTAMP(b.`posting_date`, b.`posting_time`) <= TIMESTAMP(DATE_ADD(DATE(DATE_SUB(NOW(), INTERVAL rs.`hours` HOUR)), INTERVAL 1 DAY), CONCAT(LPAD(rs.`hours`, 2, '0'), ':00:00')) AND TIMESTAMP(b.`posting_date`, b.`posting_time`) >= TIMESTAMP(DATE(DATE_SUB(NOW(), INTERVAL rs.`hours` HOUR)), CONCAT(LPAD(rs.`hours`, 2, '0'), ':00:00')))
 					OR (rs.`branch` IS NULL AND b.`posting_date` = curdate())
 				)
 			""",

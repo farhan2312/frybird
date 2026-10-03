@@ -9,7 +9,7 @@
     <!-- Header -->
     <div class="flex items-center gap-3">
       <div
-        class="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center text-2xl"
+        class="w-12 h-12 rounded-xl bg-red-100 flex items-center justify-center text-2xl"
       >
         🍳
       </div>
@@ -29,8 +29,8 @@
     <div class="grid grid-cols-3 gap-3 mt-6">
 
       <!-- Active -->
-      <div class="bg-blue-50 rounded-xl p-3 text-center">
-        <div class="text-3xl font-bold text-blue-700">
+      <div class="bg-red-50 rounded-xl p-3 text-center">
+        <div class="text-3xl font-bold text-red-700">
           {{ activeOrders }}
         </div>
 

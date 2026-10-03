@@ -30,7 +30,7 @@ const CommentDialog = ({ isOpen, onClose, onSave, initialComment = '' }: Comment
       <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4 shadow-xl">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
-            <MessageSquare className="w-5 h-5 text-blue-600" />
+            <MessageSquare className="w-5 h-5 text-primary-600" />
             <h2 className="text-lg font-semibold text-gray-900">
               {t('comment.title')}
             </h2>
@@ -54,7 +54,7 @@ const CommentDialog = ({ isOpen, onClose, onSave, initialComment = '' }: Comment
             value={comment}
             onChange={(e) => setComment(e.target.value)}
             placeholder={t('comment.placeholder')}
-            className="w-full h-32 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
+            className="w-full h-32 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 resize-none"
             autoFocus
           />
         </div>
@@ -69,7 +69,7 @@ const CommentDialog = ({ isOpen, onClose, onSave, initialComment = '' }: Comment
           </Button>
           <Button
             onClick={handleSave}
-            className="px-4 py-2 bg-blue-600 hover:bg-blue-700"
+            className="px-4 py-2 bg-primary-600 hover:bg-primary-700"
           >
             {t('comment.save_button')}
           </Button>

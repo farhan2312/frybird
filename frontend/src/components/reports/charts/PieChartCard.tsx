@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@ury/ui";
 import { Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
 
-const DEFAULT_COLORS = ["#3b82f6", "#6366f1", "#8b5cf6", "#a855f7", "#0ea5e9", "#14b8a6"];
+const DEFAULT_COLORS = ["#e21f26", "#f5a623", "#7a1c1c", "#f97316", "#14b8a6", "#64748b"];
 
 export interface PieChartCardProps {
   title: string;

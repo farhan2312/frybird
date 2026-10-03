@@ -58,7 +58,7 @@ export const useAlert = defineStore("alert", {
 
         const closeButton = document.createElement("button");
         closeButton.classList.add(
-          "bg-blue-700",
+          "bg-red-700",
           "md:ml-96",
           "ml-64",
           "text-white",

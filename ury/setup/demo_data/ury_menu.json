@@ -1,64 +1,242 @@
 [
     {
         "doctype": "URY Menu",
-        "__newname": "Demo Menu",
-        "branch": "Demo Branch",
+        "__newname": "FryBird Menu",
+        "branch": "FryBird Whitehall",
         "items": [
             {
                 "doctype": "URY Menu Item",
-                "item": "GR",
-                "item_name": "Ghee Rice",
-                "rate": 150.0,
-                "course": "Demo Course",
+                "item": "FC-2",
+                "item_name": "2 PC Leg & Thigh",
+                "rate": 15,
+                "course": "Fried Chicken",
                 "parentfield": "items"
             },
             {
                 "doctype": "URY Menu Item",
-                "item": "WNG",
-                "item_name": "Wings",
+                "item": "FC-3",
+                "item_name": "3 PC Leg, Thigh & Wing",
+                "rate": 22,
+                "course": "Fried Chicken",
+                "parentfield": "items"
+            },
+            {
+                "doctype": "URY Menu Item",
+                "item": "FC-5",
+                "item_name": "5 PC Mix Fried Chicken",
+                "rate": 29,
+                "course": "Fried Chicken",
                 "special_dish": "1",
-                "rate": 99.0,
-                "course": "Demo Course",
                 "parentfield": "items"
             },
             {
                 "doctype": "URY Menu Item",
-                "item": "MR",
-                "item_name": "Mandhi",
-                "rate": 350.0,
-                "course": "Demo Course",
+                "item": "FC-8",
+                "item_name": "8 PC Mix Fried Chicken",
+                "rate": 48,
+                "course": "Fried Chicken",
                 "parentfield": "items"
             },
             {
                 "doctype": "URY Menu Item",
-                "item": "BR",
-                "item_name": "Biriyani",
-                "rate": 110.0,
-                "course": "Demo Course",
+                "item": "FC-10",
+                "item_name": "10 PC Mix Fried Chicken",
+                "rate": 55,
+                "course": "Fried Chicken",
                 "parentfield": "items"
             },
             {
                 "doctype": "URY Menu Item",
-                "item": "CG",
-                "item_name": "Chicken Gravy",
-                "rate": 120.0,
-                "course": "Demo Course",
+                "item": "FC-15",
+                "item_name": "15 PC Mix Fried Chicken",
+                "rate": 77,
+                "course": "Fried Chicken",
                 "parentfield": "items"
             },
             {
                 "doctype": "URY Menu Item",
-                "item": "BG",
-                "item_name": "Beef Gravy",
-                "rate": 200.0,
-                "course": "Demo Course",
+                "item": "NG-8",
+                "item_name": "8 PC Chicken Nuggets",
+                "rate": 18,
+                "course": "Chicken Nuggets",
                 "parentfield": "items"
             },
             {
                 "doctype": "URY Menu Item",
-                "item": "MOM",
-                "item_name": "Momo",
-                "rate": 40.0,
-                "course": "Demo Course",
+                "item": "NG-15",
+                "item_name": "15 PC Chicken Nuggets",
+                "rate": 33,
+                "course": "Chicken Nuggets",
+                "parentfield": "items"
+            },
+            {
+                "doctype": "URY Menu Item",
+                "item": "NG-20",
+                "item_name": "20 PC Chicken Nuggets",
+                "rate": 44,
+                "course": "Chicken Nuggets",
+                "parentfield": "items"
+            },
+            {
+                "doctype": "URY Menu Item",
+                "item": "WG-4",
+                "item_name": "4 PC Chicken Wings",
+                "rate": 26,
+                "course": "Chicken Wings",
+                "parentfield": "items"
+            },
+            {
+                "doctype": "URY Menu Item",
+                "item": "WG-6",
+                "item_name": "6 PC Chicken Wings",
+                "rate": 33,
+                "course": "Chicken Wings",
+                "parentfield": "items"
+            },
+            {
+                "doctype": "URY Menu Item",
+                "item": "WG-8",
+                "item_name": "8 PC Chicken Wings",
+                "rate": 40,
+                "course": "Chicken Wings",
+                "parentfield": "items"
+            },
+            {
+                "doctype": "URY Menu Item",
+                "item": "WG-10",
+                "item_name": "10 PC Chicken Wings",
+                "rate": 48,
+                "course": "Chicken Wings",
+                "special_dish": "1",
+                "parentfield": "items"
+            },
+            {
+                "doctype": "URY Menu Item",
+                "item": "WG-15",
+                "item_name": "15 PC Chicken Wings",
+                "rate": 66,
+                "course": "Chicken Wings",
+                "parentfield": "items"
+            },
+            {
+                "doctype": "URY Menu Item",
+                "item": "WG-20",
+                "item_name": "20 PC Chicken Wings",
+                "rate": 81,
+                "course": "Chicken Wings",
+                "parentfield": "items"
+            },
+            {
+                "doctype": "URY Menu Item",
+                "item": "TD-3",
+                "item_name": "3 PC Chicken Tenders",
+                "rate": 22,
+                "course": "Chicken Tenders",
+                "parentfield": "items"
+            },
+            {
+                "doctype": "URY Menu Item",
+                "item": "TD-6",
+                "item_name": "6 PC Chicken Tenders",
+                "rate": 37,
+                "course": "Chicken Tenders",
+                "parentfield": "items"
+            },
+            {
+                "doctype": "URY Menu Item",
+                "item": "TD-12",
+                "item_name": "12 PC Chicken Tenders",
+                "rate": 66,
+                "course": "Chicken Tenders",
+                "parentfield": "items"
+            },
+            {
+                "doctype": "URY Menu Item",
+                "item": "BG-CHK",
+                "item_name": "Classic Fried Chicken Burger",
+                "rate": 29,
+                "course": "Burgers",
+                "special_dish": "1",
+                "parentfield": "items"
+            },
+            {
+                "doctype": "URY Menu Item",
+                "item": "BG-SPC",
+                "item_name": "Spicy Nashville Chicken Burger",
+                "rate": 31,
+                "course": "Burgers",
+                "parentfield": "items"
+            },
+            {
+                "doctype": "URY Menu Item",
+                "item": "BG-BEEF",
+                "item_name": "Classic Beef Burger",
+                "rate": 33,
+                "course": "Burgers",
+                "parentfield": "items"
+            },
+            {
+                "doctype": "URY Menu Item",
+                "item": "BG-DBL",
+                "item_name": "Double Beef Cheeseburger",
+                "rate": 44,
+                "course": "Burgers",
+                "parentfield": "items"
+            },
+            {
+                "doctype": "URY Menu Item",
+                "item": "BG-COMBO",
+                "item_name": "Chicken Burger Meal Combo",
+                "rate": 36,
+                "course": "Burgers",
+                "parentfield": "items"
+            },
+            {
+                "doctype": "URY Menu Item",
+                "item": "ADD-MEAL",
+                "item_name": "Make it a Meal (Fries & Drink)",
+                "rate": 9,
+                "course": "Sides & Add-ons",
+                "parentfield": "items"
+            },
+            {
+                "doctype": "URY Menu Item",
+                "item": "ADD-CHS",
+                "item_name": "Cheese Sauce on Fries",
+                "rate": 5,
+                "course": "Sides & Add-ons",
+                "parentfield": "items"
+            },
+            {
+                "doctype": "URY Menu Item",
+                "item": "SC-HNY",
+                "item_name": "Honey Glaze Sauce",
+                "rate": 4,
+                "course": "Sauces",
+                "parentfield": "items"
+            },
+            {
+                "doctype": "URY Menu Item",
+                "item": "SC-BBQ",
+                "item_name": "BBQ Sauce",
+                "rate": 4,
+                "course": "Sauces",
+                "parentfield": "items"
+            },
+            {
+                "doctype": "URY Menu Item",
+                "item": "SC-HOT",
+                "item_name": "Hot Sauce",
+                "rate": 4,
+                "course": "Sauces",
+                "parentfield": "items"
+            },
+            {
+                "doctype": "URY Menu Item",
+                "item": "SC-BUF",
+                "item_name": "Buffalo Sauce",
+                "rate": 4,
+                "course": "Sauces",
                 "parentfield": "items"
             }
         ]

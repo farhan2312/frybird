@@ -27,14 +27,14 @@
         <input
           type="search"
           id="orderSeach"
-          class="block w-full rounded-lg border-gray-300 bg-gray-50 p-2.5 pl-10 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+          class="block w-full rounded-lg border-gray-300 bg-gray-50 p-2.5 pl-10 text-sm text-gray-900 focus:border-red-500 focus:ring-red-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-red-500 dark:focus:ring-red-500"
           placeholder="Search by Invoice Id or Customer Name or Mobile Number"
           v-model="this.recentOrders.searchOrder"
           @input="this.recentOrders.handleSearchInput"
         />
         <select
           id="status"
-          class="mt-4 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+          class="mt-4 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-red-500 focus:ring-red-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-red-500 dark:focus:ring-red-500"
           v-model="this.recentOrders.selectedStatus"
           @change="this.recentOrders.handleStatusChange"
         >
@@ -307,7 +307,7 @@
       <div class="relative mb-6 mt-6" v-if="this.recentOrders.showInput">
         <input
           type="number"
-          class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pl-10 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+          class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pl-10 text-sm text-gray-900 focus:border-red-500 focus:ring-red-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-red-500 dark:focus:ring-red-500"
           placeholder="Enter Discount Percentage"
           v-model="this.recentOrders.percentage"
           @input="this.recentOrders.updatePercentage"
@@ -526,7 +526,7 @@
               </button>
               <button
                 @click="handleConfirmCancellation()"
-                class="mt-6 rounded bg-blue-500 px-3 py-2 text-white hover:bg-blue-600"
+                class="mt-6 rounded bg-red-500 px-3 py-2 text-white hover:bg-red-600"
               >
                 Yes
               </button>
@@ -583,7 +583,7 @@
                       :id="'modeofPayments-' + index"
                       type="number"
                       name="modeofPayments"
-                      class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                      class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-red-500 focus:ring-red-500 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                       required
                       v-model.number="modeOfPayment.value"
                       @click="recentOrders.calculatePaidAmount(modeOfPayment)"
@@ -601,7 +601,7 @@
             <div v-if="recentOrders.changeAmount > 0" class="mt-4 p-4 bg-gray-50 rounded-lg">
               <div class="flex justify-between items-center mt-2 text-green-600">
                 <span class="text-lg font-medium">Change Amount:</span>
-                <span class="text-lg">₹ {{ recentOrders.changeAmount.toFixed(2) }}</span>
+                <span class="text-lg">AED {{ recentOrders.changeAmount.toFixed(2) }}</span>
               </div>
             </div>
             <div class="flex justify-end">
@@ -610,7 +610,7 @@
                   this.recentOrders.showPayment = false;
                   this.recentOrders.makePayment();
                 "
-                class="mt-10 rounded bg-blue-500 px-3 py-2 text-white hover:bg-blue-600"
+                class="mt-10 rounded bg-red-500 px-3 py-2 text-white hover:bg-red-600"
               >
                 Submit
               </button>

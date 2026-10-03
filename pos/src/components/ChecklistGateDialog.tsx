@@ -161,7 +161,7 @@ const ChecklistGateDialog = ({ posProfile, checklistType, onComplete }: Checklis
                       type="checkbox"
                       checked={row.is_checked}
                       onChange={(e) => handleCheckedChange(index, e.target.checked)}
-                      className="mt-1 h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                      className="mt-1 h-4 w-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500"
                     />
                     <span className="text-sm font-medium text-gray-900">
                       {row.item_label}
@@ -188,7 +188,7 @@ const ChecklistGateDialog = ({ posProfile, checklistType, onComplete }: Checklis
               onClick={handleSubmit}
               disabled={!allMandatoryChecked || isSubmitting}
               className={cn(
-                'w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg transition-colors duration-200',
+                'w-full bg-primary-600 hover:bg-primary-700 text-white font-medium py-3 px-6 rounded-lg transition-colors duration-200',
                 (!allMandatoryChecked || isSubmitting) && 'opacity-50 cursor-not-allowed'
               )}
             >

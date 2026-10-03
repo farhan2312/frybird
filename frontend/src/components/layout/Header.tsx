@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useBranchContext } from '../../context/BranchContext';
 import { logout, call, getLoggedUser, getUserRoles } from '@ury/core';
-import uryLogo from '../../../Public/photo_2026-08-19_13-24-09.jpg';
+import uryLogo from '../../../Public/frybird-logo.jpg';
 import {
   Bell,
   User,
@@ -133,7 +133,7 @@ export const Header: React.FC = () => {
         {/* Left Section: Logo & Brand */}
         <div className="flex items-center space-x-3">
           <Link to="/dashboard" className="flex items-center space-x-3 group">
-            <img src={uryLogo} alt="URY Logo" className="h-7 w-auto" />
+            <img src={uryLogo} alt="FryBird Logo" className="h-7 w-auto" />
           </Link>
         </div>
 
@@ -143,7 +143,7 @@ export const Header: React.FC = () => {
           <div className="relative" ref={branchMenuRef}>
             <button
               onClick={() => setIsBranchDropdownOpen(!isBranchDropdownOpen)}
-              className="flex items-center space-x-2 px-3 py-1.5 bg-blue-50 hover:bg-blue-100/80 border border-blue-200 rounded-md text-sm font-medium text-primary transition-colors"
+              className="flex items-center space-x-2 px-3 py-1.5 bg-primary-50 hover:bg-primary-100/80 border border-primary-200 rounded-md text-sm font-medium text-primary transition-colors"
             >
               <Building2 className="w-4 h-4 text-primary" />
               <span className="max-w-[120px] sm:max-w-[160px] truncate">
@@ -165,7 +165,7 @@ export const Header: React.FC = () => {
                   }}
                   className={`w-full flex items-center justify-between px-3 py-2 text-sm text-left transition-colors ${
                     activeBranchId === 'all'
-                      ? 'bg-blue-50 text-primary font-semibold'
+                      ? 'bg-primary-50 text-primary font-semibold'
                       : 'text-gray-700 hover:bg-gray-50'
                   }`}
                 >
@@ -187,7 +187,7 @@ export const Header: React.FC = () => {
                     }}
                     className={`w-full flex items-center justify-between px-3 py-2 text-sm text-left transition-colors ${
                       activeBranchId === b.id
-                        ? 'bg-blue-50 text-primary font-semibold'
+                        ? 'bg-primary-50 text-primary font-semibold'
                         : 'text-gray-700 hover:bg-gray-50'
                     }`}
                   >
@@ -321,7 +321,7 @@ export const Header: React.FC = () => {
                     <div
                       key={item.id}
                       className={`p-4 transition-colors ${
-                        item.read ? 'bg-white' : 'bg-blue-50/40'
+                        item.read ? 'bg-white' : 'bg-primary-50/40'
                       }`}
                     >
                       <div className="flex items-start space-x-3">

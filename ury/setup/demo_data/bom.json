@@ -2,19 +2,25 @@
     {
         "doctype": "BOM",
         "company": "__COMPANY__",
-        "item": "CG",
+        "item": "WG-10",
         "qty": 10,
         "items": [
             {
                 "doctype": "BOM Item",
-                "item_code": "ONN",
-                "qty": 10,
+                "item_code": "RM-WING",
+                "qty": 1,
                 "parentfield": "items"
             },
             {
                 "doctype": "BOM Item",
-                "item_code": "CKN",
-                "qty": 1,
+                "item_code": "RM-BREAD",
+                "qty": 0.2,
+                "parentfield": "items"
+            },
+            {
+                "doctype": "BOM Item",
+                "item_code": "RM-OIL",
+                "qty": 0.1,
                 "parentfield": "items"
             }
         ]
@@ -22,19 +28,25 @@
     {
         "doctype": "BOM",
         "company": "__COMPANY__",
-        "item": "MOM",
+        "item": "NG-8",
         "qty": 10,
         "items": [
             {
                 "doctype": "BOM Item",
-                "item_code": "ONN",
-                "qty": 10,
+                "item_code": "RM-CHKN",
+                "qty": 0.8,
                 "parentfield": "items"
             },
             {
                 "doctype": "BOM Item",
-                "item_code": "CKN",
-                "qty": 1,
+                "item_code": "RM-BREAD",
+                "qty": 0.2,
+                "parentfield": "items"
+            },
+            {
+                "doctype": "BOM Item",
+                "item_code": "RM-OIL",
+                "qty": 0.1,
                 "parentfield": "items"
             }
         ]
@@ -42,19 +54,51 @@
     {
         "doctype": "BOM",
         "company": "__COMPANY__",
-        "item": "WNG",
-        "qty": 20,
+        "item": "BG-CHK",
+        "qty": 10,
         "items": [
             {
                 "doctype": "BOM Item",
-                "item_code": "ONN",
+                "item_code": "RM-CHKN",
+                "qty": 1.5,
+                "parentfield": "items"
+            },
+            {
+                "doctype": "BOM Item",
+                "item_code": "RM-BUN",
                 "qty": 10,
                 "parentfield": "items"
             },
             {
                 "doctype": "BOM Item",
-                "item_code": "CKN",
-                "qty": 2,
+                "item_code": "RM-BREAD",
+                "qty": 0.5,
+                "parentfield": "items"
+            },
+            {
+                "doctype": "BOM Item",
+                "item_code": "RM-OIL",
+                "qty": 0.2,
+                "parentfield": "items"
+            }
+        ]
+    },
+    {
+        "doctype": "BOM",
+        "company": "__COMPANY__",
+        "item": "BG-BEEF",
+        "qty": 10,
+        "items": [
+            {
+                "doctype": "BOM Item",
+                "item_code": "RM-BEEF",
+                "qty": 10,
+                "parentfield": "items"
+            },
+            {
+                "doctype": "BOM Item",
+                "item_code": "RM-BUN",
+                "qty": 10,
                 "parentfield": "items"
             }
         ]

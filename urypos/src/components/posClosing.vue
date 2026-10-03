@@ -9,7 +9,7 @@
         :class="{
           'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300':
             this.posClose.getBadgeType() === 'red',
-          'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300':
+          'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300':
             this.posClose.getBadgeType() === 'default',
 
           'bg-yellow-100 text-yellow-800':
@@ -22,7 +22,7 @@
     <div class="flex space-x-4">
       <button
         @click="this.posClose.savePosClosing()"
-        class="rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 focus:outline-none"
+        class="rounded-md bg-red-500 px-4 py-2 text-white hover:bg-red-600 focus:outline-none"
         v-if="this.posClose.posClosing"
       >
         Save
@@ -30,7 +30,7 @@
       <button
         v-if="this.posClose.posCloseSaved"
         @click="this.posClose.showSumbitPosCloseModal()"
-        class="rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 focus:outline-none"
+        class="rounded-md bg-red-500 px-4 py-2 text-white hover:bg-red-600 focus:outline-none"
       >
         Submit
       </button>
@@ -50,7 +50,7 @@
       <input
         v-model="this.posClose.startDate"
         readonly
-        class="block w-full rounded-md border border-gray-300 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+        class="block w-full rounded-md border border-gray-300 text-sm text-gray-900 focus:border-red-500 focus:ring-red-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-red-500 dark:focus:ring-red-500"
         type="text"
       />
     </div>
@@ -68,7 +68,7 @@
       <input
         v-model="this.posClose.postingDate"
         readonly
-        class="block w-full rounded-md border border-gray-300 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+        class="block w-full rounded-md border border-gray-300 text-sm text-gray-900 focus:border-red-500 focus:ring-red-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-red-500 dark:focus:ring-red-500"
         type="text"
       />
     </div>
@@ -111,14 +111,14 @@
         <input
           type="text"
           id="posOpen"
-          class="block w-full rounded-md border border-gray-300 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+          class="block w-full rounded-md border border-gray-300 text-sm text-gray-900 focus:border-red-500 focus:ring-red-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-red-500 dark:focus:ring-red-500"
           v-model="this.posClose.selectedPosOpenEntry"
           @click="this.posClose.selectPosOpen()"
           required
         />
         <div
           v-if="this.posClose.showPosOpen"
-          class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+          class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-red-500 focus:ring-red-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-red-500 dark:focus:ring-red-500"
           ref="dropdown"
         >
           <div
@@ -152,7 +152,7 @@
         type="text"
         id="company"
         v-model="this.invoiceData.company"
-        class="block w-full rounded-md border border-gray-300 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+        class="block w-full rounded-md border border-gray-300 text-sm text-gray-900 focus:border-red-500 focus:ring-red-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-red-500 dark:focus:ring-red-500"
         required
       />
     </div>
@@ -166,7 +166,7 @@
         <input
           type="text"
           id="posProfile"
-          class="block w-full rounded-md border border-gray-300 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+          class="block w-full rounded-md border border-gray-300 text-sm text-gray-900 focus:border-red-500 focus:ring-red-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-red-500 dark:focus:ring-red-500"
           v-model="this.invoiceData.posProfile"
           required
         />
@@ -181,7 +181,7 @@
           type="text"
           id="cashier"
           v-model="this.posClose.cashier"
-          class="block w-full rounded-md border border-gray-300 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+          class="block w-full rounded-md border border-gray-300 text-sm text-gray-900 focus:border-red-500 focus:ring-red-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-red-500 dark:focus:ring-red-500"
           required
         />
       </div>
@@ -287,7 +287,7 @@
         type="text"
         id="grandTotal"
         v-model="this.posClose.grandTotal"
-        class="b block w-full rounded-md border border-gray-300 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+        class="b block w-full rounded-md border border-gray-300 text-sm text-gray-900 focus:border-red-500 focus:ring-red-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-red-500 dark:focus:ring-red-500"
         required
       />
     </div>
@@ -301,7 +301,7 @@
         type="text"
         id="totalInvoices"
         v-model="this.posClose.totalInvoices"
-        class="block w-full rounded-md border border-gray-300 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+        class="block w-full rounded-md border border-gray-300 text-sm text-gray-900 focus:border-red-500 focus:ring-red-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-red-500 dark:focus:ring-red-500"
         required
       />
     </div>
@@ -314,7 +314,7 @@
       <input
         type="text"
         id="netTotak"
-        class="block w-full rounded-md border border-gray-300 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+        class="block w-full rounded-md border border-gray-300 text-sm text-gray-900 focus:border-red-500 focus:ring-red-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-red-500 dark:focus:ring-red-500"
         v-model="this.posClose.netTotal"
         required
       />
@@ -328,7 +328,7 @@
       <input
         type="text"
         id="totalQty"
-        class="block w-full rounded-md border border-gray-300 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+        class="block w-full rounded-md border border-gray-300 text-sm text-gray-900 focus:border-red-500 focus:ring-red-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-red-500 dark:focus:ring-red-500"
         v-model="this.posClose.totalQty"
         required
       />
@@ -375,7 +375,7 @@
           </button>
           <button
             @click="this.posClose.sumbitPosClosing()"
-            class="mt-6 rounded bg-blue-500 px-3 py-2 text-white hover:bg-blue-600"
+            class="mt-6 rounded bg-red-500 px-3 py-2 text-white hover:bg-red-600"
           >
             Yes
           </button>

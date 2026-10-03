@@ -78,7 +78,7 @@ export default function Dashboard() {
             label: 'Orders Today',
             value: String(statsData.orders_today),
             icon: ShoppingCart,
-            color: 'text-blue-600'
+            color: 'text-primary-600'
           },
           {
             label: 'Avg. Order Value',
@@ -279,15 +279,15 @@ export default function Dashboard() {
                     <span>Open</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 bg-blue-300 rounded"></div>
+                    <div className="w-3 h-3 bg-amber-300 rounded"></div>
                     <span>Seated</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 bg-blue-500 rounded"></div>
+                    <div className="w-3 h-3 bg-orange-500 rounded"></div>
                     <span>Fired</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 bg-blue-700 rounded"></div>
+                    <div className="w-3 h-3 bg-emerald-600 rounded"></div>
                     <span>Served</span>
                   </div>
                   <div className="flex items-center gap-2">
@@ -301,9 +301,9 @@ export default function Dashboard() {
                   {serviceLine.map((table: any, idx: number) => {
                     let barColor = 'bg-gray-300';
                     if (table.stage === 'open') barColor = 'bg-gray-300';
-                    else if (table.stage === 'seated') barColor = 'bg-blue-300';
-                    else if (table.stage === 'fired') barColor = 'bg-blue-500';
-                    else if (table.stage === 'served') barColor = 'bg-blue-700';
+                    else if (table.stage === 'seated') barColor = 'bg-amber-300';
+                    else if (table.stage === 'fired') barColor = 'bg-orange-500';
+                    else if (table.stage === 'served') barColor = 'bg-emerald-600';
                     else if (table.stage === 'over') barColor = 'bg-red-600';
 
                     const barHeight = table.minutes !== null ? (table.minutes / maxMinutes) * 100 : 5;
@@ -490,7 +490,7 @@ export default function Dashboard() {
                       </div>
                       <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
                         <div
-                          className="h-full bg-blue-600 rounded-full"
+                          className="h-full bg-primary-600 rounded-full"
                           style={{ width: `${(waiter.table_count / maxTableCount) * 100}%` }}
                         />
                       </div>
@@ -520,7 +520,7 @@ export default function Dashboard() {
           <Card className="bg-white border border-gray-200">
             <CardContent className="p-6">
               <div className="flex items-center gap-2 mb-4">
-                <Bell className="w-5 h-5 text-blue-600" />
+                <Bell className="w-5 h-5 text-primary-600" />
                 <h3 className="text-lg font-semibold text-gray-900">Recent Notifications</h3>
               </div>
               <div className="space-y-2">

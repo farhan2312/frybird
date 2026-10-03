@@ -66,7 +66,7 @@ const CaptainMenu: React.FC<CaptainMenuProps> = ({ canAddItems }) => {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search menu"
-            className="w-full ps-9 pe-3 py-3 rounded-lg border border-gray-200 bg-gray-50 text-base focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full ps-9 pe-3 py-3 rounded-lg border border-gray-200 bg-gray-50 text-base focus:outline-none focus:ring-2 focus:ring-primary-500"
           />
         </div>
 
@@ -76,7 +76,7 @@ const CaptainMenu: React.FC<CaptainMenuProps> = ({ canAddItems }) => {
             className={cn(
               'shrink-0 px-4 py-2 rounded-full text-sm font-medium border',
               selectedCategory === ''
-                ? 'bg-blue-600 text-white border-blue-600'
+                ? 'bg-primary-600 text-white border-primary-600'
                 : 'bg-white text-gray-700 border-gray-200'
             )}
           >
@@ -89,7 +89,7 @@ const CaptainMenu: React.FC<CaptainMenuProps> = ({ canAddItems }) => {
               className={cn(
                 'shrink-0 px-4 py-2 rounded-full text-sm font-medium border',
                 selectedCategory === category.name
-                  ? 'bg-blue-600 text-white border-blue-600'
+                  ? 'bg-primary-600 text-white border-primary-600'
                   : 'bg-white text-gray-700 border-gray-200'
               )}
             >

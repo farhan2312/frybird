@@ -121,7 +121,7 @@ export function EmployeeItemWiseSales() {
                   setQuery(s.full_name);
                   setSuggestions([]);
                 }}
-                className="w-full text-left px-3 py-2 text-sm hover:bg-blue-50"
+                className="w-full text-left px-3 py-2 text-sm hover:bg-primary-50"
               >
                 {s.full_name}
               </button>

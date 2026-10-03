@@ -2,16 +2,16 @@
     {
         "doctype": "Supplier",
         "supplier_group": "Demo Supplier Group",
-        "supplier_name": "Zuckerman Foodie Ltd."
+        "supplier_name": "Buckeye Poultry Supply"
     },
     {
         "doctype": "Supplier",
         "supplier_group": "Demo Supplier Group",
-        "supplier_name": "MA Inc."
+        "supplier_name": "Ohio Valley Meats"
     },
     {
         "doctype": "Supplier",
         "supplier_group": "Demo Supplier Group",
-        "supplier_name": "Summit Traders Ltd."
+        "supplier_name": "Midwest Bakery & Oil Co."
     }
 ]

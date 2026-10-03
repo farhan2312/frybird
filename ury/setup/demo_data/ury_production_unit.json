@@ -1,23 +1,51 @@
 [
     {
         "doctype": "URY Production Unit",
-        "production": "Demo Kitchen",
-        "pos_profile": "Demo Profile",
-        "branch": "Demo Branch",
+        "production": "Fry Station",
+        "pos_profile": "FryBird POS",
+        "branch": "FryBird Whitehall",
         "item_groups": [
             {
                 "doctype": "URY Production Item Groups",
-                "item_group": "STARTERS",
+                "item_group": "FRIED CHICKEN",
                 "parentfield": "item_groups"
             },
             {
                 "doctype": "URY Production Item Groups",
-                "item_group": "RICE",
+                "item_group": "WINGS",
                 "parentfield": "item_groups"
             },
             {
                 "doctype": "URY Production Item Groups",
-                "item_group": "GRAVIES",
+                "item_group": "TENDERS",
+                "parentfield": "item_groups"
+            },
+            {
+                "doctype": "URY Production Item Groups",
+                "item_group": "NUGGETS",
+                "parentfield": "item_groups"
+            },
+            {
+                "doctype": "URY Production Item Groups",
+                "item_group": "SIDES",
+                "parentfield": "item_groups"
+            }
+        ]
+    },
+    {
+        "doctype": "URY Production Unit",
+        "production": "Grill Station",
+        "pos_profile": "FryBird POS",
+        "branch": "FryBird Whitehall",
+        "item_groups": [
+            {
+                "doctype": "URY Production Item Groups",
+                "item_group": "BURGERS",
+                "parentfield": "item_groups"
+            },
+            {
+                "doctype": "URY Production Item Groups",
+                "item_group": "COMBOS",
                 "parentfield": "item_groups"
             }
         ]

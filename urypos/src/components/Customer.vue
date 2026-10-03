@@ -24,7 +24,7 @@
         </div>
         <input
           type="search"
-          class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pl-10 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500 md:w-3/5 lg:w-2/5"
+          class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pl-10 text-sm text-gray-900 focus:border-red-500 focus:ring-red-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-red-500 dark:focus:ring-red-500 md:w-3/5 lg:w-2/5"
           placeholder="Search Customers"
           v-model="this.customers.search"
           @input="this.customers.handleSearchInput"
@@ -80,7 +80,7 @@
             </div>
             <a
               href="#"
-              class="mt-1 lg:mt-0 inline-flex items-center text-blue-600 hover:underline"
+              class="mt-1 lg:mt-0 inline-flex items-center text-red-600 hover:underline"
               @click.prevent="
                 this.customers.newCustomerData(this.customers.search)
               "
@@ -143,7 +143,7 @@
             <input
               type="text"
               id="newCustomer"
-              class="mt-4 w-full rounded-lg border border-gray-300 bg-gray-50 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+              class="mt-4 w-full rounded-lg border border-gray-300 bg-gray-50 text-sm text-gray-900 focus:border-red-500 focus:ring-red-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-red-500 dark:focus:ring-red-500"
               v-model="this.customers.newCustomer"
             />
 
@@ -156,7 +156,7 @@
             <input
               type="number"
               id="mobileNumber"
-              class="mt-4 w-full rounded-lg border border-gray-300 bg-gray-50 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+              class="mt-4 w-full rounded-lg border border-gray-300 bg-gray-50 text-sm text-gray-900 focus:border-red-500 focus:ring-red-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-red-500 dark:focus:ring-red-500"
               v-model="this.customers.newCustomerMobileNo"
             />
             <div class="relative mt-5" ref="container">
@@ -169,7 +169,7 @@
               <input
                 type="text"
                 id="customerGroup"
-                class="mt-4 w-full rounded-lg border border-gray-300 bg-gray-50 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+                class="mt-4 w-full rounded-lg border border-gray-300 bg-gray-50 text-sm text-gray-900 focus:border-red-500 focus:ring-red-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-red-500 dark:focus:ring-red-500"
                 v-model="this.customers.customerGroup"
                 @click="
                   this.customers.showCustomersGroup = true;
@@ -205,7 +205,7 @@
               <input
                 type="text"
                 id="territory"
-                class="mt-4 w-full rounded-lg border border-gray-300 bg-gray-50 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+                class="mt-4 w-full rounded-lg border border-gray-300 bg-gray-50 text-sm text-gray-900 focus:border-red-500 focus:ring-red-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-red-500 dark:focus:ring-red-500"
                 v-model="this.customers.customerTerritory"
                 @click="
                   this.customers.showCustomersTerritory = true;
@@ -236,7 +236,7 @@
             <div class="flex justify-end">
               <button
                 @click="this.customers.addNewCustomer()"
-                class="mt-8 rounded bg-blue-500 px-3 py-2 text-white hover:bg-blue-600"
+                class="mt-8 rounded bg-red-500 px-3 py-2 text-white hover:bg-red-600"
               >
                 Save
               </button>
@@ -262,7 +262,7 @@
         <input
           type="number"
           id="mobileNumber"
-          class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pl-10 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500 md:w-3/5 lg:w-2/5"
+          class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pl-10 text-sm text-gray-900 focus:border-red-500 focus:ring-red-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-red-500 dark:focus:ring-red-500 md:w-3/5 lg:w-2/5"
           placeholder="Mobile Number"
           readonly
           :value="this.customers.newCustomerMobileNo || this.recentOrders.mobileNumber || this.table.mobileNumber"
@@ -273,7 +273,7 @@
           class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3"
         >
           <svg
-            class="h-6 w-6 text-gray-500 group-hover:text-blue-600 dark:text-gray-400 dark:group-hover:text-blue-500"
+            class="h-6 w-6 text-gray-500 group-hover:text-red-600 dark:text-gray-400 dark:group-hover:text-red-500"
             fill="currentColor"
             viewBox="0 0 20 20"
             xmlns="http://www.w3.org/2000/svg"
@@ -289,7 +289,7 @@
         <input
           type="number"
           id="numberOfPax"
-          class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pl-10 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500 md:w-3/5 lg:w-2/5"
+          class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pl-10 text-sm text-gray-900 focus:border-red-500 focus:ring-red-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-red-500 dark:focus:ring-red-500 md:w-3/5 lg:w-2/5"
           placeholder="Pax"
           required
           v-model="this.customers.numberOfPax"
@@ -301,7 +301,7 @@
           class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3"
         >
           <svg
-            class="h-6 w-6 text-gray-800 group-hover:text-blue-600 dark:text-gray-400 dark:group-hover:text-blue-500"
+            class="h-6 w-6 text-gray-800 group-hover:text-red-600 dark:text-gray-400 dark:group-hover:text-red-500"
             aria-hidden="true"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -317,7 +317,7 @@
         </div>
         <input
           type="text"
-          class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pl-10 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500 md:w-3/5 lg:w-2/5"
+          class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pl-10 text-sm text-gray-900 focus:border-red-500 focus:ring-red-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-red-500 dark:focus:ring-red-500 md:w-3/5 lg:w-2/5"
           placeholder="Order Type"
           :value="
             this.menu.selectedOrderType || this.recentOrders.pastOrderType

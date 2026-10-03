@@ -5,7 +5,7 @@
         "items": [
             {
                 "doctype": "Material Request Item",
-                "item_code": "WNG",
+                "item_code": "WG-10",
                 "qty": 1,
                 "parentfield": "items"
             }
@@ -17,7 +17,7 @@
         "items": [
             {
                 "doctype": "Material Request Item",
-                "item_code": "BR",
+                "item_code": "FC-10",
                 "qty": 1,
                 "parentfield": "items"
             }
@@ -29,7 +29,7 @@
         "items": [
             {
                 "doctype": "Material Request Item",
-                "item_code": "ONN",
+                "item_code": "RM-FRIES",
                 "qty": 5,
                 "parentfield": "items"
             }
@@ -41,7 +41,7 @@
         "items": [
             {
                 "doctype": "Material Request Item",
-                "item_code": "CKN",
+                "item_code": "RM-CHKN",
                 "qty": 5,
                 "parentfield": "items"
             }
@@ -53,7 +53,7 @@
         "items": [
             {
                 "doctype": "Material Request Item",
-                "item_code": "MOM",
+                "item_code": "NG-8",
                 "qty": 5,
                 "parentfield": "items"
             }
@@ -65,7 +65,7 @@
         "items": [
             {
                 "doctype": "Material Request Item",
-                "item_code": "GR",
+                "item_code": "FC-5",
                 "qty": 5,
                 "parentfield": "items"
             }
@@ -77,7 +77,7 @@
         "items": [
             {
                 "doctype": "Material Request Item",
-                "item_code": "BR",
+                "item_code": "FC-10",
                 "qty": 3,
                 "parentfield": "items"
             }
@@ -89,7 +89,7 @@
         "items": [
             {
                 "doctype": "Material Request Item",
-                "item_code": "MR",
+                "item_code": "FC-8",
                 "qty": 4,
                 "parentfield": "items"
             }
@@ -101,7 +101,7 @@
         "items": [
             {
                 "doctype": "Material Request Item",
-                "item_code": "MR",
+                "item_code": "FC-8",
                 "qty": 2,
                 "parentfield": "items"
             }
@@ -113,7 +113,7 @@
         "items": [
             {
                 "doctype": "Material Request Item",
-                "item_code": "CG",
+                "item_code": "BG-CHK",
                 "qty": 5,
                 "parentfield": "items"
             }
@@ -125,7 +125,7 @@
         "items": [
             {
                 "doctype": "Material Request Item",
-                "item_code": "BG",
+                "item_code": "BG-BEEF",
                 "qty": 5,
                 "parentfield": "items"
             }

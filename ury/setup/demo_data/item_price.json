@@ -1,58 +1,51 @@
 [
     {
         "doctype": "Item Price",
-        "item_code": "ONN",
+        "item_code": "RM-CHKN",
         "uom": "Kg",
         "price_list": "Standard Buying",
-        "price_list_rate": "130"
+        "price_list_rate": "23.86"
     },
     {
         "doctype": "Item Price",
-        "item_code": "CKN",
+        "item_code": "RM-WING",
         "uom": "Kg",
         "price_list": "Standard Buying",
-        "price_list_rate": "250"
+        "price_list_rate": "26.42"
     },
     {
         "doctype": "Item Price",
-        "item_code": "BG",
-        "uom": "Kg",
-        "price_list": "Standard Buying",
-        "price_list_rate": "300"
-    },
-    {
-        "doctype": "Item Price",
-        "item_code": "MOM",
+        "item_code": "RM-BEEF",
         "uom": "Nos",
         "price_list": "Standard Buying",
-        "price_list_rate": "250"
+        "price_list_rate": "4.4"
     },
     {
         "doctype": "Item Price",
-        "item_code": "WNG",
+        "item_code": "RM-BUN",
         "uom": "Nos",
         "price_list": "Standard Buying",
-        "price_list_rate": "250"
+        "price_list_rate": "1.28"
     },
     {
         "doctype": "Item Price",
-        "item_code": "BR",
+        "item_code": "RM-FRIES",
         "uom": "Kg",
         "price_list": "Standard Buying",
-        "price_list_rate": "250"
+        "price_list_rate": "8.07"
     },
     {
         "doctype": "Item Price",
-        "item_code": "MR",
+        "item_code": "RM-BREAD",
         "uom": "Kg",
         "price_list": "Standard Buying",
-        "price_list_rate": "250"
+        "price_list_rate": "6.61"
     },
     {
         "doctype": "Item Price",
-        "item_code": "CG",
+        "item_code": "RM-OIL",
         "uom": "Kg",
         "price_list": "Standard Buying",
-        "price_list_rate": "250"
+        "price_list_rate": "9.18"
     }
 ]

@@ -208,7 +208,7 @@
           </button>
           <button
             @click="handleConfirmCancellation()"
-            class="mt-6 rounded bg-blue-500 px-3 py-2 text-white hover:bg-blue-600"
+            class="mt-6 rounded bg-red-500 px-3 py-2 text-white hover:bg-red-600"
           >
             Yes
           </button>
@@ -284,7 +284,7 @@
               this.menu.addToCartAndUpdateQty(item);
               menu.showDialogCart = false;
             "
-            class="mt-8 rounded bg-blue-500 px-3 py-2 text-white hover:bg-blue-600"
+            class="mt-8 rounded bg-red-500 px-3 py-2 text-white hover:bg-red-600"
           >
             Add
           </button>

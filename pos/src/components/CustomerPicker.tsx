@@ -222,17 +222,17 @@ export function CustomerPicker({ value, onChange, disabled }: CustomerPickerProp
   return (
     <div className="relative">
       {value ? (
-        <div className="flex items-center justify-between rounded-lg bg-blue-50 p-3">
+        <div className="flex items-center justify-between rounded-lg bg-primary-50 p-3">
           <div>
-            <p className="font-medium text-blue-900">{value.name}</p>
-            <p className="text-sm text-blue-700">{value.phone}</p>
+            <p className="font-medium text-primary-900">{value.name}</p>
+            <p className="text-sm text-primary-700">{value.phone}</p>
           </div>
           <Button
             onClick={() => onChange(null)}
             disabled={disabled}
             variant="ghost"
             size="sm"
-            className="text-blue-700 hover:text-blue-800"
+            className="text-primary-700 hover:text-primary-800"
           >
             {t('common.change')}
           </Button>

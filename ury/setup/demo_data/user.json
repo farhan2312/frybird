@@ -1,8 +1,8 @@
 [
     {
         "doctype": "User",
-        "email": "cashier@ury.com",
-        "first_name": "URY Cashier",
+        "email": "cashier@frybird.test",
+        "first_name": "FryBird Cashier",
         "status": "Active",
         "roles": [
             {
@@ -12,8 +12,8 @@
     },
     {
         "doctype": "User",
-        "email": "captain@ury.com",
-        "first_name": "URY Captain",
+        "email": "captain@frybird.test",
+        "first_name": "FryBird Captain",
         "status": "Active",
         "roles": [
             {
@@ -23,8 +23,8 @@
     },
     {
         "doctype": "User",
-        "email": "manager@ury.com",
-        "first_name": "URY Manager",
+        "email": "manager@frybird.test",
+        "first_name": "FryBird Manager",
         "status": "Active",
         "roles": [
             {

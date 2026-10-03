@@ -897,15 +897,28 @@ def getAggregatorItem(aggregator):
         fields=["item_code", "item_name", "price_list_rate"],
         filters={"selling": 1, "price_list": priceList},
     )
+    # course / special dish come from the branch's active menu so the POS can group items by category
+    restaurant = frappe.db.get_value("URY Restaurant", {"branch": branchName}, ["name", "active_menu"], as_dict=True)
+    menu_rows = {}
+    if restaurant and restaurant.active_menu:
+        for row in frappe.get_all(
+            "URY Menu Item",
+            filters={"parent": restaurant.active_menu, "parenttype": "URY Menu"},
+            fields=["item", "course", "special_dish", "disabled"],
+        ):
+            menu_rows[row.item] = row
     aggregatorItemList = [
         {
             "item": item.item_code,
             "item_name": item.item_name,
             "rate": item.price_list_rate,
-            "item_image": frappe.db.get_value("Item", item.item, "image"),
+            "item_image": frappe.db.get_value("Item", item.item_code, "image"),
+            "course": menu_rows[item.item_code].course if item.item_code in menu_rows else None,
+            "special_dish": menu_rows[item.item_code].special_dish if item.item_code in menu_rows else 0,
         }
         for item in aggregatorItem
         if not frappe.db.get_value("Item", item.item_code, "disabled")
+        and not (item.item_code in menu_rows and menu_rows[item.item_code].disabled)
     ]
     return aggregatorItemList
 

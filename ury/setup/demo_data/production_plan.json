@@ -4,10 +4,10 @@
         "po_items": [
             {
                 "doctype": "Production Plan Item",
-                "item_code": "CG",
-                "bom_no": "__BOM_FOR_CG__",
+                "item_code": "BG-CHK",
+                "bom_no": "__BOM_FOR_BG-CHK__",
                 "planned_qty": 10,
-                "stock_uom": "Kg",
+                "stock_uom": "Nos",
                 "parentfield": "po_items"
             }
         ]
@@ -17,10 +17,10 @@
         "po_items": [
             {
                 "doctype": "Production Plan Item",
-                "item_code": "MOM",
-                "bom_no": "__BOM_FOR_MOM__",
+                "item_code": "NG-8",
+                "bom_no": "__BOM_FOR_NG-8__",
                 "planned_qty": 10,
-                "stock_uom": "Kg",
+                "stock_uom": "Nos",
                 "parentfield": "po_items"
             }
         ]
@@ -30,10 +30,10 @@
         "po_items": [
             {
                 "doctype": "Production Plan Item",
-                "item_code": "WNG",
-                "bom_no": "__BOM_FOR_WNG__",
+                "item_code": "WG-10",
+                "bom_no": "__BOM_FOR_WG-10__",
                 "planned_qty": 10,
-                "stock_uom": "Kg",
+                "stock_uom": "Nos",
                 "parentfield": "po_items"
             }
         ]

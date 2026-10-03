@@ -57,7 +57,7 @@ export const SidebarCard = React.forwardRef<HTMLDivElement, React.HTMLAttributes
 SidebarCard.displayName = "SidebarCard";
 
 export const SidebarActiveIndicator = () => (
-  <div className="absolute start-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-blue-600 rounded-e-full" />
+  <div className="absolute start-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-primary-600 rounded-e-full" />
 );
 
 export interface SidebarItemProps

@@ -5,7 +5,6 @@ import frappe
 from frappe import _
 from frappe.utils import cint
 from ury.setup.demo import process_masters, process_transactions
-from ury.setup.pos_demo import generate_pos_demo
 
 
 def get_setup_stages(args=None):
@@ -107,7 +106,8 @@ def load_demo_transactions(args=None):
 def load_demo_pos(args=None):
 	_prepare_demo_company(args)
 	try:
-		generate_pos_demo()
+		# POS sales history and today's live shift come from ury.setup.live_seed.run,
+		# which is run separately after the wizard (see scripts/wsl/rebuild-site.sh).
 		admin = frappe.get_doc("User", "Administrator")
 		admin.add_roles("URY Cashier", "URY Captain", "URY Manager")
 		frappe.cache.delete_keys("bootinfo")

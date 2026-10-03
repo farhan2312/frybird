@@ -9,7 +9,7 @@
         <div class="mb-8 flex justify-center">
           <img
             :src="imagePath"
-            alt="URY POS logo"
+            alt="FryBird POS logo"
             class="h-8 w-auto sm:h-8 lg:h-8"
           />
         </div>
@@ -44,7 +44,7 @@
               name="user_id"
               v-model="this.auth.userId"
               required
-              class="block w-full rounded-md border border-gray-200 py-3 pl-10 text-sm placeholder-gray-400 focus:border-blue-500 focus:ring-blue-500"
+              class="block w-full rounded-md border border-gray-200 py-3 pl-10 text-sm placeholder-gray-400 focus:border-red-500 focus:ring-red-500"
               placeholder="jane@example.com"
             />
           </div>
@@ -73,7 +73,7 @@
               name="currentPassword"
               v-model="this.auth.currentPassword"
               required
-              class="block w-full rounded-md border border-gray-200 py-3 pl-10 pr-16 text-sm placeholder-gray-400 focus:border-blue-500 focus:ring-blue-500"
+              class="block w-full rounded-md border border-gray-200 py-3 pl-10 pr-16 text-sm placeholder-gray-400 focus:border-red-500 focus:ring-red-500"
               placeholder="•••••"
             />
             <button
@@ -90,7 +90,7 @@
           <!-- Login Button -->
           <button
             type="submit"
-            class="flex w-full justify-center rounded-md border border-transparent bg-blue-600 px-4 py-3 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            class="flex w-full justify-center rounded-md border border-transparent bg-red-600 px-4 py-3 text-sm font-medium text-white shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
           >
             Login
           </button>
@@ -102,7 +102,7 @@
 
 <script>
 import { useAuthStore } from "@/stores/Auth.js";
-import uriPosImage from "@/assets/logos/URY_POS.jpg";
+import uriPosImage from "@/assets/logos/FRYBIRD_POS.jpg";
 
 export default {
   setup() {

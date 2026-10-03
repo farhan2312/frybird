@@ -31,6 +31,8 @@ def get_service_line(branch=None):
 		minutes = None
 		if t.latest_invoice_time:
 			minutes = int((now - get_datetime(str(t.latest_invoice_time))).total_seconds() // 60)
+			if minutes < 0:  # seated before midnight; latest_invoice_time holds only a time of day
+				minutes += 24 * 60
 
 		invoice = frappe.db.sql(
 			"""

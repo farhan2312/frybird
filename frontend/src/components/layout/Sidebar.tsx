@@ -155,7 +155,7 @@ const MainPanel: React.FC<{ isManager: boolean }> = ({ isManager }) => {
           <ChevronDown
             className={cn(
               "w-4 h-4 transition-transform duration-200",
-              isSettingsOpen ? "rotate-180 text-blue-600" : "text-gray-400"
+              isSettingsOpen ? "rotate-180 text-primary-600" : "text-gray-400"
             )}
           />
         </button>

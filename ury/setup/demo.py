@@ -138,7 +138,7 @@ def add_global_opening_stock(company, start_date):
             se_items.append({
                 "item_code": item,
                 "qty": 1000,
-                "basic_rate": 100
+                "basic_rate": frappe.db.get_value("Item", item, "valuation_rate") or 1
             })
             
         se = frappe.get_doc({

@@ -30,7 +30,7 @@ def get_pos_warehouse(pos_profile):
     return frappe.db.get_value("POS Profile", pos_profile, "warehouse")
 
 def get_cashier_user():
-    return "cashier@ury.com"
+    return "cashier@frybird.test"
 
 def get_customer():
     customers = frappe.get_all("Customer", pluck="name")

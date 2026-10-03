@@ -104,18 +104,27 @@ const PaymentDialog: React.FC<PaymentDialogProps> = ({
   const roundedFinalAdjustment = Math.round(finalAdjustment * 100) / 100;
   const showFinalAdjustment = Math.abs(roundedFinalAdjustment) > 0.001;
 
+  // Delivery-platform orders (Talabat, Keeta, ...) are settled by the platform, not at the till:
+  // default to the mode of payment configured for that aggregator on the branch.
+  const [defaultMode, setDefaultMode] = useState<string>(DEFAULT_PAYMENT_MODE);
+  useEffect(() => {
+    if (!customer) return;
+    call.get('ury.ury_pos.api.getAggregatorMOP', { aggregator: customer })
+      .then((res: any) => {
+        const mop = res?.message?.[0]?.mode_of_payment;
+        if (mop) setDefaultMode(mop);
+      })
+      .catch(() => {});
+  }, [customer]);
+
   useEffect(()=>{
-    const defaultPaymentModePresent=paymentModes.find((mode)=>mode===DEFAULT_PAYMENT_MODE)
-    //only one payment mode should be present, then autofill the final amount, if not do not fill
-    const otherPaymentModesNotEntered=Object.keys(paymentInputs).length<=1;
-    if(finalTotal && paymentModes && DEFAULT_PAYMENT_MODE && defaultPaymentModePresent && otherPaymentModesNotEntered){
-      //check if default payment mode is present in paymentModes
-      setPaymentInputs((prev)=>({ 
-        ...prev,
-        [DEFAULT_PAYMENT_MODE]:String(finalTotal) 
-      }))
+    const defaultPaymentModePresent=paymentModes.find((mode)=>mode===defaultMode)
+    //only the default payment mode should be filled so far, then autofill the final amount, if not do not fill
+    const otherPaymentModesNotEntered=Object.keys(paymentInputs).every((mode)=>mode===DEFAULT_PAYMENT_MODE || mode===defaultMode);
+    if(finalTotal && paymentModes && defaultPaymentModePresent && otherPaymentModesNotEntered){
+      setPaymentInputs({ [defaultMode]:String(finalTotal) })
     }
-  },[finalTotal,paymentModes])
+  },[finalTotal,paymentModes,defaultMode])
 
   // Helper to calculate remaining balance
   const getRemainingBalance = (currentId: string) => {
@@ -291,7 +300,7 @@ const PaymentDialog: React.FC<PaymentDialogProps> = ({
               )}
               {/* Adjustment (if any) */}
               {showFinalAdjustment && (
-                <div className="flex justify-between text-blue-600">
+                <div className="flex justify-between text-primary-600">
                   <span>{t('payment.adjustment')}</span>
                   <span>{roundedFinalAdjustment > 0 ? '+' : ''}{formatCurrency(roundedFinalAdjustment)}</span>
                 </div>

@@ -1,7 +1,7 @@
 import { storage } from '@ury/core';
 
 export function formatCurrency(amount: number): string {
-  const symbol = (storage as any)?.getItem?.('currencySymbol') || '₹';
+  const symbol = (storage as any)?.getItem?.('currencySymbol') || 'AED';
   const formattedVal = typeof amount === 'number' && !isNaN(amount) ? amount.toLocaleString('en-IN') : amount;
   return `${symbol} ${formattedVal}`;
 }

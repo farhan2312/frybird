@@ -18,7 +18,7 @@
             <span
               class="me-2 rounded px-2.5 py-0.5 text-sm font-medium"
               :class="{
-                'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300':
+                'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300':
                   this.table.getBadgeType(table) === 'default',
                 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300':
                   this.table.getBadgeType(table) === 'red',
@@ -110,8 +110,8 @@
               class="inline-flex items-center rounded px-2 py-2.5 text-center text-sm font-medium text-white hover:bg-[#2557D6]/90 focus:outline-none focus:ring-4 focus:ring-[#2557D6]/50 dark:focus:ring-[#2557D6]/50"
               :class="[
                 {
-                  'bg-blue-700': !this.auth.restrictTableOrder,
-                  'pointer-events-none bg-blue-400':
+                  'bg-red-700': !this.auth.restrictTableOrder,
+                  'pointer-events-none bg-red-400':
                     this.auth.restrictTableOrder,
                 },
               ]"
@@ -140,7 +140,7 @@
           <div class="mt-2 flex justify-center" v-if="table.occupied === 1">
             <button
               type="button"
-              class="mb-2 me-2 inline-flex items-center rounded bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-[#2557D6]/90 focus:outline-none focus:ring-4 focus:ring-[#2557D6]/50 dark:focus:ring-[#2557D6]/50"
+              class="mb-2 me-2 inline-flex items-center rounded bg-red-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-[#2557D6]/90 focus:outline-none focus:ring-4 focus:ring-[#2557D6]/50 dark:focus:ring-[#2557D6]/50"
               @click="this.invoiceData.billing(table)"
             >
               <svg
@@ -157,12 +157,12 @@
               Bill
             </button>
             <div
-              class="relative inline-flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border hover:bg-blue-700 hover:text-white focus:outline-none focus:ring-4 focus:ring-blue-300 dark:border-blue-500 dark:text-blue-500 dark:hover:bg-blue-500 dark:hover:text-white dark:focus:ring-blue-800"
+              class="relative inline-flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border hover:bg-red-700 hover:text-white focus:outline-none focus:ring-4 focus:ring-red-300 dark:border-red-500 dark:text-red-500 dark:hover:bg-red-500 dark:hover:text-white dark:focus:ring-red-800"
               :class="[
                 {
-                  'border-blue-700 text-blue-700':
+                  'border-red-700 text-red-700':
                     !this.auth.restrictTableOrder,
-                  'pointer-events-none border-blue-400 text-blue-400':
+                  'pointer-events-none border-red-400 text-red-400':
                     this.auth.restrictTableOrder,
                 },
               ]"

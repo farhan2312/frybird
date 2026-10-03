@@ -401,7 +401,7 @@ export default function Orders() {
                 <Card 
                   key={order.name} 
                   className={`p-0 bg-white hover:shadow-md transition-shadow flex flex-col overflow-hidden cursor-pointer ${
-                    selectedOrder?.name === order.name ? 'ring-2 ring-blue-500 shadow-lg' : ''
+                    selectedOrder?.name === order.name ? 'ring-2 ring-primary-500 shadow-lg' : ''
                   } ${splitBill || mergedBill ? 'border-s-4 border-s-primary-500' : ''}`}
                   onClick={() => handleOrderClick(order)}
                 >
@@ -557,7 +557,7 @@ export default function Orders() {
                       />
                       <button
                         type="button"
-                        className="inline-flex items-center justify-center rounded-md p-2 bg-gray-100 hover:bg-gray-200 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="inline-flex items-center justify-center rounded-md p-2 bg-gray-100 hover:bg-gray-200 text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-500"
                         aria-label="Edit order"
                         onClick={handleEditOrder}
                         disabled={editLoading}

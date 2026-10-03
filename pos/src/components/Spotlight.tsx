@@ -93,7 +93,7 @@ const Spotlight = () => {
                 variant="ghost"
                 className={cn(
                   'w-full flex items-center p-4 hover:bg-gray-50 transition-colors',
-                  index === selectedIndex && 'bg-blue-50'
+                  index === selectedIndex && 'bg-primary-50'
                 )}
               >
                 <img

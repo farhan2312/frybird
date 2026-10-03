@@ -1,0 +1,19 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "frybird-pos",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["vite", "--port", "5173", "--strictPort"],
+      "cwd": "pos",
+      "port": 5173
+    },
+    {
+      "name": "frybird-admin",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["vite", "--port", "5174", "--strictPort"],
+      "cwd": "frontend",
+      "port": 5174
+    }
+  ]
+}

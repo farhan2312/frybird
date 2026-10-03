@@ -13,9 +13,9 @@ const ScreenSizeDialog = () => {
       <div className="bg-white rounded-lg p-8 max-w-md w-full mx-4 shadow-xl">
         <div className="text-center">
           {/* Icon */}
-          <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-blue-100 mb-6">
+          <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-primary-100 mb-6">
             <div className="relative">
-              <Monitor className="h-8 w-8 text-blue-600" />
+              <Monitor className="h-8 w-8 text-primary-600" />
               <Smartphone className="h-4 w-4 text-red-500 absolute -top-1 -right-1" />
             </div>
           </div>
@@ -46,13 +46,13 @@ const ScreenSizeDialog = () => {
           </div>
           
           {/* Alternative Option */}
-          <div className="bg-blue-50 rounded-lg p-4 mb-6">
-            <p className="text-sm text-blue-800 mb-3">
-              You can use URY POS Version 1 for mobile devices.
+          <div className="bg-primary-50 rounded-lg p-4 mb-6">
+            <p className="text-sm text-primary-800 mb-3">
+              You can use FryBird POS Version 1 for mobile devices.
             </p>
             <Button
               onClick={handleSwitchToVersion1}
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 text-sm"
+              className="w-full bg-primary-600 hover:bg-primary-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 text-sm"
             >
               <ExternalLink className="w-4 h-4 mr-2" />
               Switch to Version 1

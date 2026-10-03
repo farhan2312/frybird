@@ -1,6 +1,30 @@
 [
     {
         "doctype": "URY Menu Course",
-        "course": "Demo Course"
+        "course": "Fried Chicken"
+    },
+    {
+        "doctype": "URY Menu Course",
+        "course": "Chicken Wings"
+    },
+    {
+        "doctype": "URY Menu Course",
+        "course": "Chicken Tenders"
+    },
+    {
+        "doctype": "URY Menu Course",
+        "course": "Chicken Nuggets"
+    },
+    {
+        "doctype": "URY Menu Course",
+        "course": "Burgers"
+    },
+    {
+        "doctype": "URY Menu Course",
+        "course": "Sides & Add-ons"
+    },
+    {
+        "doctype": "URY Menu Course",
+        "course": "Sauces"
     }
 ]

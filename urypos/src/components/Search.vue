@@ -32,7 +32,7 @@
       <input
         type="search"
         id="default-search"
-        class="block w-full rounded border border-gray-300 bg-gray-50 px-10 pb-2 pt-2.5 text-sm font-medium text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+        class="block w-full rounded border border-gray-300 bg-gray-50 px-10 pb-2 pt-2.5 text-sm font-medium text-gray-900 focus:border-red-500 focus:ring-red-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-red-500 dark:focus:ring-red-500"
         placeholder="Item Search"
         v-model="this.menu.searchTerm"
         @input="this.menu.handleSearchInput"
@@ -66,17 +66,17 @@
         </select>
       </div>
       <button
-        class="focus:shadow-outline w-28 rounded bg-blue-700 p-2 font-bold text-white hover:bg-blue-900 focus:outline-blue-500"
+        class="focus:shadow-outline w-28 rounded bg-red-700 p-2 font-bold text-white hover:bg-red-900 focus:outline-red-500"
         type="button"
-        :class="{ 'bg-blue-900': this.menu.priority }"
+        :class="{ 'bg-red-900': this.menu.priority }"
         @click="this.menu.showSpecialItems"
       >
         Priority
       </button>
       <button
-        class="focus:shadow-outline w-28 rounded bg-blue-700 p-2 font-bold text-white hover:bg-blue-900 focus:outline-blue-500"
+        class="focus:shadow-outline w-28 rounded bg-red-700 p-2 font-bold text-white hover:bg-red-900 focus:outline-red-500"
         type="button"
-        :class="{ 'bg-blue-900': this.menu.displayAll }"
+        :class="{ 'bg-red-900': this.menu.displayAll }"
         @click="this.menu.showAllItems"
       >
         All

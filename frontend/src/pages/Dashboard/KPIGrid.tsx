@@ -2,8 +2,8 @@ import React from 'react';
 import { formatCurrency } from '@ury/core';
 import { Card, Spinner } from '@ury/ui';
 import { DashboardSummary } from '../../services/dashboard';
-import uryPosLogo from '../../../../pos/public/ury_pos.png';
-import uryMosaicLogo from '../../../../mosaic/src/assets/logos/mosaic.jpg';
+import uryPosLogo from '../../../../pos/public/frybird_pos.png';
+import uryMosaicLogo from '../../../../mosaic/src/assets/logos/frybird_mosaic.jpg';
 
 interface LinkCardProps {
   logoSrc: string;
@@ -68,13 +68,13 @@ export const KPIGrid: React.FC<KPIGridProps> = ({ summary, loading }) => {
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <LinkCard
           logoSrc={uryPosLogo}
-          label="URY POS"
+          label="FRYBIRD POS"
           href="/pos"
         />
 
         <LinkCard
           logoSrc={uryMosaicLogo}
-          label="URY MOSAIC"
+          label="FRYBIRD KITCHEN"
           href="/mosaic"
         />
 

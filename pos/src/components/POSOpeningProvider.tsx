@@ -221,7 +221,7 @@ const POSOpeningProvider = ({ children }: POSOpeningProviderProps) => {
     return (
       <div className="fixed inset-0 bg-white flex items-center justify-center z-50">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
           <p className="text-gray-600">{t('common.checking_pos_status')}</p>
         </div>
       </div>

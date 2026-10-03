@@ -1,12 +1,12 @@
 [
     {
         "doctype": "POS Profile",
-        "__newname": "Demo Profile",
+        "__newname": "FryBird POS",
         "company": "__COMPANY__",
-        "restaurant": "Demo Restaurant",
-        "branch": "Demo Branch",
+        "restaurant": "FryBird",
+        "branch": "FryBird Whitehall",
         "show_image": "1",
-        "custom_kot_naming_series": "KOT-UD-",
+        "custom_kot_naming_series": "KOT-FB-",
         "custom_kot_warning_time": "15",
         "custom_reset_order_number_daily": "1",
         "submit_stock_reconciliation": "1",
@@ -32,7 +32,7 @@
         "applicable_for_users": [
             {
                 "doctype": "POS Profile User",
-                "user": "cashier@ury.com",
+                "user": "cashier@frybird.test",
                 "default": "1",
                 "parentfield": "applicable_for_users"
             },

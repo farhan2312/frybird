@@ -31,7 +31,7 @@
     <div
       v-if="!this.auth.cashier"
       @click="this.table.toggleTableTypeSwitch"
-      class="relative mb-3 mt-2 inline-block h-10 w-28 cursor-pointer rounded bg-blue-700"
+      class="relative mb-3 mt-2 inline-block h-10 w-28 cursor-pointer rounded bg-red-700"
     >
       <span
         class="absolute w-full py-2 text-base text-white"
@@ -116,7 +116,7 @@
                 :class="{
                   'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300':
                     this.table.getBadgeType(table) === 'red',
-                  'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300':
+                  'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300':
                     this.table.getBadgeType(table) === 'default',
 
                   'bg-yellow-100 text-yellow-800':
@@ -211,8 +211,8 @@
                 class="inline-flex items-center rounded px-2 py-2.5 text-center text-sm font-medium text-white hover:bg-[#2557D6]/90 focus:outline-none focus:ring-4 focus:ring-[#2557D6]/50 dark:focus:ring-[#2557D6]/50"
                 :class="[
                   {
-                    'bg-blue-700': !this.auth.restrictTableOrder,
-                    'pointer-events-none bg-blue-400':
+                    'bg-red-700': !this.auth.restrictTableOrder,
+                    'pointer-events-none bg-red-400':
                       this.auth.restrictTableOrder,
                   },
                 ]"
@@ -241,7 +241,7 @@
             <div class="mt-2 flex justify-center" v-if="table.occupied === 1">
               <button
                 type="button"
-                class="mb-2 me-2 inline-flex items-center rounded bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-[#2557D6]/90 focus:outline-none focus:ring-4 focus:ring-[#2557D6]/50 dark:focus:ring-[#2557D6]/50"
+                class="mb-2 me-2 inline-flex items-center rounded bg-red-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-[#2557D6]/90 focus:outline-none focus:ring-4 focus:ring-[#2557D6]/50 dark:focus:ring-[#2557D6]/50"
                 @click="this.invoiceData.billing(table)"
               >
                 <svg
@@ -260,12 +260,12 @@
               </button>
 
               <div
-                class="relative inline-flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border hover:bg-blue-700 hover:text-white focus:outline-none focus:ring-4 focus:ring-blue-300 dark:border-blue-500 dark:text-blue-500 dark:hover:bg-blue-500 dark:hover:text-white dark:focus:ring-blue-800"
+                class="relative inline-flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border hover:bg-red-700 hover:text-white focus:outline-none focus:ring-4 focus:ring-red-300 dark:border-red-500 dark:text-red-500 dark:hover:bg-red-500 dark:hover:text-white dark:focus:ring-red-800"
                 :class="[
                   {
-                    'border-blue-700 text-blue-700':
+                    'border-red-700 text-red-700':
                       !this.auth.restrictTableOrder,
-                    'pointer-events-none border-blue-400 text-blue-400':
+                    'pointer-events-none border-red-400 text-red-400':
                       this.auth.restrictTableOrder,
                   },
                 ]"
@@ -389,7 +389,7 @@
               this.table.showModal = false;
               this.table.tableTransfer(table);
             "
-            class="mt-8 rounded bg-blue-700 px-3 py-2 text-white hover:bg-blue-600"
+            class="mt-8 rounded bg-red-700 px-3 py-2 text-white hover:bg-red-600"
           >
             Transfer
           </button>
@@ -422,7 +422,7 @@
         </h2>
         <div class="mt-4 text-left">
           <label for="mergeSelect" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Select Table to Merge</label>
-          <select id="mergeSelect" v-model="table.selectedMergedTable" class="mt-1 block w-full rounded border-gray-300 py-2 pl-3 pr-10 text-base focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm dark:bg-gray-700 dark:text-white dark:border-gray-600">
+          <select id="mergeSelect" v-model="table.selectedMergedTable" class="mt-1 block w-full rounded border-gray-300 py-2 pl-3 pr-10 text-base focus:border-red-500 focus:outline-none focus:ring-red-500 sm:text-sm dark:bg-gray-700 dark:text-white dark:border-gray-600">
             <option value="" disabled>Select a table</option>
             <option v-for="(t, index) in table.transferTable" :key="index" :value="t.name">{{t.name}}</option>
           </select>
@@ -433,7 +433,7 @@
               this.table.showModalMergeFree = false;
               this.table.mergeFreeTablesAction();
             "
-            class="mt-8 rounded bg-blue-700 px-3 py-2 text-white hover:bg-blue-600"
+            class="mt-8 rounded bg-red-700 px-3 py-2 text-white hover:bg-red-600"
             :disabled="!table.selectedMergedTable"
             :class="{'opacity-50 cursor-not-allowed': !table.selectedMergedTable}"
           >
@@ -525,7 +525,7 @@
               this.table.showModalCaptainTransfer = false;
               this.table.captianTransfer();
             "
-            class="mt-8 rounded bg-blue-700 px-3 py-2 text-white hover:bg-blue-600"
+            class="mt-8 rounded bg-red-700 px-3 py-2 text-white hover:bg-red-600"
           >
             Transfer
           </button>

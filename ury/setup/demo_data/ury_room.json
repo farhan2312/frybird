@@ -1,30 +1,14 @@
 [
     {
         "doctype": "URY Room",
-        "__newname": "Ground Floor",
+        "__newname": "Dining Room",
+        "room_type": "AC",
+        "branch": "FryBird Whitehall"
+    },
+    {
+        "doctype": "URY Room",
+        "__newname": "Patio",
         "room_type": "NON-AC",
-        "branch": "Demo Branch"
-    },
-    {
-        "doctype": "URY Room",
-        "__newname": "First Floor",
-        "room_type": "NON-AC",
-        "branch": "Demo Branch"
-    },
-    {
-        "doctype": "URY Room",
-        "__newname": "Ground Floor AC",
-        "branch": "Demo Branch"
-    },
-    {
-        "doctype": "URY Room",
-        "__newname": "First Floor AC",
-        "branch": "Demo Branch"
-    },
-    {
-        "doctype": "URY Room",
-        "__newname": "Second Floor",
-        "room_type": "NON-AC",
-        "branch": "Demo Branch"
+        "branch": "FryBird Whitehall"
     }
 ]

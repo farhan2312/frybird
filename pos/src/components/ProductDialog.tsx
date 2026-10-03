@@ -359,7 +359,7 @@ const ProductDialog: React.FC<ProductDialogProps> = ({
               {(selectedItem?.course_label || selectedItem?.course) && (
                 <>
                   <span className="text-gray-300">•</span>
-                  <span className="text-sm font-medium text-blue-600">{selectedItem?.course_label || selectedItem?.course}</span>
+                  <span className="text-sm font-medium text-primary-600">{selectedItem?.course_label || selectedItem?.course}</span>
                 </>
               )}
             </div>
@@ -424,8 +424,8 @@ const ProductDialog: React.FC<ProductDialogProps> = ({
                       className={cn(
                         'p-2 rounded-lg border text-left w-full flex justify-between items-center',
                         variant.id === itemDoc?.item
-                          ? 'border-blue-500 bg-blue-50'
-                          : 'border-gray-200 hover:border-blue-200'
+                          ? 'border-primary-500 bg-primary-50'
+                          : 'border-gray-200 hover:border-primary-200'
                       )}
                     >
                       <div className="font-medium">{variant.name}</div>
@@ -457,8 +457,8 @@ const ProductDialog: React.FC<ProductDialogProps> = ({
                       className={cn(
                         'w-full p-3 rounded-lg border text-left',
                         selectedAddons.some(item => item.id === addon.id)
-                          ? 'border-blue-500 bg-blue-50'
-                          : 'border-gray-200 hover:border-blue-200'
+                          ? 'border-primary-500 bg-primary-50'
+                          : 'border-gray-200 hover:border-primary-200'
                       )}
                     >
                       <div className="flex justify-between items-center">

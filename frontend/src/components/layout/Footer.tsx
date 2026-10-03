@@ -17,7 +17,7 @@ export const Footer: React.FC = () => {
               to={item.path}
               className={({ isActive }) =>
                 `flex flex-col items-center p-2 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors ${
-                  isActive ? 'text-blue-600 font-semibold' : ''
+                  isActive ? 'text-primary-600 font-semibold' : ''
                 }`
               }
             >

@@ -37,7 +37,7 @@ const CaptainOrderLine: React.FC<CaptainOrderLineProps> = ({
     <div
       className={cn(
         'flex items-center justify-between gap-3 py-3 px-3 rounded-lg',
-        variant === 'delta' && 'bg-blue-50',
+        variant === 'delta' && 'bg-primary-50',
         variant === 'reduction' && 'bg-red-50',
         variant === 'confirmed' && 'bg-white'
       )}
@@ -52,7 +52,7 @@ const CaptainOrderLine: React.FC<CaptainOrderLineProps> = ({
           <span
             className={cn(
               'font-medium text-sm',
-              variant === 'delta' && 'text-blue-900',
+              variant === 'delta' && 'text-primary-900',
               variant === 'reduction' && 'text-red-900 line-through decoration-red-400',
               variant === 'confirmed' && 'text-gray-900'
             )}

@@ -508,7 +508,7 @@ export const ReportSettingsPage: React.FC = () => {
               className="w-full px-6 py-4 bg-white flex items-center justify-between border-b border-gray-100 hover:bg-gray-50/80 transition-colors text-left"
             >
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center">
+                <div className="w-9 h-9 rounded-lg bg-primary-50 text-primary-600 flex items-center justify-center">
                   <Calculator className="w-5 h-5" />
                 </div>
                 <div>

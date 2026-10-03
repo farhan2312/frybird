@@ -1,17 +1,17 @@
 [
     {
         "doctype": "Product Bundle",
-        "new_item_code": "TDC",
+        "new_item_code": "BG-COMBO",
         "items": [
             {
                 "doctype": "Product Bundle Item",
-                "item_code": "GR",
+                "item_code": "BG-CHK",
                 "qty": 1,
                 "parentfield": "items"
             },
             {
                 "doctype": "Product Bundle Item",
-                "item_code": "CG",
+                "item_code": "ADD-MEAL",
                 "qty": 1,
                 "parentfield": "items"
             }

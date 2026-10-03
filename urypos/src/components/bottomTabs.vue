@@ -22,7 +22,7 @@
           :class="[
             {
               'text-gray-500': this.tabClick.currentTab !== '/Table',
-              'text-blue-600': this.tabClick.currentTab === '/Table',
+              'text-red-600': this.tabClick.currentTab === '/Table',
             },
           ]"
           fill="currentColor"
@@ -40,7 +40,7 @@
           :class="[
             {
               'text-gray-500': this.tabClick.currentTab !== '/Table',
-              'text-blue-600': this.tabClick.currentTab === '/Table',
+              'text-red-600': this.tabClick.currentTab === '/Table',
             },
           ]"
           >Table</span
@@ -57,7 +57,7 @@
           :class="[
             {
               'text-gray-500': this.tabClick.currentTab !== '/Menu',
-              'text-blue-600': this.tabClick.currentTab === '/Menu',
+              'text-red-600': this.tabClick.currentTab === '/Menu',
             },
           ]"
           fill="currentColor"
@@ -77,7 +77,7 @@
           :class="[
             {
               'text-gray-500': this.tabClick.currentTab !== '/Menu',
-              'text-blue-600': this.tabClick.currentTab === '/Menu',
+              'text-red-600': this.tabClick.currentTab === '/Menu',
             },
           ]"
           >Menu</span
@@ -93,7 +93,7 @@
           :class="[
             {
               'text-gray-500': this.tabClick.currentTab !== '/Customer',
-              'text-blue-600': this.tabClick.currentTab === '/Customer',
+              'text-red-600': this.tabClick.currentTab === '/Customer',
             },
           ]"
           fill="currentColor"
@@ -113,7 +113,7 @@
           :class="[
             {
               'text-gray-500': this.tabClick.currentTab !== '/Customer',
-              'text-blue-600': this.tabClick.currentTab === '/Customer',
+              'text-red-600': this.tabClick.currentTab === '/Customer',
             },
           ]"
           >Customer</span
@@ -129,10 +129,10 @@
           :class="[
             {
               'text-gray-500': this.tabClick.currentTab !== '/Cart',
-              'text-blue-600': this.tabClick.currentTab === '/Cart',
+              'text-red-600': this.tabClick.currentTab === '/Cart',
             },
           ]"
-          class="h-6 w-6 group-hover:text-blue-600 dark:text-gray-400 dark:group-hover:text-blue-500"
+          class="h-6 w-6 group-hover:text-red-600 dark:text-gray-400 dark:group-hover:text-red-500"
           fill="currentColor"
           viewBox="0 0 20 20"
           xmlns="http://www.w3.org/2000/svg"
@@ -143,11 +143,11 @@
         </svg>
 
         <span
-          class="text-sm group-hover:text-blue-600 dark:text-gray-400 dark:group-hover:text-blue-500"
+          class="text-sm group-hover:text-red-600 dark:text-gray-400 dark:group-hover:text-red-500"
           :class="[
             {
               'text-gray-500': this.tabClick.currentTab !== '/Cart',
-              'text-blue-600': this.tabClick.currentTab === '/Cart',
+              'text-red-600': this.tabClick.currentTab === '/Cart',
             },
           ]"
           >Cart</span
@@ -163,7 +163,7 @@
           :class="[
             {
               'text-gray-500': this.tabClick.currentTab !== '/recentOrder',
-              'text-blue-600': this.tabClick.currentTab === '/recentOrder',
+              'text-red-600': this.tabClick.currentTab === '/recentOrder',
             },
           ]"
           fill="currentColor"
@@ -184,7 +184,7 @@
           :class="[
             {
               'text-gray-500': this.tabClick.currentTab !== '/recentOrder',
-              'text-blue-600': this.tabClick.currentTab === '/recentOrder',
+              'text-red-600': this.tabClick.currentTab === '/recentOrder',
             },
           ]"
           >OrderLog</span

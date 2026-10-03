@@ -182,7 +182,7 @@ export function SearchableSelect({
         scrollbarWidth: 'none',
         msOverflowStyle: 'none',
       }}
-      className="z-[9999] bg-white border border-gray-200 rounded-lg shadow-xl overflow-y-auto p-1 focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-500 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+      className="z-[9999] bg-white border border-gray-200 rounded-lg shadow-xl overflow-y-auto p-1 focus:outline-none focus:ring-2 focus:ring-primary-200 focus:border-primary-500 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
     >
       {filteredOptions.length > 0 ? (
         filteredOptions.map((opt) => {
@@ -206,9 +206,9 @@ export function SearchableSelect({
               onClick={() => handleSelectOption(opt)}
               className={`px-4 py-2 text-sm rounded-md cursor-pointer select-none transition-colors ${
                 isSelected
-                  ? 'bg-blue-50 text-blue-700 font-normal'
+                  ? 'bg-primary-50 text-primary-700 font-normal'
                   : isActionOption
-                  ? 'text-blue-600 font-medium hover:bg-blue-50/50 border-t border-gray-100 mt-1 pt-2'
+                  ? 'text-primary-600 font-medium hover:bg-primary-50/50 border-t border-gray-100 mt-1 pt-2'
                   : 'text-gray-800 hover:bg-gray-50'
               }`}
             >

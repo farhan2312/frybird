@@ -9,7 +9,7 @@
         <input type="password" v-model="password" />
 
         <button
-          class="bg-blue-500 block text-white p-2 hover:bg-blue-700"
+          class="bg-red-500 block text-white p-2 hover:bg-red-700"
           type="submit"
         >
           Sign in

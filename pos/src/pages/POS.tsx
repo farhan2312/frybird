@@ -66,7 +66,7 @@ export default function POS() {
       className={cn(
         'flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium transition-colors',
         quickFilter === filter
-          ? 'bg-blue-100 text-blue-700'
+          ? 'bg-primary-100 text-primary-700'
           : 'bg-gray-100 text-gray-700 hover:bg-gray-200',
         isMenuInteractionDisabled() && 'opacity-50 cursor-not-allowed pointer-events-none'
       )}

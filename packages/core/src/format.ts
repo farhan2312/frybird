@@ -1,7 +1,7 @@
 import { storage } from './storage';
 
 export function formatCurrency(amount: number): string {
-  const symbol = storage.getItem('currencySymbol') || '₹';
+  const symbol = storage.getItem('currencySymbol') || 'AED';
   const roundedAmount = flt(amount, 2);
   const formattedVal = typeof roundedAmount === 'number' && !isNaN(roundedAmount) ? roundedAmount.toLocaleString('en-IN') : roundedAmount;
   return `${symbol} ${formattedVal}`;
@@ -27,7 +27,7 @@ export function flt(v: number | string | null | undefined, decimals: number = 2)
  * e.g. 600000 -> "₹6L", 12500000 -> "₹1.25Cr", 8200 -> "₹8.2k".
  */
 export function formatCompactCurrency(amount: number): string {
-  const symbol = storage.getItem('currencySymbol') || '₹';
+  const symbol = storage.getItem('currencySymbol') || 'AED';
   if (typeof amount !== 'number' || isNaN(amount)) return `${symbol} ${amount}`;
 
   const sign = amount < 0 ? '-' : '';

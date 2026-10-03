@@ -27,7 +27,7 @@
                 this.showModal = false;
                 this.redirectToLogin();
               "
-              class="mt-8 rounded bg-blue-500 px-3 py-2 text-white hover:bg-blue-600"
+              class="mt-8 rounded bg-red-500 px-3 py-2 text-white hover:bg-red-600"
             >
               Login
             </button>
@@ -64,7 +64,7 @@
                     : serveOrder(kot)
                 "
                 :class="[{ hidden: !kot.isRotated }]"
-                class="py-2 px-6 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-300 ease-in-out"
+                class="py-2 px-6 bg-red-600 text-white rounded-md hover:bg-red-700 transition duration-300 ease-in-out"
               >
                 {{
                   kot.type === "Cancelled" || kot.type === "Partially cancelled"
@@ -459,7 +459,7 @@ export default {
       } else if (type == "Partially cancelled" || type == "Cancelled") {
         kot.color = "bg-[#FFD2D2] border border-[#FAA7A7]";
       } else if (restaurant_table === undefined || table_takeaway == 1) {
-        kot.color = "bg-blue-100 border border-blue-200";
+        kot.color = "bg-red-100 border border-red-200";
       } else {
         kot.color = "bg-white";
       }

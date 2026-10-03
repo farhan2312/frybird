@@ -20,7 +20,7 @@
     <div class="flex space-x-4">
       <button
         @click="this.posOpen.savePosOpening()"
-        class="rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 focus:outline-none"
+        class="rounded-md bg-red-500 px-4 py-2 text-white hover:bg-red-600 focus:outline-none"
         v-if="this.posOpen.posOpencreation"
       >
         Save
@@ -28,7 +28,7 @@
       <button
         v-if="this.posOpen.posOpenSaved"
         @click="this.posOpen.showSumbitPosOpenModal()"
-        class="rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 focus:outline-none"
+        class="rounded-md bg-red-500 px-4 py-2 text-white hover:bg-red-600 focus:outline-none"
       >
         Submit
       </button>
@@ -63,7 +63,7 @@
       <input
         v-model="this.posOpen.postingDate"
         readonly
-        class="block w-full rounded-md border border-gray-300 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+        class="block w-full rounded-md border border-gray-300 text-sm text-gray-900 focus:border-red-500 focus:ring-red-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-red-500 dark:focus:ring-red-500"
         type="text"
       />
     </div>
@@ -80,7 +80,7 @@
         type="text"
         id="company"
         v-model="this.invoiceData.company"
-        class="b block w-full rounded-md border border-gray-300 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+        class="b block w-full rounded-md border border-gray-300 text-sm text-gray-900 focus:border-red-500 focus:ring-red-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-red-500 dark:focus:ring-red-500"
         required
       />
     </div>
@@ -94,7 +94,7 @@
         type="text"
         id="cashier"
         v-model="this.invoiceData.cashier"
-        class="block w-full rounded-md border border-gray-300 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+        class="block w-full rounded-md border border-gray-300 text-sm text-gray-900 focus:border-red-500 focus:ring-red-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-red-500 dark:focus:ring-red-500"
         required
       />
     </div>
@@ -107,7 +107,7 @@
       <input
         type="text"
         id="posProfile"
-        class="block w-full rounded-md border border-gray-300 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+        class="block w-full rounded-md border border-gray-300 text-sm text-gray-900 focus:border-red-500 focus:ring-red-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-red-500 dark:focus:ring-red-500"
         v-model="this.invoiceData.posProfile"
         required
       />
@@ -121,7 +121,7 @@
       <input
         type="text"
         id="branch"
-        class="block w-full rounded-md border border-gray-300 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+        class="block w-full rounded-md border border-gray-300 text-sm text-gray-900 focus:border-red-500 focus:ring-red-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-red-500 dark:focus:ring-red-500"
         v-model="this.invoiceData.branch"
         required
       />
@@ -238,7 +238,7 @@
           </button>
           <button
             @click="this.posOpen.sumbitPosOpening()"
-            class="mt-6 rounded bg-blue-500 px-3 py-2 text-white hover:bg-blue-600"
+            class="mt-6 rounded bg-red-500 px-3 py-2 text-white hover:bg-red-600"
           >
             Yes
           </button>

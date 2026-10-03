@@ -442,7 +442,7 @@ export default function CaptainOrder() {
 
           {newOrChangedLines.length > 0 && (
             <section>
-              <h2 className="text-xs font-semibold text-blue-600 uppercase tracking-wide mb-2 px-1">
+              <h2 className="text-xs font-semibold text-primary-600 uppercase tracking-wide mb-2 px-1">
                 New / Changed
               </h2>
               <div className="space-y-2">
@@ -559,7 +559,7 @@ export default function CaptainOrder() {
                 <ClipboardList className="w-4 h-4" />
                 Order
                 {activeOrders.length > 0 && (
-                  <span className="ms-0.5 inline-flex items-center justify-center min-w-[1.25rem] h-5 px-1 rounded-full bg-blue-600 text-white text-xs">
+                  <span className="ms-0.5 inline-flex items-center justify-center min-w-[1.25rem] h-5 px-1 rounded-full bg-primary-600 text-white text-xs">
                     {activeOrders.length}
                   </span>
                 )}

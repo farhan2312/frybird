@@ -30,7 +30,7 @@ const Footer = () => {
               className={({ isActive }) =>
                 cn(
                   'flex flex-col items-center p-2 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors',
-                  isActive && 'text-blue-600'
+                  isActive && 'text-primary-600'
                 )
               }
             >

@@ -1499,8 +1499,14 @@ def sync_order(
         _reconcile_invoice_merged_tables(invoice)
     
     if order_type == "Aggregators":
+        # counter orders have no table, so branch is only fetched from the POS Profile on save; set it now
+        if not invoice.branch:
+            invoice.branch = posprofile.branch
         price_list = frappe.db.get_value("Aggregator Settings",{"customer": customer, "parent": invoice.branch, "parenttype": "Branch"},"price_list",)
-        
+        # the order is billed at the platform's price list (also used for rate lookup below)
+        if price_list:
+            invoice.selling_price_list = price_list
+
         if not price_list:
             frappe.throw(f"Price list for customer {customer} in branch {invoice.branch} not found in Aggregator Settings.")
     else:

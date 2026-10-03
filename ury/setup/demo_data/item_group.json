@@ -1,19 +1,31 @@
 [
     {
         "doctype": "Item Group",
-        "item_group_name": "STARTERS"
+        "item_group_name": "FRIED CHICKEN"
     },
     {
         "doctype": "Item Group",
-        "item_group_name": "RICE"
+        "item_group_name": "WINGS"
     },
     {
         "doctype": "Item Group",
-        "item_group_name": "GRAVIES"
+        "item_group_name": "TENDERS"
     },
     {
         "doctype": "Item Group",
-        "item_group_name": "VEGETABLES"
+        "item_group_name": "NUGGETS"
+    },
+    {
+        "doctype": "Item Group",
+        "item_group_name": "BURGERS"
+    },
+    {
+        "doctype": "Item Group",
+        "item_group_name": "SIDES"
+    },
+    {
+        "doctype": "Item Group",
+        "item_group_name": "SAUCES"
     },
     {
         "doctype": "Item Group",
@@ -21,6 +33,6 @@
     },
     {
         "doctype": "Item Group",
-        "item_group_name": "MEAT"
+        "item_group_name": "RAW MATERIALS"
     }
 ]

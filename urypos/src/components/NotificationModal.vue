@@ -32,7 +32,7 @@
             </button>
             <button
               @click="modal.handleConfirm"
-              class="rounded bg-blue-700 px-3 py-1.5 text-sm font-medium text-white hover:bg-blue-800"
+              class="rounded bg-red-700 px-3 py-1.5 text-sm font-medium text-white hover:bg-red-800"
             >
               Yes
             </button>

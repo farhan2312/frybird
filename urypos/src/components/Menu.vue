@@ -168,7 +168,7 @@
             <div class="flex justify-end">
               <button
                 @click="this.menu.addToCartAndUpdateQty(item)"
-                class="mt-8 rounded bg-blue-500 px-3 py-2 text-white hover:bg-blue-600"
+                class="mt-8 rounded bg-red-500 px-3 py-2 text-white hover:bg-red-600"
               >
                 Add
               </button>

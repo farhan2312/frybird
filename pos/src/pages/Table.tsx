@@ -506,7 +506,7 @@ const TableView = () => {
                 ) : (
                   <div
                     key={group.map((t) => t.name).join('-')}
-                    className="col-span-full flex flex-wrap items-stretch gap-y-2 rounded-lg border border-blue-200/70 bg-blue-50/40 p-2"
+                    className="col-span-full flex flex-wrap items-stretch gap-y-2 rounded-lg border border-primary-200/70 bg-primary-50/40 p-2"
                   >
                     {group.map((table, index) => (
                       <Fragment key={table.name}>
@@ -587,7 +587,7 @@ const TableView = () => {
               <span>{t('tables.occupied')}</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-4 h-4 bg-blue-50/40 border border-blue-200/70 rounded"></div>
+              <div className="w-4 h-4 bg-primary-50/40 border border-primary-200/70 rounded"></div>
               <span>{t('tables.merged')}</span>
             </div>
           </div>

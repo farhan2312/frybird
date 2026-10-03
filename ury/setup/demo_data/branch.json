@@ -1,19 +1,19 @@
 [
     {
         "doctype": "Branch",
-        "branch": "Demo Branch",
+        "branch": "FryBird Whitehall",
         "user": [
             {
                 "user": "Administrator"
             },
             {
-                "user": "cashier@ury.com"
+                "user": "cashier@frybird.test"
             },
             {
-                "user": "captain@ury.com"
+                "user": "captain@frybird.test"
             },
             {
-                "user": "manager@ury.com"
+                "user": "manager@frybird.test"
             }
         ]
     }

@@ -94,9 +94,9 @@ const POSOpeningDialog = ({
       },
     },
     crossCompanyOpen: {
-      icon: <MapPin className="h-8 w-8 text-blue-600" />,
-      iconBg: 'bg-blue-100',
-      iconColor: 'text-blue-600',
+      icon: <MapPin className="h-8 w-8 text-primary-600" />,
+      iconBg: 'bg-primary-100',
+      iconColor: 'text-primary-600',
       title: t('pos.opening.session_elsewhere_title'),
       description: t('pos.opening.session_elsewhere_message', {
         location: existingEntry
@@ -145,7 +145,7 @@ const POSOpeningDialog = ({
             {config.primaryAction && (
               <Button
                 onClick={config.primaryAction.onClick}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg transition-colors duration-200"
+                className="w-full bg-primary-600 hover:bg-primary-700 text-white font-medium py-3 px-6 rounded-lg transition-colors duration-200"
               >
                 {config.primaryAction.icon}
                 {config.primaryAction.label}

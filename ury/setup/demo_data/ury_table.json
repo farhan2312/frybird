@@ -1,110 +1,110 @@
 [
     {
         "doctype": "URY Table",
-        "restaurant": "Demo Restaurant",
-        "restaurant_room": "Ground Floor",
-        "__newname": "T1",
-        "branch": "Demo Branch",
+        "restaurant": "FryBird",
+        "restaurant_room": "Dining Room",
+        "__newname": "D1",
+        "branch": "FryBird Whitehall",
+        "no_of_seats": "2",
+        "table_shape": "Square"
+    },
+    {
+        "doctype": "URY Table",
+        "restaurant": "FryBird",
+        "restaurant_room": "Dining Room",
+        "__newname": "D2",
+        "branch": "FryBird Whitehall",
+        "no_of_seats": "2",
+        "table_shape": "Square"
+    },
+    {
+        "doctype": "URY Table",
+        "restaurant": "FryBird",
+        "restaurant_room": "Dining Room",
+        "__newname": "D3",
+        "branch": "FryBird Whitehall",
         "no_of_seats": "4",
         "table_shape": "Square"
     },
     {
         "doctype": "URY Table",
-        "restaurant": "Demo Restaurant",
-        "restaurant_room": "Ground Floor",
-        "__newname": "T2",
-        "branch": "Demo Branch",
+        "restaurant": "FryBird",
+        "restaurant_room": "Dining Room",
+        "__newname": "D4",
+        "branch": "FryBird Whitehall",
+        "no_of_seats": "4",
+        "table_shape": "Square"
+    },
+    {
+        "doctype": "URY Table",
+        "restaurant": "FryBird",
+        "restaurant_room": "Dining Room",
+        "__newname": "D5",
+        "branch": "FryBird Whitehall",
+        "no_of_seats": "4",
+        "table_shape": "Rectangle"
+    },
+    {
+        "doctype": "URY Table",
+        "restaurant": "FryBird",
+        "restaurant_room": "Dining Room",
+        "__newname": "D6",
+        "branch": "FryBird Whitehall",
         "no_of_seats": "6",
         "table_shape": "Rectangle"
     },
     {
         "doctype": "URY Table",
-        "restaurant": "Demo Restaurant",
-        "restaurant_room": "Ground Floor",
-        "__newname": "T3",
-        "branch": "Demo Branch",
-        "no_of_seats": "4",
-        "table_shape": "Circle"
-    },
-    {
-        "doctype": "URY Table",
-        "restaurant": "Demo Restaurant",
-        "restaurant_room": "Ground Floor",
-        "__newname": "T4",
-        "branch": "Demo Branch",
-        "no_of_seats": "4",
-        "table_shape": "Square"
-    },
-    {
-        "doctype": "URY Table",
-        "restaurant": "Demo Restaurant",
-        "restaurant_room": "Ground Floor AC",
-        "__newname": "T5",
-        "branch": "Demo Branch",
-        "no_of_seats": "4",
-        "table_shape": "Square"
-    },
-    {
-        "doctype": "URY Table",
-        "restaurant": "Demo Restaurant",
-        "restaurant_room": "Ground Floor AC",
-        "__newname": "T6",
-        "branch": "Demo Branch",
+        "restaurant": "FryBird",
+        "restaurant_room": "Dining Room",
+        "__newname": "D7",
+        "branch": "FryBird Whitehall",
         "no_of_seats": "6",
         "table_shape": "Rectangle"
     },
     {
         "doctype": "URY Table",
-        "restaurant": "Demo Restaurant",
-        "restaurant_room": "Ground Floor AC",
-        "__newname": "T7",
-        "branch": "Demo Branch",
-        "no_of_seats": "4",
-        "table_shape": "Circle"
-    },
-    {
-        "doctype": "URY Table",
-        "restaurant": "Demo Restaurant",
-        "restaurant_room": "First Floor",
-        "__newname": "T8",
-        "branch": "Demo Branch",
-        "no_of_seats": "4",
-        "table_shape": "Square"
-    },
-    {
-        "doctype": "URY Table",
-        "restaurant": "Demo Restaurant",
-        "restaurant_room": "First Floor AC",
-        "__newname": "T9",
-        "branch": "Demo Branch",
-        "no_of_seats": "4",
-        "table_shape": "Square"
-    },
-    {
-        "doctype": "URY Table",
-        "restaurant": "Demo Restaurant",
-        "restaurant_room": "First Floor AC",
-        "__newname": "T10",
-        "branch": "Demo Branch",
-        "no_of_seats": "6",
+        "restaurant": "FryBird",
+        "restaurant_room": "Dining Room",
+        "__newname": "D8",
+        "branch": "FryBird Whitehall",
+        "no_of_seats": "8",
         "table_shape": "Rectangle"
     },
     {
         "doctype": "URY Table",
-        "restaurant": "Demo Restaurant",
-        "restaurant_room": "First Floor",
-        "__newname": "T11",
-        "branch": "Demo Branch",
+        "restaurant": "FryBird",
+        "restaurant_room": "Patio",
+        "__newname": "P1",
+        "branch": "FryBird Whitehall",
         "no_of_seats": "4",
         "table_shape": "Circle"
     },
     {
         "doctype": "URY Table",
-        "restaurant": "Demo Restaurant",
-        "restaurant_room": "First Floor",
-        "__newname": "T12",
-        "branch": "Demo Branch",
+        "restaurant": "FryBird",
+        "restaurant_room": "Patio",
+        "__newname": "P2",
+        "branch": "FryBird Whitehall",
         "no_of_seats": "4",
-        "table_shape": "Square"
+        "table_shape": "Circle"
+    },
+    {
+        "doctype": "URY Table",
+        "restaurant": "FryBird",
+        "restaurant_room": "Patio",
+        "__newname": "P3",
+        "branch": "FryBird Whitehall",
+        "no_of_seats": "4",
+        "table_shape": "Circle"
+    },
+    {
+        "doctype": "URY Table",
+        "restaurant": "FryBird",
+        "restaurant_room": "Patio",
+        "__newname": "P4",
+        "branch": "FryBird Whitehall",
+        "no_of_seats": "4",
+        "table_shape": "Circle"
     }
 ]

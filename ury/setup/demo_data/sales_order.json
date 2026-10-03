@@ -1,7 +1,7 @@
 [
     {
         "conversion_rate": 1.0,
-        "customer": "Grant Foodie Ltd.",
+        "customer": "Whitehall Office Catering",
         "doctype": "Sales Order",
         "order_type": "Sales",
         "update_stock": 1,
@@ -9,17 +9,17 @@
         "items": [
             {
                 "doctype": "Sales Order Item",
-                "item_code": "MOM",
+                "item_code": "NG-8",
                 "parentfield": "items",
                 "qty": 10.0,
-                "rate": 500.0,
+                "rate": 18,
                 "conversion_factor": 1
             }
         ]
     },
     {
         "conversion_rate": 1.0,
-        "customer": "West View Foodie Ltd.",
+        "customer": "East Main Game Day Club",
         "doctype": "Sales Order",
         "order_type": "Sales",
         "update_stock": 1,
@@ -27,25 +27,25 @@
         "items": [
             {
                 "doctype": "Sales Order Item",
-                "item_code": "WNG",
+                "item_code": "WG-10",
                 "parentfield": "items",
                 "qty": 20.0,
-                "rate": 800.0,
+                "rate": 48,
                 "conversion_factor": 1
             },
             {
                 "doctype": "Sales Order Item",
-                "item_code": "GR",
+                "item_code": "FC-5",
                 "parentfield": "items",
                 "qty": 3.0,
-                "rate": 800.0,
+                "rate": 29,
                 "conversion_factor": 1
             }
         ]
     },
     {
         "conversion_rate": 1.0,
-        "customer": "West View Foodie Ltd.",
+        "customer": "East Main Game Day Club",
         "doctype": "Sales Order",
         "order_type": "Sales",
         "update_stock": 1,
@@ -53,33 +53,33 @@
         "items": [
             {
                 "doctype": "Sales Order Item",
-                "item_code": "BR",
+                "item_code": "FC-10",
                 "parentfield": "items",
                 "qty": 10,
-                "rate": 18000.0,
+                "rate": 55,
                 "conversion_factor": 1
             },
             {
                 "doctype": "Sales Order Item",
-                "item_code": "MR",
+                "item_code": "FC-8",
                 "parentfield": "items",
                 "qty": 6,
-                "rate": 1800.0,
+                "rate": 48,
                 "conversion_factor": 1
             },
             {
                 "doctype": "Sales Order Item",
-                "item_code": "MOM",
+                "item_code": "NG-8",
                 "parentfield": "items",
                 "qty": 10,
-                "rate": 900.0,
+                "rate": 18,
                 "conversion_factor": 1
             }
         ]
     },
     {
         "conversion_rate": 1.0,
-        "customer": "Palmer Foodie Ltd.",
+        "customer": "Columbus Youth Sports League",
         "doctype": "Sales Order",
         "order_type": "Sales",
         "update_stock": 1,
@@ -87,17 +87,17 @@
         "items": [
             {
                 "doctype": "Sales Order Item",
-                "item_code": "BG",
+                "item_code": "BG-BEEF",
                 "parentfield": "items",
                 "qty": 2.0,
-                "rate": 600.0,
+                "rate": 33,
                 "conversion_factor": 1
             }
         ]
     },
     {
         "conversion_rate": 1.0,
-        "customer": "Grant Foodie Ltd.",
+        "customer": "Whitehall Office Catering",
         "doctype": "Sales Order",
         "order_type": "Sales",
         "update_stock": 1,
@@ -105,26 +105,26 @@
         "items": [
             {
                 "doctype": "Sales Order Item",
-                "item_code": "CG",
+                "item_code": "BG-CHK",
                 "parentfield": "items",
                 "qty": 1.0,
-                "rate": 350.0,
+                "rate": 29,
                 "conversion_factor": 1
             },
             {
                 "doctype": "Sales Order Item",
-                "item_code": "BR",
+                "item_code": "FC-10",
                 "parentfield": "items",
                 "qty": 4.0,
-                "rate": 400.0,
+                "rate": 55,
                 "conversion_factor": 1
             },
             {
                 "doctype": "Sales Order Item",
-                "item_code": "MR",
+                "item_code": "FC-8",
                 "parentfield": "items",
                 "qty": 2.0,
-                "rate": 900.0,
+                "rate": 48,
                 "conversion_factor": 1
             }
         ]
