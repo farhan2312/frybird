@@ -123,7 +123,7 @@ def run(history_days=21, seed=7):
 	print("FryBird live seed complete")
 
 
-def refresh_live(seed=None):
+def refresh_live(seed=None, user="Administrator"):
 	"""Start a fresh live shift without rebuilding history: run before a demo.
 
 	Clears tonight's open orders and kitchen tickets, frees tables, closes the open shift (like a
@@ -142,7 +142,7 @@ def refresh_live(seed=None):
 														"shift_date": frappe.utils.nowdate()}, pluck="name"):
 		frappe.delete_doc("URY POS Checklist Log", log, ignore_permissions=True, force=True)
 	frappe.db.commit()
-	seed_today(ctx)
+	seed_today(ctx, user)
 	frappe.cache.delete_keys("bootinfo")
 	print("FryBird live shift refreshed")
 
@@ -402,7 +402,7 @@ def seed_closed_day(ctx, day):
 
 
 # --------------------------------------------------------------------------- today
-def seed_today(ctx):
+def seed_today(ctx, user="Administrator"):
 	from ury.ury.doctype.ury_order.ury_order import sync_order
 	from ury.ury.api.ury_kot_display import serve_kot
 
@@ -420,8 +420,7 @@ def seed_today(ctx):
 	if last_paid and last_paid < now:  # shift change (refresh_live): carry on after the earlier shift's last sale
 		start = last_paid + timedelta(minutes=1)
 
-	# Administrator is the account you sign in with locally, so the open shift belongs to it.
-	user = "Administrator"
+	# the open shift belongs to whoever will sign in and use the POS (Administrator locally, a demo login for clients)
 	opening = opening_entry(ctx, user, start)
 
 	# paid orders so far this shift (dashboard sales, order count, baseline)

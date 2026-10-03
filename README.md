@@ -52,6 +52,15 @@ For local development, `scripts/wsl/rebuild-site.sh` rebuilds the whole site thi
   (e.g. `http://192.168.1.20:8000`) on that page before printing. The self-ordering profile is created by
   `ury/setup/self_ordering.py`.
 
+## Sharing a demo with a client (local machine)
+
+1. `scripts/wsl/dev-start.sh` running, plus nginx in WSL with `scripts/wsl/nginx-frybird.conf` (port 8080 routes
+   `/socket.io` to the realtime server, so live kitchen/POS updates work, and always serves the FryBird site).
+2. `scripts/wsl/client-demo.sh`: creates the `demo@frybird.test` manager login (password in WSL `~/.frybird_demo`),
+   starts a fresh live shift for it and turns developer mode off.
+3. `cloudflared tunnel --url http://localhost:8080` prints a public `https://….trycloudflare.com` link to share.
+   Nothing to install for the client; the link changes every time the tunnel restarts.
+
 ## Delivery platforms: Talabat & Keeta
 
 Talabat and Keeta are set up as URY *aggregators* by `ury/setup/aggregators.py` (the live seed runs it; for a real

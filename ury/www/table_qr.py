@@ -28,7 +28,7 @@ def get_context(context):
 	selected = frappe.form_dict.get("profile") or profiles[0].name
 	profile = next((p for p in profiles if p.name == selected), profiles[0])
 
-	base = (frappe.form_dict.get("base") or frappe.utils.get_url()).rstrip("/")
+	base = (frappe.form_dict.get("base") or _request_base()).rstrip("/")
 	tables = frappe.get_all("URY Table", {"branch": profile.branch, "is_take_away": 0},
 							["name", "restaurant_room", "no_of_seats"], order_by="restaurant_room, name")
 
@@ -42,6 +42,13 @@ def get_context(context):
 		"cards": cards, "no_breadcrumbs": 1, "show_sidebar": 0,
 	})
 	return context
+
+
+def _request_base():
+	"""The address this page was opened on (works behind nginx / tunnels; get_url() adds the dev port)."""
+	scheme = frappe.get_request_header("X-Forwarded-Proto") or frappe.request.scheme
+	host = frappe.get_request_header("X-Forwarded-Host") or frappe.request.host
+	return f"{scheme}://{host}"
 
 
 def _card(base, profile, table, label, sublabel):
