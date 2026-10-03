@@ -14,7 +14,7 @@ interface ScreenSizeProviderProps {
 // prior test in this migration ran at >=1024px and never hit this. Exempt
 // Captain routes from the desktop-only gate rather than raising the floor
 // for the whole app (Cashier POS genuinely isn't usable below 1024px).
-const isCaptainRoute = () => window.location.pathname.includes('/order');
+const isCaptainRoute = () => /^\/pos\/(order|captain)(\/|$)/.test(window.location.pathname);
 
 const ScreenSizeProvider = ({ children }: ScreenSizeProviderProps) => {
   const [isScreenTooSmall, setIsScreenTooSmall] = useState(false);

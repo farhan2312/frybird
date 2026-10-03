@@ -42,6 +42,16 @@ card and cash payments, about 40 customers, and tonight's open shift with occupi
 and orders on the kitchen display. Today's opening checklist is left pending so you see the checklist gate.
 For local development, `scripts/wsl/rebuild-site.sh` rebuilds the whole site this way.
 
+## Captain app and table QR ordering
+
+- **Captains / waiters** use `/pos/captain` (alias of `/pos/order`) on a phone or iPad: pick a table, add items,
+  send to the kitchen.
+- **Customers** scan the QR code on their table and order from their phone at `/order`. Managers print the codes
+  from **`/table-qr`** (one per table plus a pickup code). Codes are signed per table and stay valid until the
+  profile's signing secret changes. If phones can't reach `frybird.localhost`, enter the PC's network address
+  (e.g. `http://192.168.1.20:8000`) on that page before printing. The self-ordering profile is created by
+  `ury/setup/self_ordering.py`.
+
 ## Delivery platforms: Talabat & Keeta
 
 Talabat and Keeta are set up as URY *aggregators* by `ury/setup/aggregators.py` (the live seed runs it; for a real

@@ -14,7 +14,7 @@ SITE=frybird.localhost
 rsync -a --delete \
   --exclude node_modules --exclude .claude \
   --exclude ury/public/pos --exclude ury/public/ury --exclude ury/public/urypos \
-  --exclude ury/public/mosaic --exclude ury/public/order --exclude 'ury/www/*.html' \
+  --exclude ury/public/mosaic --exclude ury/public/order --exclude 'ury/www/pos.html' --exclude 'ury/www/ury.html' --exclude 'ury/www/urypos.html' --exclude 'ury/www/mosaic.html' --exclude 'ury/www/order.html' \
   "$SRC/" "$BENCH/apps/ury/"
 
 cd "$BENCH/apps/ury"

@@ -868,7 +868,8 @@ def price_items_for_invoice(items, price_list, pos_profile, branch, menu):
             priced_items.append(
                 dict(
                     item_code=d.get("item"),
-                    item_name=d.get("item_name"),
+                    # callers (e.g. self ordering) may pass the code as the name; the Item is authoritative
+                    item_name=frappe.db.get_value("Item", d.get("item"), "item_name") or d.get("item_name"),
                     qty=d.get("qty"),
                     **({"custom_course": course} if course else {}),
                     comment=d.get("comment"),

@@ -58,6 +58,7 @@ function App() {
                   "/pos" today, so "/order" sits alongside it here rather
                   than in a separate outer router file.
                 */}
+                <Route path="/captain" element={<Navigate to="/order" replace />} />
                 <Route
                   path="/order"
                   element={

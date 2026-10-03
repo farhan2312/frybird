@@ -104,6 +104,8 @@ def run(history_days=21, seed=7):
 	from ury.setup.aggregators import setup_delivery_platforms
 	setup_delivery_platforms(BRANCH)
 	seed_customers()
+	from ury.setup.self_ordering import setup_self_ordering
+	setup_self_ordering(BRANCH)
 	ctx = build_ctx()
 	close_stale_openings(ctx)
 	frappe.db.commit()

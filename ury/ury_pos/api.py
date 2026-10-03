@@ -141,6 +141,12 @@ def getBranch():
 
     return branch_name
 
+
+@frappe.whitelist()
+def get_production_units_for_branch():
+    """Production units (kitchen stations) of the user's branch; the POS subscribes to their KOT error channels."""
+    return {"production_units": frappe.get_all("URY Production Unit", {"branch": getBranch()}, pluck="name")}
+
 @frappe.whitelist()
 def getBranchRoom():
     user = frappe.session.user
