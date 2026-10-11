@@ -72,6 +72,18 @@ cd ~/frappe-bench
 [ -d apps/erpnext ] || bench get-app --branch version-15 erpnext https://github.com/frappe/erpnext.git
 [ -d apps/hrms ] || bench get-app --branch version-15 hrms https://github.com/frappe/hrms.git
 [ -d apps/ury ] || bench get-app --branch "$GIT_BRANCH" ury "$REPO"
+printf "frappe
+erpnext
+hrms
+ury
+" > sites/apps.txt
+bench build
+
+log "Production services (supervisor runs redis, workers, socketio; nginx in front)"
+# before creating the site: new-site needs the bench redis instances, which supervisor starts
+sudo env "PATH=$PATH" "NVM_DIR=$NVM_DIR" "$(command -v bench)" setup production "$USER" --yes
+sudo supervisorctl status | head -20
+for i in $(seq 1 20); do redis-cli -p 11000 ping >/dev/null 2>&1 && redis-cli -p 13000 ping >/dev/null 2>&1 && break; sleep 3; done
 
 log "Site $SITE"
 if [ ! -f "sites/$SITE/site_config.json" ]; then
@@ -98,13 +110,14 @@ from ury.setup.store_setup import setup_store
 print(setup_store())
 ")
 
-log "Production services (supervisor + nginx)"
-sudo env "PATH=$PATH" "NVM_DIR=$NVM_DIR" "$(command -v bench)" setup production "$USER" --yes
+log "nginx for the site"
 if [ -n "$ALIAS" ]; then
   bench setup add-domain "$ALIAS" --site "$SITE"
   bench setup nginx --yes
 fi
+bench setup nginx --yes
 sudo nginx -t && sudo systemctl reload nginx
+bench restart
 bench setup backups
 bench --site "$SITE" enable-scheduler
 
