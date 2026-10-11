@@ -14,7 +14,9 @@ LOG=~/deploy-logs/deploy-$(date +%Y%m%d-%H%M%S).log
 exec > >(tee -a "$LOG") 2>&1
 
 cd "$BENCH"
-SITE=$(cat sites/currentsite.txt)
+SITE=${SITE:-$(cat sites/currentsite.txt 2>/dev/null || true)}
+SITE=${SITE:-$(python3 -c "import json; print(json.load(open('sites/common_site_config.json')).get('default_site', ''))")}
+SITE=${SITE:-$(ls -d sites/*/site_config.json | head -1 | cut -d/ -f2)}
 echo "== Deploying $REF to $SITE ($(date))"
 
 echo "== Backup"
