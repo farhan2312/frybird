@@ -65,6 +65,8 @@ export NVM_DIR="$HOME/.nvm"
 set +u; . "$NVM_DIR/nvm.sh"; set -u
 nvm install 20 >/dev/null && nvm alias default 20 >/dev/null
 command -v yarn >/dev/null || npm install -g yarn >/dev/null
+sudo ln -sf "$(command -v node)" /usr/local/bin/node  # supervisor's socketio needs node on the system PATH
+chmod o+x "$HOME"  # nginx (www-data) must traverse the home dir to serve sites/assets
 uv tool install --python 3.11 frappe-bench 2>/dev/null || true
 
 log "Bench and apps"
@@ -78,6 +80,9 @@ printf 'frappe\nerpnext\nhrms\nury\n' > sites/apps.txt
 bench build
 
 log "Production services (supervisor runs redis, workers, socketio; nginx in front)"
+bench config dns_multitenant on  # sites are routed by domain; also required for bench's HTTPS config
+# bench's nginx config logs with format "main", which Ubuntu's nginx.conf doesn't define
+echo 'log_format main '"'"'$remote_addr - $remote_user [$time_local] "$request" $status $body_bytes_sent "$http_referer" "$http_user_agent" "$http_x_forwarded_for"'"'"';'   | sudo tee /etc/nginx/conf.d/00-log-format.conf >/dev/null
 # before creating the site: new-site needs the bench redis instances, which supervisor starts
 sudo env "PATH=$PATH" "NVM_DIR=$NVM_DIR" "$(command -v bench)" setup production "$USER" --yes
 # bench links nginx but can silently skip supervisor; make sure supervisor runs the bench programs (redis, web, workers)
@@ -126,5 +131,17 @@ bench --site "$SITE" enable-scheduler
 log "deploy.sh"
 cp ~/frappe-bench/apps/ury/scripts/server/deploy.sh ~/deploy.sh && chmod +x ~/deploy.sh
 
-log "Done: http://$SITE  ${ALIAS:+(also http://$ALIAS)}"
+log "HTTPS (Let's Encrypt), when DNS for $SITE already points here"
+if [ -n "${HTTPS_EMAIL:-}" ] && getent hosts "$SITE" | grep -q "$(curl -s https://api.ipify.org)"; then
+  sudo certbot certonly --standalone -d "$SITE" --non-interactive --agree-tos -m "$HTTPS_EMAIL"     --pre-hook "systemctl stop nginx" --post-hook "systemctl start nginx"
+  sudo chmod 0755 /etc/letsencrypt/live /etc/letsencrypt/archive  # bench only adds SSL if it can see the cert files
+  bench --site "$SITE" set-config ssl_certificate "/etc/letsencrypt/live/$SITE/fullchain.pem"
+  bench --site "$SITE" set-config ssl_certificate_key "/etc/letsencrypt/live/$SITE/privkey.pem"
+  bench --site "$SITE" set-config host_name "https://$SITE"
+  bench setup nginx --yes && sudo nginx -t && sudo systemctl reload nginx
+else
+  echo "Skipped: set HTTPS_EMAIL and point DNS for $SITE at this server, then re-run this block."
+fi
+
+log "Done: https://$SITE  ${ALIAS:+(also http://$ALIAS)}"
 echo "Administrator password: cat ~/.frybird_admin"
