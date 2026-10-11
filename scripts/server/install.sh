@@ -80,6 +80,10 @@ bench build
 log "Production services (supervisor runs redis, workers, socketio; nginx in front)"
 # before creating the site: new-site needs the bench redis instances, which supervisor starts
 sudo env "PATH=$PATH" "NVM_DIR=$NVM_DIR" "$(command -v bench)" setup production "$USER" --yes
+# bench links nginx but can silently skip supervisor; make sure supervisor runs the bench programs (redis, web, workers)
+[ -e /etc/supervisor/conf.d/frappe-bench.conf ] || sudo ln -s "$HOME/frappe-bench/config/supervisor.conf" /etc/supervisor/conf.d/frappe-bench.conf
+sudo systemctl enable --now supervisor
+sudo supervisorctl reread && sudo supervisorctl update
 sudo supervisorctl status | head -20
 for i in $(seq 1 20); do redis-cli -p 11000 ping >/dev/null 2>&1 && redis-cli -p 13000 ping >/dev/null 2>&1 && break; sleep 3; done
 
