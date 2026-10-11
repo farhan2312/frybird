@@ -25,7 +25,7 @@ log "System packages"
 sudo apt-get update -q
 sudo apt-get install -yq git curl build-essential pkg-config cron \
   mariadb-server mariadb-client libmariadb-dev redis-server nginx supervisor \
-  xvfb libfontconfig1 fontconfig xfonts-75dpi xfonts-base certbot
+  xvfb libfontconfig1 fontconfig xfonts-75dpi xfonts-base certbot \n  ansible-core fail2ban  # bench setup production expects these and cannot pip-install them itself
 if ! command -v wkhtmltopdf >/dev/null; then  # patched-qt build Frappe uses for PDF invoices
   curl -fsSL -o /tmp/wkhtmltox.deb https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-3/wkhtmltox_0.12.6.1-3.jammy_amd64.deb \
     && sudo apt-get install -yq /tmp/wkhtmltox.deb || echo "wkhtmltopdf not installed (PDF printing only)"
