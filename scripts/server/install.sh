@@ -72,11 +72,7 @@ cd ~/frappe-bench
 [ -d apps/erpnext ] || bench get-app --branch version-15 erpnext https://github.com/frappe/erpnext.git
 [ -d apps/hrms ] || bench get-app --branch version-15 hrms https://github.com/frappe/hrms.git
 [ -d apps/ury ] || bench get-app --branch "$GIT_BRANCH" ury "$REPO"
-printf "frappe
-erpnext
-hrms
-ury
-" > sites/apps.txt
+printf 'frappe\nerpnext\nhrms\nury\n' > sites/apps.txt
 bench build
 
 log "Production services (supervisor runs redis, workers, socketio; nginx in front)"
