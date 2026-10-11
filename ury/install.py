@@ -20,7 +20,7 @@ def after_install():
 
 def set_frybird_branding():
     """Brand the Frappe login page, navbar and browser tab as FryBird."""
-    logo = "/assets/ury/Images/frybird.png"
+    logo = "/assets/ury/Images/frybird-badge.png"  # transparent: login page and navbar have light backgrounds
     favicon = "/assets/ury/pos/frybird.ico"
 
     website = frappe.get_single("Website Settings")
