@@ -1,13 +1,13 @@
 #!/bin/bash
 # Update FryBird on the production server from GitHub.
-#   bash ~/deploy.sh            # deploy the latest main
+#   bash ~/deploy.sh            # deploy the latest main from GitHub
 #   bash ~/deploy.sh <commit>   # deploy (or roll back to) a specific commit
 # Steps: backup -> pull -> python/node deps -> build -> migrate -> restart. Logs in ~/deploy-logs/.
 set -euo pipefail
 export PATH="$HOME/.local/bin:$PATH"
 export NVM_DIR="$HOME/.nvm"; set +u; . "$NVM_DIR/nvm.sh"; set -u
 
-REF=${1:-origin/main}
+REF=${1:-}
 BENCH=~/frappe-bench
 mkdir -p ~/deploy-logs
 LOG=~/deploy-logs/deploy-$(date +%Y%m%d-%H%M%S).log
@@ -17,14 +17,16 @@ cd "$BENCH"
 SITE=${SITE:-$(cat sites/currentsite.txt 2>/dev/null || true)}
 SITE=${SITE:-$(python3 -c "import json; print(json.load(open('sites/common_site_config.json')).get('default_site', ''))")}
 SITE=${SITE:-$(ls -d sites/*/site_config.json | head -1 | cut -d/ -f2)}
-echo "== Deploying $REF to $SITE ($(date))"
+echo "== Deploying ${REF:-latest main} to $SITE ($(date))"
 
 echo "== Backup"
 bench --site "$SITE" backup --with-files
 
 echo "== Pull"
 cd apps/ury
-git fetch --quiet origin
+REMOTE=$(git remote | head -1)  # bench get-app names it "upstream"
+REF=${REF:-$REMOTE/main}
+git fetch --quiet "$REMOTE"
 BEFORE=$(git rev-parse --short HEAD)
 git reset --hard "$REF"
 AFTER=$(git rev-parse --short HEAD)
