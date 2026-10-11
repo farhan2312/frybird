@@ -77,16 +77,16 @@ MENU_ITEMS = [
 	("SIDE-FRYBIRD", "FryBird Fries", "Sides", "SIDES", 20, "", "ADD-CHS"),
 	("ADD-MEAL-FD", "Meal with Fries & Drink", "Add-ons", "ADD-ONS", 7, "Upgrade any item to a meal", None),
 	("ADD-BUN", "Brioche Bun", "Add-ons", "BURGERS", 2, "", None),  # grill makes it, so it shares the burger group
-	("DRK-COLA", "Cola", "Drinks", "DRINKS", 4, "", None),
-	("DRK-LEMONADE", "Lemonade", "Drinks", "DRINKS", 4, "", None),
-	("DRK-SHAKE-OREO", "Milkshake - Oreo", "Drinks", "DRINKS", 10, "", None),
-	("DRK-SHAKE-KINDER", "Milkshake - Kinder", "Drinks", "DRINKS", 10, "", None),
-	("DRK-SHAKE-LOTUS", "Milkshake - Lotus", "Drinks", "DRINKS", 10, "", None),
-	("DRK-SHAKE-PB", "Peanut Butter Shake", "Drinks", "DRINKS", 15, "", None),
-	("DRK-WATER", "Water", "Drinks", "DRINKS", 1, "", None),
-	("DIP-GARLIC", "Garlic Dip", "Dips", "DIPS", 2, "", None),
-	("DIP-RANCHY", "Ranchy Dip", "Dips", "DIPS", 2, "", None),
-	("DIP-DYNAMITE", "Dynamite Dip", "Dips", "DIPS", 2, "", None),
+	("DRK-COLA", "Cola", "Drinks", "DRINKS", 4, "", "drink-cola"),
+	("DRK-LEMONADE", "Lemonade", "Drinks", "DRINKS", 4, "", "drink-lemonade"),
+	("DRK-SHAKE-OREO", "Milkshake - Oreo", "Drinks", "DRINKS", 10, "", "shake-oreo"),
+	("DRK-SHAKE-KINDER", "Milkshake - Kinder", "Drinks", "DRINKS", 10, "", "shake-kinder"),
+	("DRK-SHAKE-LOTUS", "Milkshake - Lotus", "Drinks", "DRINKS", 10, "", "shake-lotus"),
+	("DRK-SHAKE-PB", "Peanut Butter Shake", "Drinks", "DRINKS", 15, "", "shake-peanut-butter"),
+	("DRK-WATER", "Water", "Drinks", "DRINKS", 1, "", "drink-water"),
+	("DIP-GARLIC", "Garlic Dip", "Dips", "DIPS", 2, "", "dip-garlic"),
+	("DIP-RANCHY", "Ranchy Dip", "Dips", "DIPS", 2, "", "dip-ranchy"),
+	("DIP-DYNAMITE", "Dynamite Dip", "Dips", "DIPS", 2, "", "dip-dynamite"),
 ]
 
 STAFF_ROLES = {

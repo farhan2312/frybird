@@ -30,3 +30,17 @@ Photos from Unsplash (https://unsplash.com/license), free to use. FryBird's own 
 - SC-BBQ: photo-1472476443507-c7a5948772fc by Dennis Klein
 - SC-HOT: photo-1700619773778-f02b45ca0616 by Yi Wei
 - SC-BUF: photo-1617908486074-2c4a15fa412e by Sticker Mule
+
+Drinks and dips (Unsplash, free to use):
+- drink-cola: photo-1629654613528-5d0a2e4166de by Qasim Malick
+- drink-lemonade: photo-1623084921164-4a8c5c37a912 by Laura Chouette
+- shake-oreo: photo-1572490122747-3968b75cc699 by Victor Rutka
+- shake-kinder: photo-1594488506255-a8bbfdeedbaf by Eiliv Aceron
+- shake-lotus: photo-1653122025451-ec76a73f8a08 by kimia kazemi
+- shake-peanut-butter: photo-1555411093-41f7864ed3a2 by Pratiksha Mohanty
+- drink-water: photo-1616118132534-381148898bb4 by charlesdeluvio
+- dip-garlic: photo-1781722758469-975dd9e90643 by Mikey Frost
+- dip-ranchy: photo-1622268349641-4c814e2cc806 by Doris Morgan
+- dip-dynamite: photo-1779939855596-8506096e2ebe by Bunly Hort
+
+Folder real/: product photos from FryBird's own flyer.
