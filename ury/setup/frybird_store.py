@@ -87,7 +87,52 @@ MENU_ITEMS = [
 	("DIP-GARLIC", "Garlic Dip", "Dips", "DIPS", 2, "", "dip-garlic"),
 	("DIP-RANCHY", "Ranchy Dip", "Dips", "DIPS", 2, "", "dip-ranchy"),
 	("DIP-DYNAMITE", "Dynamite Dip", "Dips", "DIPS", 2, "", "dip-dynamite"),
+	# Options and Add-ons sheet: burger extras (ticked in the burger's product dialog, printed on the Grill ticket)
+	("ADD-CHEESE", "Extra Cheese", "Add-ons", "BURGERS", 2, "Burger add-on", None),
+	("ADD-PICKLE", "Add Pickle", "Add-ons", "BURGERS", 2, "Burger add-on", None),
+	# Combos and Meals sheet
+	("MEAL-CHK-BURGER", "Chicken Burger Meal", "Meals", "BURGERS", 17,
+	 "Classic Burger + fries + soft drink (Pepsi, 7Up, Mirinda or water)", "real/burger-classic"),
 ]
+# add-on items offered on every burger and on the burger meal
+BURGER_ADDONS = ["ADD-CHEESE", "ADD-PICKLE"]
+ADDON_TARGET_COURSES = ["Burgers", "Meals"]
+
+# Checklists sheet (client-edited wording; Halal certificate item removed)
+OPENING_CHECKLIST = [
+	("Fryer oil filtered and tested (TPM below 24%); changed if dark or foaming", 1),
+	("Fryers at 175 °C before first drop", 1),
+	("Chiller at or below 5 °C and freezer at or below -18 °C, logged on HACCP sheet", 1),
+	("Raw chicken on bottom shelf, covered and labelled; thaw log checked", 1),
+	("Marinated chicken, breading and wings prepped to par levels", 1),
+	("Hand-wash stations stocked: soap, paper towels, sanitiser", 1),
+	("Staff in clean uniform, hairnets and gloves; fitness-to-work check done", 1),
+	(f"Cash float counted (AED {CASH_FLOAT}) and matches opening balance", 1),
+	("Card terminal (Network) online; test transaction approved", 1),
+	("Receipt and KOT printers loaded with paper; test print OK", 1),
+	("Delivery tablets (Talabat, Keeta, Noon Food) online and accepting", 1),
+	("Dining room and patio clean; tables and high chairs sanitised", 1),
+	("Fire extinguisher and fire blanket in place; exits clear", 0),
+	("Sauces and dips stocked: garlic mayo, dynamite, ranch", 0),
+	("Drinks fridge restocked and cold", 0),
+	("Music and lighting on at opening time; outdoor signage on", 0),
+]
+CLOSING_CHECKLIST = [
+	("Fryers off; oil filtered and covered", 1),
+	("Unsold chicken past holding time discarded and logged", 1),
+	("Beef patties counted and entered in stock; leftover raw stock labelled, dated and in chiller", 1),
+	("Chiller and freezer temperatures logged at close", 1),
+	("Grills, hoods, prep tables and floors cleaned", 1),
+	("Cash counted, reconciled and safe drop done", 1),
+	("Card terminal batch settlement done", 1),
+	("Gas valves off; back door and front doors locked; alarm set", 1),
+	("Waste log completed", 0),
+	("Tomorrow's prep list written", 0),
+]
+
+# Payments sheet: delivery platforms used, with their commission. The client says app prices differ from
+# in-store but has not sent them yet, so app prices stay at in-store +15% until the real lists arrive.
+PLATFORMS = [("Talabat", 0.15, 30), ("Keeta", 0.15, 28), ("Noon Food", 0.15, 26)]  # name, markup, commission %
 
 STAFF_ROLES = {
 	"Owner": ["System Manager", "URY Admin", "URY Manager", "URY Cashier", "URY Captain", "Self Ordering Manager",
@@ -116,13 +161,14 @@ def apply(default_password=None):
 	_branch()
 	_tables()
 	_menu()
+	_addons()
 	_stations()
-	_cash_float_checklist()
+	_checklists()
 	if default_password:
 		_staff(default_password)
-	from ury.setup.aggregators import setup_delivery_platforms
+	_platforms()
+	frappe.db.set_value("POS Profile", PROFILE, "custom_enable_discount", 1)  # Staff sheet: manager/owner give discounts
 	from ury.setup.self_ordering import setup_self_ordering
-	setup_delivery_platforms(BRANCH)  # rebuild Talabat/Keeta price lists from the new menu
 	setup_self_ordering(BRANCH)
 	frappe.db.commit()
 	frappe.clear_cache()
@@ -218,12 +264,28 @@ def _stations():
 		doc.save(ignore_permissions=True)
 
 
-def _cash_float_checklist():
+def _addons():
+	targets = [i[0] for i in MENU_ITEMS if i[2] in ADDON_TARGET_COURSES]
+	for code in targets:
+		item = frappe.get_doc("Item", code)
+		item.set("custom_pos_add_on_items", [{"item": a} for a in BURGER_ADDONS])
+		item.save(ignore_permissions=True)
+
+
+def _checklists():
 	profile = frappe.get_doc("POS Profile", PROFILE)
-	for row in profile.custom_checklist_items:
-		if row.item_label.startswith("Cash float counted"):
-			row.item_label = f"Cash float counted (AED {CASH_FLOAT}) and matches opening balance"
+	profile.set("custom_checklist_items", [])
+	for kind, rows in (("Opening", OPENING_CHECKLIST), ("Closing", CLOSING_CHECKLIST)):
+		for label, mandatory in rows:
+			profile.append("custom_checklist_items", {"item_label": label, "applies_to": kind, "is_mandatory": mandatory})
 	profile.save(ignore_permissions=True)
+
+
+def _platforms():
+	from ury.setup.aggregators import setup_delivery_platforms
+	setup_delivery_platforms(BRANCH, platforms=[(name, markup) for name, markup, _ in PLATFORMS])
+	for name, _, commission in PLATFORMS:
+		frappe.db.set_value("Customer", name, "customer_details", f"Delivery platform. Commission {commission}% of order value.")
 
 
 def _staff(password):
