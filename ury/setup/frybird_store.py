@@ -95,8 +95,18 @@ MENU_ITEMS = [
 	 "Classic Burger + fries + soft drink (Pepsi, 7Up, Mirinda or water)", "real/burger-classic"),
 ]
 # add-on items offered on every burger and on the burger meal
-BURGER_ADDONS = ["ADD-CHEESE", "ADD-PICKLE"]
-ADDON_TARGET_COURSES = ["Burgers", "Meals"]
+MENU_ITEMS += [
+	# spice level for fried chicken and tenders: free add-ons, printed on the Fry Station ticket
+	("ADD-SPICE-HOT", "Spice Level: Hot", "Add-ons", "FRIED CHICKEN", 0, "Spice level", "SC-HOT"),
+	("ADD-SPICE-XHOT", "Spice Level: Extra Hot", "Add-ons", "FRIED CHICKEN", 0, "Spice level", "SC-HOT"),
+]
+# menu course -> add-on items offered on every item in that course (POS product dialog and QR ordering)
+ADDONS_BY_COURSE = {
+	"Burgers": ["ADD-CHEESE", "ADD-PICKLE"],
+	"Meals": ["ADD-CHEESE", "ADD-PICKLE"],
+	"Fried Chicken": ["ADD-SPICE-HOT", "ADD-SPICE-XHOT"],
+	"Chicken Tenders": ["ADD-SPICE-HOT", "ADD-SPICE-XHOT"],
+}
 
 # Checklists sheet (client-edited wording; Halal certificate item removed)
 OPENING_CHECKLIST = [
@@ -265,11 +275,11 @@ def _stations():
 
 
 def _addons():
-	targets = [i[0] for i in MENU_ITEMS if i[2] in ADDON_TARGET_COURSES]
-	for code in targets:
-		item = frappe.get_doc("Item", code)
-		item.set("custom_pos_add_on_items", [{"item": a} for a in BURGER_ADDONS])
-		item.save(ignore_permissions=True)
+	for code, _, course, *_ in MENU_ITEMS:
+		if course in ADDONS_BY_COURSE:
+			item = frappe.get_doc("Item", code)
+			item.set("custom_pos_add_on_items", [{"item": a} for a in ADDONS_BY_COURSE[course]])
+			item.save(ignore_permissions=True)
 
 
 def _checklists():

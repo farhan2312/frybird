@@ -151,6 +151,32 @@ export async function getMenu(session: string): Promise<MenuResponse> {
   return response.message
 }
 
+export interface ProductOption {
+  item_code: string
+  item_name: string
+  image: string | null
+  rate: number | null
+}
+
+export interface ProductDetail {
+  item_code: string
+  item_name: string
+  description: string | null
+  image: string | null
+  variants: ProductOption[]
+  addons: ProductOption[]
+}
+
+// Item detail incl. its add-ons (extra cheese, spice level...). Add-ons are menu items themselves,
+// so their price comes from the menu the customer already has.
+export async function getProduct(session: string, itemCode: string): Promise<ProductDetail> {
+  const response = await call.get<FrappeResponse<ProductDetail>>(`${M}.get_customer_product`, {
+    session,
+    item_code: itemCode,
+  })
+  return response.message
+}
+
 export async function getCurrentOrder(session: string): Promise<CustomerOrder> {
   const response = await call.get<FrappeResponse<CustomerOrder>>(`${M}.get_customer_order`, { session })
   return response.message

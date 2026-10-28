@@ -1,7 +1,7 @@
-import { useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { formatCurrency } from '@ury/core'
 import { useOrderingSession } from '../hooks/useOrderingSession'
-import type { OrderingContext } from '../lib/api'
+import { getProduct, type MenuItem, type OrderingContext } from '../lib/api'
 
 interface LayoutProps {
   initialContext?: OrderingContext
@@ -30,6 +30,44 @@ function MobileQRLayout({ initialContext }: LayoutProps) {
     cartTotal,
   } = useOrderingSession(initialContext)
   const [carPlate, setCarPlate] = useState('')
+
+  // Add-ons (extra cheese, spice level...): tapping an item that has add-ons opens a picker first
+  const [optionsFor, setOptionsFor] = useState<{ item: MenuItem; addons: MenuItem[] } | null>(null)
+  const [chosen, setChosen] = useState<Record<string, boolean>>({})
+  const [openingItem, setOpeningItem] = useState<string | null>(null)
+  const addonCache = useRef<Record<string, string[]>>({})
+  const menuByCode = useMemo(() => Object.fromEntries(menu.map((m) => [m.item, m])), [menu])
+
+  async function handleItemTap(item: MenuItem) {
+    if (!context) return
+    let codes = addonCache.current[item.item]
+    if (!codes) {
+      setOpeningItem(item.item)
+      try {
+        const detail = await getProduct(context.session, item.item)
+        codes = detail.addons.map((a) => a.item_code)
+      } catch {
+        codes = []
+      } finally {
+        setOpeningItem(null)
+      }
+      addonCache.current[item.item] = codes
+    }
+    const addons = codes.map((c) => menuByCode[c]).filter(Boolean) as MenuItem[]
+    if (addons.length === 0) {
+      addToCart(item)
+      return
+    }
+    setChosen({})
+    setOptionsFor({ item, addons })
+  }
+
+  function confirmOptions() {
+    if (!optionsFor) return
+    addToCart(optionsFor.item)
+    optionsFor.addons.filter((a) => chosen[a.item]).forEach((a) => addToCart(a))
+    setOptionsFor(null)
+  }
 
   function handleStartOver() {
     if (window.confirm('Start over? Your current cart will be cleared.')) {
@@ -131,8 +169,9 @@ function MobileQRLayout({ initialContext }: LayoutProps) {
         {menu.map((item) => (
           <button
             key={item.item}
-            onClick={() => addToCart(item)}
-            className="flex flex-col overflow-hidden rounded-lg border text-left transition active:scale-[0.98]"
+            onClick={() => handleItemTap(item)}
+            disabled={openingItem === item.item}
+            className="flex flex-col overflow-hidden rounded-lg border text-left transition active:scale-[0.98] disabled:opacity-60"
           >
             {context?.capabilities.show_item_images && item.item_image && (
               <img src={item.item_image} alt={item.item_name} className="h-24 w-full object-cover" />
@@ -147,6 +186,46 @@ function MobileQRLayout({ initialContext }: LayoutProps) {
           </button>
         ))}
       </section>
+
+      {optionsFor && (
+        <div className="fixed inset-0 z-20 flex items-end bg-black/40" onClick={() => setOptionsFor(null)}>
+          <div className="w-full rounded-t-2xl bg-background p-4" onClick={(e) => e.stopPropagation()}>
+            <div className="mb-1 text-base font-semibold">{optionsFor.item.item_name}</div>
+            <div className="mb-3 text-sm text-muted-foreground">Choose add-ons (optional)</div>
+            <ul className="mb-4 space-y-2">
+              {optionsFor.addons.map((a) => (
+                <li key={a.item}>
+                  <label className="flex items-center justify-between rounded-md border px-3 py-2 text-sm">
+                    <span className="flex items-center gap-2">
+                      <input
+                        type="checkbox"
+                        checked={!!chosen[a.item]}
+                        onChange={(e) => setChosen((prev) => ({ ...prev, [a.item]: e.target.checked }))}
+                        className="h-4 w-4"
+                      />
+                      {a.item_name}
+                    </span>
+                    <span className="tabular-nums text-muted-foreground">
+                      {a.rate ? `+${formatCurrency(a.rate)}` : 'Free'}
+                    </span>
+                  </label>
+                </li>
+              ))}
+            </ul>
+            <div className="flex gap-2">
+              <button onClick={() => setOptionsFor(null)} className="flex-1 rounded-md border py-3 text-sm font-medium">
+                Cancel
+              </button>
+              <button
+                onClick={confirmOptions}
+                className="flex-[2] rounded-md bg-primary py-3 text-sm font-medium text-primary-foreground"
+              >
+                Add to cart
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {cartCount > 0 && (
         <div className="fixed inset-x-0 bottom-0 border-t bg-background p-4">
