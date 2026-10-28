@@ -59,6 +59,8 @@ export interface CustomerOrder {
   // identifier a QR Pickup customer has, since there's no table to point
   // to. Present (possibly null before an order exists) on every response.
   pickup_code?: string | null
+  // Curbside (QR pickup) orders: the customer's car number plate.
+  car_plate?: string | null
   items: OrderItem[]
   grand_total: number
   billed: boolean
@@ -157,10 +159,12 @@ export async function getCurrentOrder(session: string): Promise<CustomerOrder> {
 export async function addItems(
   session: string,
   items: { item: string; qty: number; comment?: string }[],
+  carPlate?: string,
 ): Promise<CustomerOrder> {
   const response = await call.post<FrappeResponse<CustomerOrder>>(`${M}.add_customer_items`, {
     session,
     items: JSON.stringify(items),
+    ...(carPlate ? { car_plate: carPlate } : {}),
   })
   return response.message
 }

@@ -26,6 +26,7 @@ import base64
 import hashlib
 import hmac
 import json
+import re
 
 import frappe
 from frappe import _
@@ -41,6 +42,14 @@ from ury.ury.api.ury_kot_generate import kot_execute
 SESSION_TOKEN_BYTES_HASH_LEN = 64  # frappe.generate_hash(length=..)
 MAX_ITEMS_PER_REQUEST = 50
 MAX_COMMENT_LEN = 200
+MAX_CAR_PLATE_LEN = 20
+CURBSIDE_PREFIX = "CURBSIDE - Car: "
+
+
+def _clean_car_plate(value):
+    """Number plate typed by a curbside customer: letters, digits, spaces and dashes, upper-cased."""
+    plate = re.sub(r"[^A-Za-z0-9 \-]", "", str(value or "")).strip().upper()
+    return re.sub(r"\s+", " ", plate)[:MAX_CAR_PLATE_LEN]
 
 
 # ---------------------------------------------------------------------------
@@ -457,6 +466,8 @@ def _sanitize_invoice_for_customer(invoice):
         # name itself doubles as their pickup reference — reusing the
         # existing invoice identity rather than minting a new field/value.
         "pickup_code": invoice.name,
+        "car_plate": (invoice.custom_comments or "").replace(CURBSIDE_PREFIX, "", 1)
+        if (invoice.custom_comments or "").startswith(CURBSIDE_PREFIX) else None,
         "items": [
             {
                 "item_code": row.item_code,
@@ -486,10 +497,14 @@ def get_customer_order(session):
 
 
 @frappe.whitelist(allow_guest=True)
-def add_customer_items(session, items):
+def add_customer_items(session, items, car_plate=None):
     """Append-only customer order mutation. `items` is a list of
     {"item": <item_code>, "qty": <number>, "comment": <optional str>} —
     same shape sync_order()/price_items_for_invoice() already expect.
+
+    QR pickup orders are curbside: the customer's car number plate is required
+    on the first order and stored as the order comment (shown in the POS and
+    printed on every kitchen ticket) so staff can bring the food to the car.
 
     Never trusts client-supplied price/tax/discount/warehouse/cost-center —
     price_items_for_invoice() re-derives price server-side from Item Price,
@@ -525,6 +540,11 @@ def add_customer_items(session, items):
                 _("This table already has an order in progress. Please ask staff for assistance."),
                 frappe.ValidationError,
             )
+
+    plate = _clean_car_plate(car_plate)
+    is_curbside = session.source == "QR Pickup" and not session.table
+    if is_curbside and not plate and not session.invoice:
+        frappe.throw(_("Please enter your car number plate so we can bring your order to you"), frappe.ValidationError)
 
     if isinstance(items, str):
         items = json.loads(items)
@@ -602,6 +622,8 @@ def add_customer_items(session, items):
             invoice.customer = profile.default_customer
 
         invoice.pos_profile = profile.pos_profile
+        if is_curbside and plate:
+            invoice.custom_comments = f"{CURBSIDE_PREFIX}{plate}"
         invoice.custom_order_source = session.source
         invoice.custom_ordering_session = session.name
         if session.device:
@@ -682,7 +704,8 @@ def add_customer_items(session, items):
                 {"item_code": code, "item_name": name_by_item[code], "qty": qty_by_item[code], "comments": ""}
                 for code in qty_by_item
             ]
-            kot_execute(invoice.name, invoice.customer, invoice.restaurant_table, current_items_for_kot, past_item, None)
+            kot_execute(invoice.name, invoice.customer, invoice.restaurant_table, current_items_for_kot, past_item,
+                        invoice.custom_comments or None)
         except Exception as e:
             frappe.log_error(f"Self-order KOT creation failed: {e}", "KOT Error")
 

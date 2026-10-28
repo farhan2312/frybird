@@ -154,13 +154,16 @@ export function useOrderingSession(initialContext?: OrderingContext) {
   const cartCount = cartItems.reduce((sum, entry) => sum + entry.qty, 0)
   const cartTotal = cartItems.reduce((sum, entry) => sum + entry.qty * entry.item.rate, 0)
 
-  async function submitCart() {
+  // carPlate: curbside (QR pickup) orders only - required by the backend on the first order.
+  // Kiosk/tablet layouts pass submitCart straight to onClick, so ignore anything that isn't text.
+  async function submitCart(carPlate?: unknown) {
     if (!context || cartItems.length === 0) return
+    const plate = typeof carPlate === 'string' ? carPlate.trim() : ''
     setSubmitting(true)
     setError(null)
     try {
       const payload = cartItems.map((entry) => ({ item: entry.item.item, qty: entry.qty }))
-      const updated = await addItems(context.session, payload)
+      const updated = await addItems(context.session, payload, plate || undefined)
       setOrder(updated)
       setCart({})
     } catch (err) {

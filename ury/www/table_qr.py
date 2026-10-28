@@ -35,7 +35,7 @@ def get_context(context):
 	cards = []
 	for t in tables:
 		cards.append(_card(base, profile.name, t.name, f"Table {t.name}", t.restaurant_room))
-	cards.append(_card(base, profile.name, None, "Pickup", "Order ahead, collect at the counter"))
+	cards.append(_card(base, profile.name, None, "Curbside", "Scan from your car - we bring your order out"))
 
 	context.update({
 		"title": _("Table QR codes"), "profiles": profiles, "profile": profile, "base": base,

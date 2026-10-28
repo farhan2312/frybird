@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { formatCurrency } from '@ury/core'
 import { useOrderingSession } from '../hooks/useOrderingSession'
 import type { OrderingContext } from '../lib/api'
@@ -28,6 +29,7 @@ function MobileQRLayout({ initialContext }: LayoutProps) {
     cartCount,
     cartTotal,
   } = useOrderingSession(initialContext)
+  const [carPlate, setCarPlate] = useState('')
 
   function handleStartOver() {
     if (window.confirm('Start over? Your current cart will be cleared.')) {
@@ -55,12 +57,15 @@ function MobileQRLayout({ initialContext }: LayoutProps) {
   // pickup mode — set server-side by _verify_qr_token/_resolve_device, never
   // guessed from context.table being falsy.
   const isPickup = context?.source === 'QR Pickup'
+  // QR pickup is run as curbside: the first order needs the car's number plate
+  const needsPlate = isPickup && !order?.invoice
+  const plateMissing = needsPlate && carPlate.trim() === ''
 
   return (
     <div className="min-h-screen pb-28">
       <header className="sticky top-0 z-10 flex items-center justify-between border-b bg-background/95 px-4 py-3 backdrop-blur">
         <h1 className="text-lg font-semibold">
-          {isPickup ? 'Order for Pickup' : context?.table ? `Table ${context.table}` : 'Order'}
+          {isPickup ? 'Curbside Order' : context?.table ? `Table ${context.table}` : 'Order'}
         </h1>
         <button
           onClick={handleStartOver}
@@ -79,7 +84,8 @@ function MobileQRLayout({ initialContext }: LayoutProps) {
           <h2 className="mb-2 text-sm font-medium text-muted-foreground">Your order so far</h2>
           {isPickup && order.pickup_code && (
             <p className="mb-2 rounded-md bg-muted p-2 text-center text-sm font-semibold">
-              Pickup code: {order.pickup_code}
+              Order {order.pickup_code}
+              {order.car_plate && <> &middot; we&apos;ll bring it to car {order.car_plate}</>}
             </p>
           )}
           <ul className="space-y-1 text-sm">
@@ -172,12 +178,28 @@ function MobileQRLayout({ initialContext }: LayoutProps) {
             <span>{cartCount} item{cartCount > 1 ? 's' : ''}</span>
             <span className="tabular-nums">{formatCurrency(cartTotal)}</span>
           </div>
+          {needsPlate && (
+            <label className="mb-2 block text-sm">
+              <span className="mb-1 block font-medium">Car number plate</span>
+              <input
+                value={carPlate}
+                onChange={(e) => setCarPlate(e.target.value.toUpperCase())}
+                placeholder="e.g. AJMAN B 12345"
+                maxLength={20}
+                autoCapitalize="characters"
+                className="w-full rounded-md border px-3 py-2 uppercase tracking-wide"
+              />
+              <span className="mt-1 block text-xs text-muted-foreground">
+                We&apos;ll bring your order out to your car.
+              </span>
+            </label>
+          )}
           <button
-            onClick={submitCart}
-            disabled={submitting}
+            onClick={() => submitCart(isPickup ? carPlate : undefined)}
+            disabled={submitting || plateMissing}
             className="w-full rounded-md bg-primary py-3 font-medium text-primary-foreground disabled:opacity-50"
           >
-            {submitting ? 'Placing order…' : 'Place Order'}
+            {submitting ? 'Placing order…' : plateMissing ? 'Enter your car number plate' : 'Place Order'}
           </button>
         </div>
       )}
