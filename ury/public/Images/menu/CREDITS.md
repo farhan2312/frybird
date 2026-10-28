@@ -44,3 +44,10 @@ Drinks and dips (Unsplash, free to use):
 - dip-dynamite: photo-1779939855596-8506096e2ebe by Bunly Hort
 
 Folder real/: product photos from FryBird's own flyer.
+
+Add-ons and water (Unsplash, free to use):
+- drink-water-glass: photo-1781510350868-b81dfa490295
+- addon-brioche-bun: photo-1598552632317-cff7e85f9918
+- addon-pickle: photo-1650072395437-223b4906207d
+- addon-cheese: photo-1683314573422-649a3c6ad784
+- addon-meal: photo-1495753379358-73c76ccd644b

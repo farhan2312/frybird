@@ -75,21 +75,21 @@ MENU_ITEMS = [
 	("SIDE-SPICY", "Spicy Fries", "Sides", "SIDES", 8, "", "ADD-MEAL"),
 	("SIDE-LOADED", "Loaded Fries", "Sides", "SIDES", 15, "", "ADD-CHS"),
 	("SIDE-FRYBIRD", "FryBird Fries", "Sides", "SIDES", 20, "", "ADD-CHS"),
-	("ADD-MEAL-FD", "Meal with Fries & Drink", "Add-ons", "ADD-ONS", 7, "Upgrade any item to a meal", None),
-	("ADD-BUN", "Brioche Bun", "Add-ons", "BURGERS", 2, "", None),  # grill makes it, so it shares the burger group
+	("ADD-MEAL-FD", "Meal with Fries & Drink", "Add-ons", "ADD-ONS", 7, "Upgrade any item to a meal", "addon-meal"),
+	("ADD-BUN", "Brioche Bun", "Add-ons", "BURGERS", 2, "", "addon-brioche-bun"),  # grill makes it, so it shares the burger group
 	("DRK-COLA", "Cola", "Drinks", "DRINKS", 4, "", "drink-cola"),
 	("DRK-LEMONADE", "Lemonade", "Drinks", "DRINKS", 4, "", "drink-lemonade"),
 	("DRK-SHAKE-OREO", "Milkshake - Oreo", "Drinks", "DRINKS", 10, "", "shake-oreo"),
 	("DRK-SHAKE-KINDER", "Milkshake - Kinder", "Drinks", "DRINKS", 10, "", "shake-kinder"),
 	("DRK-SHAKE-LOTUS", "Milkshake - Lotus", "Drinks", "DRINKS", 10, "", "shake-lotus"),
 	("DRK-SHAKE-PB", "Peanut Butter Shake", "Drinks", "DRINKS", 15, "", "shake-peanut-butter"),
-	("DRK-WATER", "Water", "Drinks", "DRINKS", 1, "", "drink-water"),
+	("DRK-WATER", "Water", "Drinks", "DRINKS", 1, "", "drink-water-glass"),
 	("DIP-GARLIC", "Garlic Dip", "Dips", "DIPS", 2, "", "dip-garlic"),
 	("DIP-RANCHY", "Ranchy Dip", "Dips", "DIPS", 2, "", "dip-ranchy"),
 	("DIP-DYNAMITE", "Dynamite Dip", "Dips", "DIPS", 2, "", "dip-dynamite"),
 	# Options and Add-ons sheet: burger extras (ticked in the burger's product dialog, printed on the Grill ticket)
-	("ADD-CHEESE", "Extra Cheese", "Add-ons", "BURGERS", 2, "Burger add-on", None),
-	("ADD-PICKLE", "Add Pickle", "Add-ons", "BURGERS", 2, "Burger add-on", None),
+	("ADD-CHEESE", "Extra Cheese", "Add-ons", "BURGERS", 2, "Burger add-on", "addon-cheese"),
+	("ADD-PICKLE", "Add Pickle", "Add-ons", "BURGERS", 2, "Burger add-on", "addon-pickle"),
 	# Combos and Meals sheet
 	("MEAL-CHK-BURGER", "Chicken Burger Meal", "Meals", "BURGERS", 17,
 	 "Classic Burger + fries + soft drink (Pepsi, 7Up, Mirinda or water)", "real/burger-classic"),
