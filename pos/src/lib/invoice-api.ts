@@ -229,6 +229,12 @@ export async function getInvoicePrintHtml(invoiceId: string, printFormat: string
   }
 }
 
+// Receipt lines for the FryBird Android app's built-in printer.
+export async function getReceipt(orderId: string) {
+  const response = await call.get<{ message: unknown }>('ury.ury.api.kitchen_print.get_receipt', { invoice: orderId });
+  return response.message;
+}
+
 export async function networkPrint(orderId: string, printer: string, printFormat: string) {
   await call.post('ury.ury.api.ury_print.network_printing', {
     doctype: 'POS Invoice',

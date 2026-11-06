@@ -22,3 +22,9 @@ ury/www/mosaic.html
 build
 
 *.lock
+
+# Android app
+android/.gradle
+android/local.properties
+*.apk
+*.jks

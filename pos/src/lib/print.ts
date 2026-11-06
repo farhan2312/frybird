@@ -1,11 +1,19 @@
 import { printWithQz } from '@ury/core';
 import {
   getInvoicePrintHtml,
+  getReceipt,
   networkPrint,
   selectNetworkPrinter,
   updatePrintStatus
 } from './invoice-api';
 import { PosProfileCombined } from './pos-profile-api';
+
+declare global {
+  interface Window {
+    // Provided by the FryBird Android app (android/) on the counter terminal. Returns an error message, or "" when printed.
+    FryBirdPrinter?: { printReceipt(document: string): string };
+  }
+}
 
 interface PrintOrderParams {
   orderId: string;
@@ -13,9 +21,18 @@ interface PrintOrderParams {
   printFormat?: string | null;
 }
 
-export async function printOrder({ orderId, posProfile, printFormat }: PrintOrderParams): Promise<'qz' | 'network' | 'socket'> {
+export async function printOrder({ orderId, posProfile, printFormat }: PrintOrderParams): Promise<'native' | 'qz' | 'network' | 'socket'> {
   const { print_type, qz_host, print_format, printer, name, cashier, multiple_cashier } = posProfile;
   const format = printFormat || print_format;
+
+  if (window.FryBirdPrinter) {
+    const error = window.FryBirdPrinter.printReceipt(JSON.stringify(await getReceipt(orderId)));
+    if (error) {
+      throw new Error(error);
+    }
+    await updatePrintStatus(orderId);
+    return 'native';
+  }
 
   if (print_type === 'qz') {
     if (!qz_host) {
