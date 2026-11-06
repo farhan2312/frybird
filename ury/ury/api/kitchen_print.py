@@ -7,6 +7,7 @@ A print document is a list of lines: {"t": text, "b": bold, "s": 1 or 2 (size), 
 """
 
 import json
+import textwrap
 import unicodedata
 
 import frappe
@@ -15,10 +16,11 @@ from frappe.utils import add_to_date, flt, format_datetime, now_datetime
 
 PRINT_ROLE = "URY Print Agent"
 PRINT_USER = "printer@frybird.ae"
+TICKET_HEADER = "FRYBIRD AJMAN"
 WIDTH = 48  # characters per line at normal size on 80mm paper
 TICKET_MAX_AGE_HOURS = 2  # anything older is stale for the kitchen, so it isn't printed late
 CANCEL_TYPES = ("Partially cancelled", "Cancelled")
-TICKET_TITLES = {"New Order": "NEW ORDER", "Order Modified": "ADDED TO ORDER", "Partially cancelled": "CANCELLED ITEMS", "Cancelled": "ORDER CANCELLED"}
+TICKET_TITLES = {"Order Modified": "ADDED TO ORDER", "Partially cancelled": "CANCELLED ITEMS", "Cancelled": "ORDER CANCELLED"}
 
 
 def setup_print_agent():
@@ -50,7 +52,7 @@ def get_pending_tickets():
 	kots = frappe.get_all(
 		"URY KOT",
 		filters={"docstatus": 1, "kitchen_printed": 0, "type": ["!=", "Duplicate"], "creation": [">=", cutoff]},
-		fields=["name", "invoice", "type", "production", "order_no", "restaurant_table", "table_takeaway", "aggregator_id", "comments", "creation"],
+		fields=["name", "invoice", "type", "production", "order_no", "restaurant_table", "table_takeaway", "aggregator_id", "comments", "creation", "user"],
 		order_by="creation asc, name asc",
 	)
 	# One order creates a KOT per station; the kitchen has one printer, so they print as one ticket.
@@ -87,22 +89,31 @@ def _ticket_lines(kots):
 	invoice = frappe.db.get_value("POS Invoice", first.invoice, ["order_type", "custom_comments"], as_dict=True) or frappe._dict()
 	is_cancel = first.type in CANCEL_TYPES
 	lines = [
-		_line(TICKET_TITLES.get(first.type, first.type), bold=True, size=2, align="c"),
-		_line(f"Order {first.order_no or first.invoice}", bold=True, size=2, align="c"),
-		_line(_ticket_destination(first, invoice), bold=True, size=2, align="c"),
-		_line(format_datetime(first.creation, "dd MMM yyyy  HH:mm"), align="c"),
+		_line(TICKET_HEADER, align="c"),
+		_line(f"KOT# {first.order_no or first.invoice}", bold=True, size=2, align="c"),
+		_line("." * WIDTH),
+		_columns("Date", format_datetime(first.creation, "d-M-yyyy")),
+		_columns("Time", format_datetime(first.creation, "HH:mm")),
 		_divider(),
+		_line(_ticket_destination(first, invoice), bold=True, size=2, align="c"),
 	]
+	if first.type != "New Order":
+		lines.append(_line(TICKET_TITLES.get(first.type, first.type), bold=True, align="c"))
+	lines += [_divider(), _line("QTY  ITEM")]
+	total_qty = 0
 	for kot in kots:
-		lines.append(_line(frappe.db.get_value("URY Production Unit", kot.production, "production") or kot.production or "", bold=True))
+		if len(kots) > 1:
+			station = frappe.db.get_value("URY Production Unit", kot.production, "production") or kot.production or ""
+			lines.append(_line(station.upper()))
 		for item in frappe.get_all("URY KOT Items", filters={"parent": kot.name}, fields=["item_name", "quantity", "cancelled_qty", "comments"], order_by="idx"):
 			qty = item.cancelled_qty if is_cancel else item.quantity
-			lines.append(_line(f"{qty} x {item.item_name}", bold=True, size=2))
+			total_qty += flt(qty)
+			lines += [_line(text, bold=True) for text in _wrap(f"{qty} x {item.item_name}", indent="    ")]
 			if item.comments:
-				lines.append(_line(f"   * {item.comments}"))
-		lines.append(_divider())
+				lines += [_line(text) for text in _wrap(f"    {item.comments}", indent="    ")]
 	if first.comments:
-		lines.append(_line(f"Note: {first.comments}", bold=True))
+		lines += [_divider()] + [_line(text) for text in _wrap(f"Note: {first.comments}", indent="      ")]
+	lines += [_divider(), _columns("Waiter", first.user or ""), _columns("TotalQty", f"{total_qty:g}"), _divider()]
 	return lines
 
 
@@ -172,6 +183,10 @@ def _columns(left, right, bold=False, size=1):
 	if len(left) + len(right) + 1 > width:
 		left = left[: width - len(right) - 1]
 	return _line(left.ljust(width - len(right)) + right, bold=bold, size=size)
+
+
+def _wrap(text, indent=""):
+	return textwrap.wrap(_ascii(text), WIDTH, subsequent_indent=indent, drop_whitespace=True) or [""]
 
 
 def _divider():
