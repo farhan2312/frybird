@@ -11,6 +11,8 @@ interface MenuCardProps {
   item: string;
   onClick?: () => void;
   disabled?: boolean;
+  /** How many are in the current order. Shown on the card when above zero. */
+  quantity?: number;
 }
 
 const MenuCard: FC<MenuCardProps> = ({ 
@@ -19,18 +21,25 @@ const MenuCard: FC<MenuCardProps> = ({
   item_image, 
   course, 
   onClick,
-  disabled 
+  disabled,
+  quantity
 }) => {
   return (
     <div
       className={cn(
         "bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow cursor-pointer h-56 flex flex-col",
-        disabled && "opacity-50 cursor-not-allowed pointer-events-none"
+        disabled && "opacity-50 cursor-not-allowed pointer-events-none",
+        Boolean(quantity) && "ring-2 ring-primary-600"
       )}
       onClick={disabled ? undefined : onClick}
     >
       {/* Image section - fixed height */}
-      <div className="h-24">
+      <div className="h-24 relative">
+        {Boolean(quantity) && (
+          <span className="absolute top-2 right-2 z-10 min-w-8 h-8 px-2 rounded-full bg-primary-600 text-white text-base font-bold flex items-center justify-center shadow">
+            {quantity}
+          </span>
+        )}
         {item_image ? (
           <img
             src={item_image}

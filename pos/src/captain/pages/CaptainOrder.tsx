@@ -77,8 +77,8 @@ export default function CaptainOrder() {
     isOrderInteractionDisabled,
   } = usePOSStore();
 
-  const [mode, setMode] = useState<Mode>('order');
-  const [hasSetInitialMode, setHasSetInitialMode] = useState(false);
+  // Always opens on the menu; captains switch to the Order tab to review and send.
+  const [mode, setMode] = useState<Mode>('menu');
   const [editingItemUniqueId, setEditingItemUniqueId] = useState<string | null>(null);
   const [noteEditingLine, setNoteEditingLine] = useState<OrderDeltaLine | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -92,15 +92,6 @@ export default function CaptainOrder() {
   const [transferDestinations, setTransferDestinations] = useState<Table[]>([]);
   const [isTransferDestinationsLoading, setIsTransferDestinationsLoading] = useState(false);
   const [isTransferCaptainOpen, setIsTransferCaptainOpen] = useState(false);
-
-  // Default to the Order view for a table that already has a baseline
-  // order, Menu for a fresh table — matches PLAN §5 ("free table: menu
-  // opens directly" / "occupied + mine: open with existing order loaded").
-  useEffect(() => {
-    if (hasSetInitialMode || !isOrderReady) return;
-    setMode(alreadyOrderedLines.length > 0 || reductionPendingLines.length > 0 ? 'order' : 'menu');
-    setHasSetInitialMode(true);
-  }, [hasSetInitialMode, isOrderReady, alreadyOrderedLines.length, reductionPendingLines.length]);
 
   const editingItem = useMemo(
     () => (editingItemUniqueId ? activeOrders.find((i) => i.uniqueId === editingItemUniqueId) ?? null : null),
@@ -630,7 +621,7 @@ export default function CaptainOrder() {
       </div>
 
       {/* Primary action for mobile */}
-      {canModify && (
+      {canModify && mode === 'order' && (
         <div className="sticky bottom-0 lg:hidden bg-white border-t border-gray-200 p-3">
           <div className="flex items-center justify-between mb-2 px-1">
             <span className="text-sm font-semibold text-gray-700">Total</span>

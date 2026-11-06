@@ -39,7 +39,7 @@ export default function CaptainCarOrder() {
     clearTableOrder,
   } = usePOSStore();
 
-  const [mode, setMode] = useState<'menu' | 'order'>(invoice ? 'order' : 'menu');
+  const [mode, setMode] = useState<'menu' | 'order'>('menu');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const carPlate = carPlateFrom(orderComment) ?? '';
@@ -189,6 +189,7 @@ export default function CaptainCarOrder() {
         )}
       </div>
 
+      {mode === 'order' && (
       <div className="border-t border-gray-200 bg-white p-3">
         <div className="mb-2 flex items-center justify-between px-1">
           <span className="text-sm font-semibold text-gray-700">Total</span>
@@ -198,6 +199,7 @@ export default function CaptainCarOrder() {
           {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : isUpdatingOrder ? 'Update Order' : 'Send Order'}
         </Button>
       </div>
+      )}
     </div>
   );
 }

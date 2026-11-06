@@ -30,8 +30,15 @@ const CaptainMenu: React.FC<CaptainMenuProps> = ({ canAddItems }) => {
     categories,
     fetchMenuItems,
     addToOrder,
+    activeOrders,
     isOrderInteractionDisabled,
   } = usePOSStore();
+
+  const quantities = useMemo(() => {
+    const totals = new Map<string, number>();
+    activeOrders.forEach((line) => totals.set(line.item, (totals.get(line.item) ?? 0) + line.quantity));
+    return totals;
+  }, [activeOrders]);
 
   useEffect(() => {
     fetchMenuItems();
@@ -123,6 +130,7 @@ const CaptainMenu: React.FC<CaptainMenuProps> = ({ canAddItems }) => {
                 item={item.item}
                 onClick={() => handleTap(item)}
                 disabled={disabled}
+                quantity={quantities.get(item.item)}
               />
             ))}
           </div>

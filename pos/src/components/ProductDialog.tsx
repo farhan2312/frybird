@@ -316,12 +316,12 @@ const ProductDialog: React.FC<ProductDialogProps> = ({
         showCloseButton={false}
       >
         {/* Left Column - Image  */}
-        <div className="md:w-1/3 relative">
+        <div className="md:w-1/3 relative shrink-0">
           {itemDoc?.image ? (
             <img
               src={itemDoc.image}
               alt={itemDoc.name}
-              className="w-full min-h-96 h-full object-cover rounded-t-lg md:rounded-l-lg md:rounded-tr-none filter saturate-75 brightness-95"
+              className="w-full h-40 md:min-h-96 md:h-full object-cover rounded-t-lg md:rounded-l-lg md:rounded-tr-none filter saturate-75 brightness-95"
               style={{ filter: 'saturate(0.7) brightness(0.95)' }}
               onError={(e) => {
                 const target = e.target as HTMLImageElement;
@@ -336,7 +336,7 @@ const ProductDialog: React.FC<ProductDialogProps> = ({
               }}
             />
           ) : (
-            <div className="w-full min-h-96 h-full bg-gray-200 flex items-center justify-center text-[8rem] text-gray-400 font-medium rounded-t-lg md:rounded-l-lg md:rounded-tr-none">
+            <div className="w-full h-40 md:min-h-96 md:h-full bg-gray-200 flex items-center justify-center text-[8rem] text-gray-400 font-medium rounded-t-lg md:rounded-l-lg md:rounded-tr-none">
               {itemDoc?.name.slice(0, 2).toUpperCase()}
             </div>
           )}
@@ -351,7 +351,7 @@ const ProductDialog: React.FC<ProductDialogProps> = ({
         </div>
 
         {/* Middle Column - Variants and Quantity */}
-        <div className="md:w-1/3 p-6 overflow-y-auto">
+        <div className="md:w-1/3 p-6 shrink-0 md:shrink md:overflow-y-auto">
           <div>
             <h2 className="text-2xl font-bold text-gray-900">{selectedItem?.item_name}</h2>
             <div className="flex items-center gap-2 mt-1">
@@ -440,8 +440,8 @@ const ProductDialog: React.FC<ProductDialogProps> = ({
 
 
         {/* Right Column - Add-ons and Order Button */}
-        <div className="h-auto md:w-1/3 p-6 border-t md:border-t-0 md:border-l border-gray-200 overflow-y-auto flex flex-col">
-          <div className="overflow-y-auto mb-6">
+        <div className="h-auto md:w-1/3 p-6 border-t md:border-t-0 md:border-l border-gray-200 shrink-0 md:shrink md:overflow-y-auto flex flex-col">
+          <div className="md:overflow-y-auto mb-6">
             {isAddonLoading ? (
               <div className="mb-6 flex items-center justify-center text-gray-500">{t('product_dialog.loading_addons')}</div>
             ) : addonError ? (
@@ -474,7 +474,7 @@ const ProductDialog: React.FC<ProductDialogProps> = ({
             )}
           </div>
           {/* Always show total section at the end */}
-          <div className="mt-auto pt-2 border-t border-gray-200">
+          <div className="mt-auto pt-2 pb-2 border-t border-gray-200 bg-white sticky bottom-0 md:static">
             <div className="flex justify-between items-center text-lg font-semibold">
               <span>{t('product_dialog.total')}&nbsp;</span>
               <span>{formatCurrency(total)}</span>
