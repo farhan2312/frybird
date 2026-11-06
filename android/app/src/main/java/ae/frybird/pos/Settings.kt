@@ -9,7 +9,7 @@ class Settings(context: Context) {
         get() = prefs.getString("server", "https://pos.frybird.ae")!!
         set(value) = prefs.edit().putString("server", value.trim().trimEnd('/')).apply()
 
-    // /pos on the counter terminal, /captain on waiters' tablets.
+    // /pos on the counter terminal, /pos/captain on waiters' tablets.
     var startPage: String
         get() = prefs.getString("start", "/pos")!!
         set(value) = prefs.edit().putString("start", "/" + value.trim().trimStart('/')).apply()

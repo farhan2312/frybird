@@ -13,6 +13,7 @@ import POSOpeningDialog from './POSOpeningDialog';
 import POSOpeningScreen from './POSOpeningScreen';
 import ChecklistGateDialog from './ChecklistGateDialog';
 import POSClosingDialog from './POSClosingDialog';
+import { isCaptainRoute } from './ScreenSizeProvider';
 import { t } from '../i18n';
 
 interface POSOpeningProviderProps {
@@ -216,6 +217,11 @@ const POSOpeningProvider = ({ children }: POSOpeningProviderProps) => {
       checkPOSStatus();
     }
   }, [posProfile, checkPOSStatus]);
+
+  // Captains take orders under the cashier's session, so they don't open or close one themselves.
+  if (isCaptainRoute()) {
+    return <>{children}</>;
+  }
 
   if (isLoading) {
     return (

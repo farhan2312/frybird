@@ -32,7 +32,7 @@ class SettingsActivity : Activity() {
             }
         }
         val server = field("Server address", settings.serverUrl, false)
-        val startPage = field("Start page (/pos on the counter, /captain on tablets)", settings.startPage, false)
+        val startPage = field("Start page (/pos on the counter, /pos/captain on tablets)", settings.startPage, false)
         val printer = field("Kitchen printer IP", settings.kitchenPrinterIp, false)
         val key = field("Print API key (counter terminal only)", settings.apiKey, false)
         val secret = field("Print API secret", settings.apiSecret, true)
