@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { AlertTriangle, Square } from 'lucide-react';
-import { Button, Spinner, showToast } from '@ury/ui';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { AlertTriangle, Car, Plus, Square } from 'lucide-react';
+import { Badge, Button, Spinner, showToast } from '@ury/ui';
+import { formatCurrency } from '@ury/core';
 import { useCaptainContext } from '../hooks/useCaptainContext';
 import { getRooms, getTables, type Room, type Table } from '../../lib/table-api';
 import { getMergeGroupMembers, sortTablesByMergeGroups } from '../../lib/table-utils';
@@ -10,6 +11,7 @@ import {
   getUserFullNames,
   type ActiveTableOrder,
 } from '../lib/captain-table-api';
+import { getActiveCarOrders, type ActiveCarOrder } from '../lib/captain-car-api';
 import CaptainTableCard, {
   type CaptainTableOwnership,
 } from '../components/CaptainTableCard';
@@ -22,6 +24,7 @@ import CaptainTableCard, {
  */
 export default function CaptainTables() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const {
     context,
     capabilities,
@@ -35,6 +38,8 @@ export default function CaptainTables() {
   const canAccessOtherCaptainsTables = Boolean(capabilities?.canAccessOtherCaptainsTables);
 
   const [selectedRoom, setSelectedRoom] = useState<string | null>(null);
+  const [showCars, setShowCars] = useState(searchParams.get('tab') === 'cars');
+  const [carOrders, setCarOrders] = useState<ActiveCarOrder[]>([]);
   const [branchRooms, setBranchRooms] = useState<Room[]>([]);
   const [roomsLoading, setRoomsLoading] = useState(false);
   const [tables, setTables] = useState<Table[]>([]);
@@ -126,10 +131,35 @@ export default function CaptainTables() {
     }
   }, [branch, loadActiveOrders]);
 
+  const loadCarOrders = useCallback(async () => {
+    if (!branch) return;
+    try {
+      const orders = await getActiveCarOrders(branch);
+      setCarOrders(orders);
+      setOwnerNames(await getUserFullNames(orders.map((order) => order.waiter)));
+    } catch (err) {
+      console.error(err);
+      showToast.error('Failed to load car orders');
+    }
+  }, [branch]);
+
+  useEffect(() => {
+    if (showCars) loadCarOrders();
+  }, [showCars, loadCarOrders]);
+
+  const handleCarTap = (order: ActiveCarOrder) => {
+    if (order.waiter === currentUser || canAccessOtherCaptainsTables) {
+      navigate(`/order/car/${order.invoiceName}`);
+      return;
+    }
+    showToast.error(`Assigned to ${ownerNames.get(order.waiter) ?? order.waiter}`);
+  };
+
   const refresh = useCallback(() => {
+    if (showCars) loadCarOrders();
     if (selectedRoom) loadTables(selectedRoom);
     if (branch) loadActiveOrders(branch);
-  }, [selectedRoom, branch, loadTables, loadActiveOrders]);
+  }, [selectedRoom, branch, loadTables, loadActiveOrders, showCars, loadCarOrders]);
 
   const tableGroups = useMemo(() => sortTablesByMergeGroups(tables), [tables]);
 
@@ -201,19 +231,63 @@ export default function CaptainTables() {
                 key={room.name}
                 variant="tab"
                 size="sm"
-                data-selected={selectedRoom === room.name}
-                onClick={() => setSelectedRoom(room.name)}
+                data-selected={!showCars && selectedRoom === room.name}
+                onClick={() => {
+                  setShowCars(false);
+                  setSelectedRoom(room.name);
+                }}
                 className="h-9 shrink-0"
               >
                 {room.name}
               </Button>
             ))}
+            <Button
+              variant="tab"
+              size="sm"
+              data-selected={showCars}
+              onClick={() => setShowCars(true)}
+              className="h-9 shrink-0"
+            >
+              Cars
+            </Button>
           </div>
         )}
       </div>
 
       <div className="flex-1 p-3">
-        {branchRooms.length === 0 ? (
+        {showCars ? (
+          <div>
+            <Button onClick={() => navigate('/order/car')} size="lg" className="mb-3 h-12 w-full text-base">
+              <Plus className="mr-2 h-5 w-5" />
+              New car order
+            </Button>
+            {carOrders.length === 0 && (
+              <div className="flex flex-col items-center py-12 text-gray-500">
+                <Car className="mb-2 h-8 w-8" />
+                <p className="text-sm">No car orders open.</p>
+              </div>
+            )}
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
+              {carOrders.map((order) => (
+                <button
+                  key={order.invoiceName}
+                  onClick={() => handleCarTap(order)}
+                  className="rounded-xl border-2 border-sky-400 bg-sky-50 p-3 text-left text-sky-900"
+                >
+                  <span className="block truncate text-lg font-bold">{order.carPlate}</span>
+                  <Badge variant={order.invoicePrinted ? 'secondary' : 'info'}>
+                    {order.invoicePrinted
+                      ? 'Billed'
+                      : order.waiter === currentUser
+                        ? 'Mine'
+                        : ownerNames.get(order.waiter) ?? order.waiter}
+                  </Badge>
+                  <span className="mt-1 block text-sm">{formatCurrency(order.grandTotal)}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        ) : branchRooms.length === 0 ? (
           <div className="flex h-full flex-col items-center justify-center gap-2 py-16 text-gray-500">
             <AlertTriangle className="h-8 w-8" />
             <p className="text-sm">No rooms available for your account.</p>

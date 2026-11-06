@@ -12,6 +12,7 @@ import KotAlertListener from './components/KotAlertListener';
 import CaptainRouteGuard from './captain/components/CaptainRouteGuard';
 import CaptainTables from './captain/pages/CaptainTables';
 import CaptainOrder from './captain/pages/CaptainOrder';
+import CaptainCarOrder from './captain/pages/CaptainCarOrder';
 import { ToastProvider } from '@ury/ui';
 import { usePOSStore } from './store/pos-store';
 import { useEffect } from 'react';
@@ -64,6 +65,14 @@ function App() {
                   element={
                     <CaptainRouteGuard>
                       <CaptainTables />
+                    </CaptainRouteGuard>
+                  }
+                />
+                <Route
+                  path="/order/car/:invoice?"
+                  element={
+                    <CaptainRouteGuard>
+                      <CaptainCarOrder />
                     </CaptainRouteGuard>
                   }
                 />

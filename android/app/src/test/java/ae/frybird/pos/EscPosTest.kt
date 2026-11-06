@@ -19,6 +19,15 @@ class EscPosTest {
     }
 
     @Test
+    fun rendersDoubleHeightLine() {
+        val tall = JSONObject().put("t", "A").put("s", 3)
+        assertArrayEquals(
+            bytes(0x1B, 0x40, 0x1B, 0x61, 0, 0x1B, 0x45, 0, 0x1D, 0x21, 0x01, 0x41, 0x0A, 0x1B, 0x64, 5),
+            EscPos.render(JSONArray().put(tall), cut = false),
+        )
+    }
+
+    @Test
     fun leavesOutCutForBuiltInPrinter() {
         assertArrayEquals(
             bytes(0x1B, 0x40, 0x1B, 0x61, 1, 0x1B, 0x45, 1, 0x1D, 0x21, 0x11, 0x41, 0x0A, 0x1B, 0x64, 5),

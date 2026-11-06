@@ -3,7 +3,7 @@
 The server can't reach printers on the shop network, so the app collects kitchen tickets from here
 and sends them to the kitchen printer itself. Layout lives here so it can change without a new app.
 
-A print document is a list of lines: {"t": text, "b": bold, "s": 1 or 2 (size), "a": "l", "c" or "r"}.
+A print document is a list of lines: {"t": text, "b": bold, "s": 1, 2 or 3 (normal, double, double height), "a": "l", "c" or "r"}.
 """
 
 import json
@@ -14,9 +14,12 @@ import frappe
 from frappe import _
 from frappe.utils import add_to_date, flt, format_datetime, now_datetime
 
+from ury.ury.api.self_ordering import CURBSIDE_PREFIX
+
 PRINT_ROLE = "URY Print Agent"
 PRINT_USER = "printer@frybird.ae"
 TICKET_HEADER = "FRYBIRD AJMAN"
+TICKET_ITEM_SIZE = 3  # double height at normal width, so the kitchen can read items without losing line width
 WIDTH = 48  # characters per line at normal size on 80mm paper
 TICKET_MAX_AGE_HOURS = 2  # anything older is stale for the kitchen, so it isn't printed late
 CANCEL_TYPES = ("Partially cancelled", "Cancelled")
@@ -108,16 +111,18 @@ def _ticket_lines(kots):
 		for item in frappe.get_all("URY KOT Items", filters={"parent": kot.name}, fields=["item_name", "quantity", "cancelled_qty", "comments"], order_by="idx"):
 			qty = item.cancelled_qty if is_cancel else item.quantity
 			total_qty += flt(qty)
-			lines += [_line(text, bold=True) for text in _wrap(f"{qty} x {item.item_name}", indent="    ")]
+			lines += [_line(text, bold=True, size=TICKET_ITEM_SIZE) for text in _wrap(f"{qty} x {item.item_name}", indent="    ")]
 			if item.comments:
-				lines += [_line(text) for text in _wrap(f"    {item.comments}", indent="    ")]
-	if first.comments:
-		lines += [_divider()] + [_line(text) for text in _wrap(f"Note: {first.comments}", indent="      ")]
+				lines += [_line(text, size=TICKET_ITEM_SIZE) for text in _wrap(f"    {item.comments}", indent="    ")]
+	if first.comments and not first.comments.startswith(CURBSIDE_PREFIX):
+		lines += [_divider()] + [_line(text, size=TICKET_ITEM_SIZE) for text in _wrap(f"Note: {first.comments}", indent="      ")]
 	lines += [_divider(), _columns("Waiter", first.user or ""), _columns("TotalQty", f"{total_qty:g}"), _divider()]
 	return lines
 
 
 def _ticket_destination(kot, invoice):
+	if (kot.comments or "").startswith(CURBSIDE_PREFIX):
+		return "Car " + kot.comments[len(CURBSIDE_PREFIX):]
 	if kot.aggregator_id:
 		return kot.aggregator_id
 	if kot.restaurant_table and not kot.table_takeaway:
@@ -141,7 +146,10 @@ def _receipt_lines(doc):
 		_line(f"Date: {format_datetime(doc.creation, 'dd MMM yyyy  HH:mm')}"),
 		_line(f"Order: {doc.get('custom_ury_order_number') or '-'}  {doc.order_type or ''}".rstrip()),
 	]
-	if doc.get("restaurant_table"):
+	comments = doc.get("custom_comments") or ""
+	if comments.startswith(CURBSIDE_PREFIX):
+		lines.append(_line(f"Car: {comments[len(CURBSIDE_PREFIX):]}"))
+	elif doc.get("restaurant_table"):
 		lines.append(_line(f"Table: {doc.restaurant_table}"))
 	lines.append(_divider())
 	for item in doc.items:

@@ -6,7 +6,7 @@ import { getCurrencyInfo, PosProfileCombined, getCombinedPosProfile } from '../l
 import { getMenuCourses } from '../lib/menu-course-api';
 import { getCustomerGroups, getCustomerTerritories } from '../lib/customer-api';
 import { DEFAULT_ORDER_TYPE, OrderType } from '../data/order-types';
-import { getTableOrder, TableOrder } from '../lib/order-api';
+import { getOrderByInvoice, getTableOrder, TableOrder } from '../lib/order-api';
 import { getPaymentModes } from '../lib/payment-api';
 
 // Constants
@@ -178,7 +178,7 @@ interface POSStore extends POSState {
   validateQuantity: (quantity: number) => boolean;
   getItemPrice: (item: OrderItem) => number;
   getItemQuantityFromCart: (item: MenuItem) => number;
-  loadTableOrder: (table: string) => Promise<void>;
+  loadTableOrder: (table: string, invoice?: string) => Promise<void>;
   clearTableOrder: () => void;
   isMenuInteractionDisabled: () => boolean;
   isOrderInteractionDisabled: () => boolean;
@@ -728,10 +728,10 @@ export const usePOSStore = create<POSStore>((set, get) => ({
     return cartItem?.quantity || 0;
   },
 
-  loadTableOrder: async (table: string) => {
+  loadTableOrder: async (table: string, invoice?: string) => {
     try {
       set({ orderLoading: true, error: null });
-      const response = await getTableOrder(table);
+      const response = invoice ? await getOrderByInvoice(invoice) : await getTableOrder(table);
       const order = response.message;
       if (order && order.name && order.items && order.items.length > 0) {
         const orderItems: OrderItem[] = order.items.map(item => {

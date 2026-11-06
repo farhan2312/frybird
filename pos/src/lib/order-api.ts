@@ -65,6 +65,12 @@ export async function getTableOrder(table_no: string): Promise<TableOrder> {
   }
 } 
 
+/** Fetches an open order by its invoice, for orders with no table. */
+export async function getOrderByInvoice(invoiceNo: string): Promise<TableOrder> {
+  const res = await call.get('ury.ury.doctype.ury_order.ury_order.get_order_invoice', { invoiceNo });
+  return res as TableOrder;
+}
+
 export interface SyncOrderRequest {
   table?: string;
   customer?: string;
