@@ -178,6 +178,7 @@ def apply(default_password=None):
 		_staff(default_password)
 	_platforms()
 	frappe.db.set_value("POS Profile", PROFILE, "custom_enable_discount", 1)  # Staff sheet: manager/owner give discounts
+	frappe.db.set_value("POS Profile", PROFILE, "paid_limit", 20)  # Orders page: Recently Paid tab shows the last 20
 	from ury.setup.self_ordering import setup_self_ordering
 	setup_self_ordering(BRANCH)
 	frappe.db.commit()

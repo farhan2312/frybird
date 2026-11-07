@@ -502,7 +502,6 @@ def getPosInvoice(status, limit, limit_start):
                 additional_discount_percentage, discount_amount
             FROM `tabPOS Invoice` 
             WHERE branch = %s AND status = %s 
-            AND (invoice_printed = 1 OR (invoice_printed = 0 AND COALESCE(restaurant_table, '') = ''))
             ORDER BY modified desc
             LIMIT %s OFFSET %s
             """,
@@ -574,8 +573,9 @@ def getPosInvoice(status, limit, limit_start):
         )
 
         updatedlist.extend(invoices)
-    if len(updatedlist) == limit and status != "Recently Paid":
-            next = True
+    # One extra row was fetched to detect a next page. Recently Paid is a fixed-size list with no next page.
+    if len(updatedlist) == limit:
+            next = status != "Recently Paid"
             updatedlist.pop()
     else:
             next = False
@@ -625,6 +625,7 @@ def searchPosInvoice(query,status):
             "order_type",
             "restaurant_table",
             "custom_merged_tables",
+            "custom_comments",
             "status",
             "rounded_total",
             "net_total",

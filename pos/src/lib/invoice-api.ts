@@ -15,7 +15,7 @@ export interface POSInvoice {
   total_taxes_and_charges: number;
   customer: string;
   customer_name?: string;
-  status: 'Draft' | 'Unbilled' | 'Recently Paid' | 'Paid' | 'Consolidated' | 'Return';
+  status: 'Draft' | 'Recently Paid' | 'Paid' | 'Consolidated' | 'Return';
   mobile_number: string;
   posting_date: string;
   rounded_total: number;
@@ -177,7 +177,6 @@ export function getOrdersTabForInvoice(
     if (options?.viewAllStatus === 1) return 'Paid';
     return 'Recently Paid';
   }
-  if (inv.invoice_printed === 0 && inv.restaurant_table) return 'Unbilled';
   return 'Draft';
 }
 

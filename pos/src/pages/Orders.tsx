@@ -39,7 +39,7 @@ function getOrderTableLabel(order: Pick<POSInvoice, 'restaurant_table' | 'custom
 }
 
 function isOrderEditable(status: string) {
-  return status === 'Draft' || status === 'Unbilled' || status === 'Recently Paid';
+  return status === 'Draft' || status === 'Recently Paid';
 }
 
 function isSplitBill(order: Pick<POSInvoice, 'split_total' | 'custom_split_group' | 'custom_split_from'>) {
@@ -109,7 +109,7 @@ export default function Orders() {
       selectedOrderItems.some((item) => item.qty > 1);
     if (!hasSplittableItems) return false;
 
-    // Tab label (Unbilled/Draft) is a UI filter; doc status is always "Draft" for open bills.
+    // Doc status is always "Draft" for open bills.
     // Use invoice_printed to distinguish pre-print vs post-print split eligibility.
     const invoicePrinted = String(selectedOrder.invoice_printed);
     return invoicePrinted === '0' || invoicePrinted === '1';
@@ -143,7 +143,7 @@ export default function Orders() {
     fetchOrders();
   }, [fetchOrders]);
 
-  // The Cars tab on Tables links here with ?order=<invoice>. Open orders with no table are on the Draft tab.
+  // The Curbside tab on Tables links here with ?order=<invoice>.
   useEffect(() => {
     if (!orderToOpen) return;
     if (selectedStatus !== 'Draft') {
@@ -188,7 +188,6 @@ export default function Orders() {
   const getBadgeVariant = (status: string) => {
     switch (status) {
       case 'Draft':
-      case 'Unbilled':
         return 'secondary';
       case 'Recently Paid':
       case 'Paid':
@@ -199,6 +198,14 @@ export default function Orders() {
       default:
         return 'default';
     }
+  };
+
+  // Open orders all share one tab, so their badge says whether the bill has been printed.
+  const getStatusLabel = (order: POSInvoice) => {
+    if (order.status === 'Draft') {
+      return t(String(order.invoice_printed) === '1' ? 'orders.bill_printed' : 'orders.bill_not_printed');
+    }
+    return t(`order_status_types.${order.status.toLowerCase().replace(/ /g, '_')}`);
   };
 
   async function handleCancelOrder() {
@@ -287,10 +294,8 @@ export default function Orders() {
       if (selectedOrder && typeof selectedOrder === 'object') {
         selectOrder({ ...selectedOrder, invoice_printed: 1 });
       }
-      // If order was Unbilled, set to Draft and reload draft orders
-      if (selectedStatus === 'Unbilled') {
-        showToast.info(t('success.order_moved_to_draft'));
-        setSelectedStatus('Draft');
+      // Refresh the list so the order's card shows the bill as printed
+      if (selectedStatus === 'Draft') {
         fetchOrders();
       }
     } catch (err: any) {
@@ -308,15 +313,7 @@ export default function Orders() {
     const result = await splitBill(selectedOrder.name, payload.itemsToMove, payload.customer);
     showToast.success(t('bill_split.split_success', { invoice: result.new_invoice }));
 
-    const childOnUnbilledTab =
-      !!selectedOrder.restaurant_table &&
-      String(selectedOrder.invoice_printed) === '1';
-
-    if (childOnUnbilledTab) {
-      await setSelectedStatus('Unbilled');
-    } else {
-      await fetchOrders();
-    }
+    await fetchOrders();
 
     const splitGroup = await getSplitGroup(result.new_invoice).catch(() => null);
     if (splitGroup?.invoices?.length) {
@@ -467,7 +464,7 @@ export default function Orders() {
                       </div>
                       <div className="flex shrink-0 items-center gap-1">
                         <Badge variant={getBadgeVariant(order.status)}>
-                          {t(`order_status_types.${order.status.toLowerCase().replace(/ /g, '_')}`)}
+                          {getStatusLabel(order)}
                         </Badge>
                       </div>
                     </div>
@@ -598,7 +595,7 @@ export default function Orders() {
                     </>
                   )}
                   <Badge variant={getBadgeVariant(selectedOrder.status)}>
-                    {t(`order_status_types.${selectedOrder.status.toLowerCase().replace(/ /g, '_')}`)}
+                    {getStatusLabel(selectedOrder)}
                   </Badge>
                 </div>
               </div>
@@ -759,7 +756,7 @@ export default function Orders() {
                 >
                   {isPrinting ? <Spinner className="w-5 h-5" hideMessage  message={t('common.loading')} /> : <Printer className="w-5 h-5" />}
                 </Button>
-                {/* Payment Button - Only show for Draft, Unbilled, and Recently Paid orders */}
+                {/* Payment Button - Only show for Draft and Recently Paid orders */}
                 {isOrderEditable(selectedOrder.status) && (
                   <Button
                     className="flex-1"

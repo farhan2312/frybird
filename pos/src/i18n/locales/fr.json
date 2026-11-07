@@ -231,10 +231,11 @@
     "order_created": "Commande créée avec succès",
     "order_updated": "Commande mise à jour avec succès",
     "printed": "Imprimé avec succès",
-    "payment_successful": "Paiement réussi",
-    "order_moved_to_draft": "Commande déplacée en brouillon après impression."
+    "payment_successful": "Paiement réussi"
   },
   "orders": {
+    "bill_printed": "Addition imprimée",
+    "bill_not_printed": "Addition non imprimée",
     "no_orders_found": "Aucune commande trouvée",
     "click_to_view": "Cliquez sur n'importe quel badge de commande pour voir ses détails",
     "status_title": "Statut de la commande",
@@ -394,8 +395,7 @@
     "aggregators": "Agrégateurs"
   },
   "order_status_types": {
-    "draft": "Brouillon",
-    "unbilled": "Non facturé",
+    "draft": "Commandes ouvertes",
     "recently_paid": "Payé récemment",
     "paid": "Payé",
     "consolidated": "Consolidé",

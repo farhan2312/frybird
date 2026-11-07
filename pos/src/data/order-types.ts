@@ -43,17 +43,13 @@ export const WALK_IN_CUSTOMER="Walk-In Customer"
 export const DEFAULT_PAYMENT_MODE="Credit Card"
 export const COUNTER_PAYMENT_MODES=["Credit Card","Cash"]
 
-export type OrderStatusType = "Draft" | "Unbilled" | "Recently Paid" | "Paid" | "Consolidated" | "Return";
+export type OrderStatusType = "Draft" | "Recently Paid" | "Paid" | "Consolidated" | "Return";
 
 // Base status types that are always available
 export const BASE_ORDER_STATUS_TYPES = [
     {
-        label: "Draft",
+        label: "Open Orders",
         value: "Draft"
-    },
-    {
-        label: "Unbilled",
-        value: "Unbilled"
     }
 ];
 

@@ -15,7 +15,7 @@ export interface POSInvoice {
   posting_time: string;
   total_taxes_and_charges: number;
   customer: string;
-  status: 'Draft' | 'Unbilled' | 'Recently Paid' | 'Paid' | 'Consolidated' | 'Return';
+  status: 'Draft' | 'Recently Paid' | 'Paid' | 'Consolidated' | 'Return';
   mobile_number: string;
   posting_date: string;
   rounded_total: number;
@@ -41,7 +41,7 @@ export interface OrdersState {
     hasNextPage: boolean;
     itemsPerPage: number;
   };
-  selectedStatus: 'Draft' | 'Unbilled' | 'Recently Paid' | 'Paid' | 'Consolidated' | 'Return';
+  selectedStatus: 'Draft' | 'Recently Paid' | 'Paid' | 'Consolidated' | 'Return';
   selectedOrder: POSInvoice | null;
   selectedOrderItems: POSInvoiceItem[];
   selectedOrderTaxes: POSInvoiceTax[];

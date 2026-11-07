@@ -258,10 +258,11 @@
     "order_created": "Order created successfully",
     "order_updated": "Order updated successfully",
     "printed": "Printed successfully",
-    "payment_successful": "Payment successful",
-    "order_moved_to_draft": "Order moved to Draft after printing."
+    "payment_successful": "Payment successful"
   },
   "orders": {
+    "bill_printed": "Bill printed",
+    "bill_not_printed": "Bill not printed",
     "no_orders_found": "No orders found",
     "click_to_view": "Click on any order card to view its details",
     "status_title": "Order Status",
@@ -421,8 +422,7 @@
     "aggregators": "Aggregators"
   },
   "order_status_types": {
-    "draft": "Draft",
-    "unbilled": "Unbilled",
+    "draft": "Open Orders",
     "recently_paid": "Recently Paid",
     "paid": "Paid",
     "consolidated": "Consolidated",

@@ -156,10 +156,11 @@
         "order_created": "تم إنشاء الطلب بنجاح",
         "order_updated": "تم تحديث الطلب بنجاح",
         "printed": "تمت الطباعة بنجاح",
-        "payment_successful": "تمت عملية الدفع بنجاح",
-        "order_moved_to_draft": "تم نقل الطلب إلى المسودات بعد الطباعة."
+        "payment_successful": "تمت عملية الدفع بنجاح"
     },
     "orders": {
+        "bill_printed": "تمت طباعة الفاتورة",
+        "bill_not_printed": "لم تتم طباعة الفاتورة",
         "no_orders_found": "لم يتم العثور على طلبات",
         "click_to_view": "انقر على أي بطاقة طلب لعرض تفاصيلها",
         "status_title": "حالة الطلب",
@@ -236,8 +237,7 @@
         "aggregators": "منصات تجميع"
     },
     "order_status_types": {
-        "draft": "مسودة",
-        "unbilled": "غير مفوتر",
+        "draft": "الطلبات المفتوحة",
         "recently_paid": "مدفوع مؤخراً",
         "paid": "مدفوع",
         "consolidated": "مجمع",
