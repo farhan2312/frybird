@@ -11,7 +11,7 @@ import { PosProfileCombined } from './pos-profile-api';
 declare global {
   interface Window {
     // Provided by the FryBird Android app (android/) on the counter terminal. Returns an error message, or "" when printed.
-    FryBirdPrinter?: { printReceipt(document: string): string };
+    FryBirdPrinter?: { printReceipt(document: string): string; updateCustomerDisplay?(order: string): void };
   }
 }
 

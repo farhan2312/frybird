@@ -1,6 +1,6 @@
 import { Fragment, useCallback, useEffect, useMemo, useState, type MouseEvent } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { AlertTriangle, Layout, Square } from 'lucide-react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { AlertTriangle, Car, Layout, Plus, Square } from 'lucide-react';
 import { usePOSStore } from '../store/pos-store';
 import { useRootStore } from '../store/root-store';
 import { getRooms, getTables, getTableCount, getVacantTablesForBranch, mergeTablesBatch, unmergeTables, type Room, type Table } from '../lib/table-api';
@@ -8,6 +8,8 @@ import { getMergeGroupMembers, formatMergedTableLabelFromGroup, getTableRenderGr
 import { Spinner } from '@ury/ui';
 import { Button } from '@ury/ui';
 import { Badge } from '@ury/ui';
+import { formatCurrency } from '@ury/core';
+import { getActiveCarOrders, type ActiveCarOrder } from '../captain/lib/captain-car-api';
 import { DINE_IN } from '../data/order-types';
 import { captainTransfer, getTableOrder, tableTransfer } from '../lib/order-api';
 import { printOrder } from '../lib/print';
@@ -33,6 +35,13 @@ const TableView = () => {
   const branch = posProfile?.branch ?? null;
   const [rooms, setRooms] = useState<Room[]>([]);
   const [selectedRoom, setSelectedRoom] = useState<string | null>(null);
+  const [searchParams] = useSearchParams();
+  const [showCars, setShowCars] = useState(searchParams.get('tab') === 'cars');
+  const [carOrders, setCarOrders] = useState<ActiveCarOrder[]>([]);
+
+  useEffect(() => {
+    if (branch) getActiveCarOrders(branch).then(setCarOrders).catch(console.error);
+  }, [branch, showCars]);
   const [tables, setTables] = useState<Table[]>([]);
   const [tablesCache, setTablesCache] = useState<Record<string, Table[]>>({});
   const [loadingRooms, setLoadingRooms] = useState(false);
@@ -395,6 +404,7 @@ const TableView = () => {
   const showGridSkeleton = loadingTables || !selectedRoom;
 
   const handleRoomChange = (roomName: string) => {
+    setShowCars(false);
     if (roomName === selectedRoom) {
       loadTables(roomName, { useCache: false });
       return;
@@ -455,7 +465,7 @@ const TableView = () => {
                   <Button
                     key={room.name}
                     variant="tab"
-                    data-selected={selectedRoom === room.name}
+                    data-selected={!showCars && selectedRoom === room.name}
                     onClick={() => handleRoomChange(room.name)}
                     className="h-fit"
                   >
@@ -467,6 +477,15 @@ const TableView = () => {
                     ) : null}
                   </Button>
                 ))}
+
+                {!loadingRooms && (
+                  <Button variant="tab" data-selected={showCars} onClick={() => setShowCars(true)} className="h-fit">
+                    Curbside
+                    <Badge variant="outline" className="ml-2 bg-white/60">
+                      {carOrders.length}
+                    </Badge>
+                  </Button>
+                )}
               </div>
 
               <div className="flex-shrink-0">
@@ -486,7 +505,35 @@ const TableView = () => {
 
       <div className="flex-1 overflow-auto bg-gray-50 p-6">
         <div className="max-w-screen-xl mx-auto h-full">
-          {error && !loadingTables ? (
+          {showCars ? (
+            <>
+            <Button onClick={() => navigate('/order/car', { state: { backTo: '/tables?tab=cars' } })} className="mb-4">
+              <Plus className="w-4 h-4 mr-2" />
+              New curbside order
+            </Button>
+            {carOrders.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-16 gap-3 text-gray-500">
+                <Car className="w-10 h-10" />
+                <p>No curbside orders open.</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 pb-40">
+                {carOrders.map((order) => (
+                  <button
+                    key={order.invoiceName}
+                    onClick={() => navigate(`/orders?order=${order.invoiceName}`)}
+                    className="rounded-lg border border-gray-200 bg-white p-4 text-left shadow-sm hover:shadow-md"
+                  >
+                    <span className="block truncate text-lg font-bold text-gray-900">{order.carPlate}</span>
+                    <span className="mt-1 block text-sm text-gray-500">{order.invoiceName}</span>
+                    <span className="mt-2 block font-semibold text-gray-900">{formatCurrency(order.grandTotal)}</span>
+                    {order.invoicePrinted && <Badge variant="secondary" className="mt-2">Billed</Badge>}
+                  </button>
+                ))}
+              </div>
+            )}
+            </>
+          ) : error && !loadingTables ? (
             <div className="h-full flex flex-col items-center justify-center gap-3 text-red-500">
               <AlertTriangle className="w-10 h-10" />
               <p>{error}</p>

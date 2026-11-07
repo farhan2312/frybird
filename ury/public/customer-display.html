@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FryBird</title>
+<!-- Shown on the T2s customer screen by the FryBird Android app (android/), which calls showCart().
+     Its browser engine is Chromium 81, so this avoids anything newer, such as flexbox gap and inset. -->
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; overflow: hidden; background: #111; font-family: Roboto, Arial, sans-serif; }
+  #screen { display: flex; height: 100%; }
+  #promo { position: relative; flex: 1; background: #111; overflow: hidden; }
+  #promo img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 1s; }
+  #promo img.logo { object-fit: contain; background: #fff; padding: 8%; }
+  #promo img.showing { opacity: 1; }
+  #cart { display: none; width: 52%; flex-direction: column; background: #fff; color: #1a1a1a; }
+  .has-order #cart { display: flex; }
+  .has-order #promo { flex: 0 0 48%; }
+  #heading { padding: 3vh 3vw; border-bottom: 3px solid #d71920; font-size: 4vh; font-weight: 700; }
+  #lines { flex: 1; overflow: hidden; padding: 1vh 3vw; }
+  .line { display: flex; align-items: center; padding: 1.6vh 0; border-bottom: 1px solid #eee; font-size: 3vh; }
+  .qty { flex: 0 0 auto; min-width: 5vh; height: 5vh; line-height: 5vh; margin-right: 2vw; border-radius: 3vh; background: #d71920; color: #fff; font-weight: 700; text-align: center; }
+  .name { flex: 1; min-width: 0; margin-right: 2vw; }
+  .amount { flex: 0 0 auto; font-weight: 700; }
+  #summary { padding: 2vh 3vw 3vh; background: #f6f6f6; }
+  .row { display: flex; justify-content: space-between; font-size: 2.6vh; padding-bottom: 1vh; }
+  .total { font-size: 5vh; font-weight: 700; padding: 0; color: #d71920; }
+  #discount { display: none; }
+</style>
+</head>
+<body>
+<div id="screen">
+  <div id="promo"></div>
+  <div id="cart">
+    <div id="heading">Your order</div>
+    <div id="lines"></div>
+    <div id="summary">
+      <div class="row" id="discount"><span>Discount</span><span id="discount-amount"></span></div>
+      <div class="row total"><span>Total</span><span id="total"></span></div>
+    </div>
+  </div>
+</div>
+<script>
+  var IMAGE_MS = 6000;
+  var IMAGES = [
+    { src: 'Images/frybird-logo.jpg', logo: true },
+    { src: 'Images/menu/real/burger-prime-house.jpg' },
+    { src: 'Images/menu/real/fried-chicken-nash-hot.jpg' },
+    { src: 'Images/menu/real/burger-big-cheese.jpg' },
+    { src: 'Images/menu/real/tenders-lemon-hot.jpg' },
+    { src: 'Images/menu/real/wrap.jpg' }
+  ];
+
+  var promo = document.getElementById('promo');
+  var slides = IMAGES.map(function (image) {
+    var el = document.createElement('img');
+    el.src = image.src;
+    el.alt = '';
+    if (image.logo) el.className = 'logo';
+    promo.appendChild(el);
+    return el;
+  });
+  var current = 0;
+  slides[0].classList.add('showing');
+  setInterval(function () {
+    slides[current].classList.remove('showing');
+    current = (current + 1) % slides.length;
+    slides[current].classList.add('showing');
+  }, IMAGE_MS);
+
+  function money(value) {
+    return 'AED ' + Number(value || 0).toFixed(2);
+  }
+
+  // order: { lines: [{ name, qty, amount }], discount, total }. No lines shows the promos full screen.
+  window.showCart = function (order) {
+    var lines = (order && order.lines) || [];
+    document.body.className = lines.length ? 'has-order' : '';
+    var list = document.getElementById('lines');
+    list.textContent = '';
+    // Newest at the bottom; when the list is too long to fit, keep the newest in view.
+    lines.forEach(function (line) {
+      var row = document.createElement('div');
+      row.className = 'line';
+      [['qty', line.qty], ['name', line.name], ['amount', money(line.amount)]].forEach(function (cell) {
+        var el = document.createElement('div');
+        el.className = cell[0];
+        el.textContent = cell[1];
+        row.appendChild(el);
+      });
+      list.appendChild(row);
+    });
+    list.scrollTop = list.scrollHeight;
+    var discount = order && Number(order.discount);
+    document.getElementById('discount').style.display = discount ? 'flex' : 'none';
+    document.getElementById('discount-amount').textContent = discount ? '-' + money(discount) : '';
+    document.getElementById('total').textContent = money(order && order.total);
+  };
+</script>
+</body>
+</html>

@@ -139,7 +139,7 @@ export default function CaptainTables() {
       setOwnerNames(await getUserFullNames(orders.map((order) => order.waiter)));
     } catch (err) {
       console.error(err);
-      showToast.error('Failed to load car orders');
+      showToast.error('Failed to load curbside orders');
     }
   }, [branch]);
 
@@ -248,7 +248,7 @@ export default function CaptainTables() {
               onClick={() => setShowCars(true)}
               className="h-9 shrink-0"
             >
-              Cars
+              Curbside
             </Button>
           </div>
         )}
@@ -259,12 +259,12 @@ export default function CaptainTables() {
           <div>
             <Button onClick={() => navigate('/order/car')} size="lg" className="mb-3 h-12 w-full text-base">
               <Plus className="mr-2 h-5 w-5" />
-              New car order
+              New curbside order
             </Button>
             {carOrders.length === 0 && (
               <div className="flex flex-col items-center py-12 text-gray-500">
                 <Car className="mb-2 h-8 w-8" />
-                <p className="text-sm">No car orders open.</p>
+                <p className="text-sm">No curbside orders open.</p>
               </div>
             )}
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">

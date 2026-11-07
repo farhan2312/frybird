@@ -1,17 +1,15 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, ClipboardList, Loader2, Minus, Plus, UtensilsCrossed } from 'lucide-react';
 import { Button, cn, showToast, Spinner } from '@ury/ui';
 import { formatCurrency } from '@ury/core';
 import CaptainMenu from '../components/CaptainMenu';
 import { CAR_ORDER_PREFIX, carOrderComment, carPlateFrom } from '../lib/captain-car-api';
-import { DEFAULT_ORDER_TYPE } from '../../data/order-types';
+import { DEFAULT_ORDER_TYPE, WALK_IN_CUSTOMER } from '../../data/order-types';
 import { syncOrder, type SyncOrderRequest } from '../../lib/order-api';
 import { useRootStore, type RootState } from '../../store/root-store';
 import { usePOSStore } from '../../store/pos-store';
 
-const WALK_IN_CUSTOMER = 'Walk-In Customer';
-const CARS_TAB_ROUTE = '/order?tab=cars';
 
 /**
  * A captain's order for a customer in a car: no table, just the number plate. `/order/car` starts a new
@@ -21,6 +19,8 @@ const CARS_TAB_ROUTE = '/order?tab=cars';
 export default function CaptainCarOrder() {
   const { invoice } = useParams<{ invoice: string }>();
   const navigate = useNavigate();
+  // The POS Tables screen opens this page too, and comes back to its own Cars tab.
+  const backTo = (useLocation().state as { backTo?: string } | null)?.backTo ?? '/order?tab=cars';
   const user = useRootStore((state: RootState) => state.user);
   const {
     activeOrders,
@@ -97,7 +97,7 @@ export default function CaptainCarOrder() {
       }
       clearTableOrder();
       showToast.success(isUpdatingOrder ? 'Order updated.' : 'Order sent to kitchen.');
-      navigate(CARS_TAB_ROUTE);
+      navigate(backTo);
     } catch (error) {
       console.error('Failed to send car order:', error);
       showToast.error(error instanceof Error ? error.message : 'Failed to send the order.');
@@ -114,10 +114,10 @@ export default function CaptainCarOrder() {
     <div className="flex h-screen flex-col bg-gray-50">
       <div className="flex items-center justify-between border-b border-gray-200 bg-white p-3">
         <div className="flex items-center">
-          <Button onClick={() => navigate(CARS_TAB_ROUTE)} variant="ghost" size="icon" aria-label="Back to cars">
+          <Button onClick={() => navigate(backTo)} variant="ghost" size="icon" aria-label="Back to curbside">
             <ArrowLeft className="h-5 w-5" />
           </Button>
-          <h1 className="ml-2 font-semibold text-gray-900">{invoice ? 'Car order' : 'New car order'}</h1>
+          <h1 className="ml-2 font-semibold text-gray-900">{invoice ? 'Curbside order' : 'New curbside order'}</h1>
         </div>
         <div className="flex rounded-full bg-gray-100 p-1">
           {(['menu', 'order'] as const).map((tab) => (

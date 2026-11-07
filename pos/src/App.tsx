@@ -13,6 +13,7 @@ import CaptainRouteGuard from './captain/components/CaptainRouteGuard';
 import CaptainTables from './captain/pages/CaptainTables';
 import CaptainOrder from './captain/pages/CaptainOrder';
 import CaptainCarOrder from './captain/pages/CaptainCarOrder';
+import CustomerDisplaySync from './components/CustomerDisplaySync';
 import { ToastProvider } from '@ury/ui';
 import { usePOSStore } from './store/pos-store';
 import { useEffect } from 'react';
@@ -37,6 +38,7 @@ function App() {
     <>
       <ToastProvider />
       <KotAlertListener />
+      <CustomerDisplaySync />
       <ScreenSizeProvider>
         <AuthGuard>
           <POSOpeningProvider>

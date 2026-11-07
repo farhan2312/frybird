@@ -3,7 +3,7 @@
 The server can't reach printers on the shop network, so the app collects kitchen tickets from here
 and sends them to the kitchen printer itself. Layout lives here so it can change without a new app.
 
-A print document is a list of lines: {"t": text, "b": bold, "s": 1, 2 or 3 (normal, double, double height), "a": "l", "c" or "r"}.
+A print document is a list of lines: {"t": text, "b": bold, "s": 1, 2, 3 or 4 (normal, double, double height, double width), "a": "l", "c" or "r"}.
 """
 
 import json
@@ -19,8 +19,9 @@ from ury.ury.api.self_ordering import CURBSIDE_PREFIX
 PRINT_ROLE = "URY Print Agent"
 PRINT_USER = "printer@frybird.ae"
 TICKET_HEADER = "FRYBIRD AJMAN"
-TICKET_ITEM_SIZE = 3  # double height at normal width, so the kitchen can read items without losing line width
+TICKET_ITEM_SIZE = 4  # double width at normal height, like the shop's old tickets
 WIDTH = 48  # characters per line at normal size on 80mm paper
+TICKET_ITEM_WIDTH = WIDTH // 2
 TICKET_MAX_AGE_HOURS = 2  # anything older is stale for the kitchen, so it isn't printed late
 CANCEL_TYPES = ("Partially cancelled", "Cancelled")
 TICKET_TITLES = {"Order Modified": "ADDED TO ORDER", "Partially cancelled": "CANCELLED ITEMS", "Cancelled": "ORDER CANCELLED"}
@@ -111,11 +112,11 @@ def _ticket_lines(kots):
 		for item in frappe.get_all("URY KOT Items", filters={"parent": kot.name}, fields=["item_name", "quantity", "cancelled_qty", "comments"], order_by="idx"):
 			qty = item.cancelled_qty if is_cancel else item.quantity
 			total_qty += flt(qty)
-			lines += [_line(text, bold=True, size=TICKET_ITEM_SIZE) for text in _wrap(f"{qty} x {item.item_name}", indent="    ")]
+			lines += [_line(text, bold=True, size=TICKET_ITEM_SIZE) for text in _wrap(f"{qty} x {item.item_name}", indent="  ", width=TICKET_ITEM_WIDTH)]
 			if item.comments:
-				lines += [_line(text, size=TICKET_ITEM_SIZE) for text in _wrap(f"    {item.comments}", indent="    ")]
+				lines += [_line(text, size=TICKET_ITEM_SIZE) for text in _wrap(f"  {item.comments}", indent="  ", width=TICKET_ITEM_WIDTH)]
 	if first.comments and not first.comments.startswith(CURBSIDE_PREFIX):
-		lines += [_divider()] + [_line(text, size=TICKET_ITEM_SIZE) for text in _wrap(f"Note: {first.comments}", indent="      ")]
+		lines += [_divider()] + [_line(text, size=TICKET_ITEM_SIZE) for text in _wrap(f"Note: {first.comments}", indent="  ", width=TICKET_ITEM_WIDTH)]
 	lines += [_divider(), _columns("Waiter", first.user or ""), _columns("TotalQty", f"{total_qty:g}"), _divider()]
 	return lines
 
@@ -193,8 +194,8 @@ def _columns(left, right, bold=False, size=1):
 	return _line(left.ljust(width - len(right)) + right, bold=bold, size=size)
 
 
-def _wrap(text, indent=""):
-	return textwrap.wrap(_ascii(text), WIDTH, subsequent_indent=indent, drop_whitespace=True) or [""]
+def _wrap(text, indent="", width=WIDTH):
+	return textwrap.wrap(_ascii(text), width, subsequent_indent=indent, drop_whitespace=True) or [""]
 
 
 def _divider():

@@ -28,6 +28,15 @@ class EscPosTest {
     }
 
     @Test
+    fun rendersDoubleWidthLine() {
+        val wide = JSONObject().put("t", "A").put("s", 4)
+        assertArrayEquals(
+            bytes(0x1B, 0x40, 0x1B, 0x61, 0, 0x1B, 0x45, 0, 0x1D, 0x21, 0x10, 0x41, 0x0A, 0x1B, 0x64, 5),
+            EscPos.render(JSONArray().put(wide), cut = false),
+        )
+    }
+
+    @Test
     fun leavesOutCutForBuiltInPrinter() {
         assertArrayEquals(
             bytes(0x1B, 0x40, 0x1B, 0x61, 1, 0x1B, 0x45, 1, 0x1D, 0x21, 0x11, 0x41, 0x0A, 0x1B, 0x64, 5),

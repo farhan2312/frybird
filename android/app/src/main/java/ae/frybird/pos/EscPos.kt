@@ -23,7 +23,8 @@ object EscPos {
             out.write(byteArrayOf(0x1B, 0x45, if (line.optBoolean("b")) 1 else 0))
             val size = when (line.optInt("s", 1)) {
                 2 -> 0x11 // double height and width
-                3 -> 0x01 // double height only, so a line still fits as many characters
+                3 -> 0x01 // double height only
+                4 -> 0x10 // double width only
                 else -> 0x00
             }
             out.write(byteArrayOf(0x1D, 0x21, size.toByte()))

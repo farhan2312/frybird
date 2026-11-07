@@ -38,7 +38,10 @@ export const ORDER_TYPES: OrderTypes[] = [
 
 export const DINE_IN="Dine In"
 export const DEFAULT_ORDER_TYPE="Take Away"
-export const DEFAULT_PAYMENT_MODE="Cash"
+// sync_order requires a customer; orders that don't ask for one go to this.
+export const WALK_IN_CUSTOMER="Walk-In Customer"
+export const DEFAULT_PAYMENT_MODE="Credit Card"
+export const COUNTER_PAYMENT_MODES=["Credit Card","Cash"]
 
 export type OrderStatusType = "Draft" | "Unbilled" | "Recently Paid" | "Paid" | "Consolidated" | "Return";
 

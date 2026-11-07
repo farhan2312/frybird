@@ -20,6 +20,7 @@ export interface POSInvoice {
   posting_date: string;
   rounded_total: number;
   order_type: OrderType;
+  custom_comments?: string | null;
   custom_merged_tables?: string | null;
   custom_split_group?: string | null;
   custom_split_from?: string | null;

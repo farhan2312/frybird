@@ -496,7 +496,7 @@ def getPosInvoice(status, limit, limit_start):
                 name, invoice_printed, grand_total, restaurant_table, custom_merged_tables,
                 cashier, waiter, net_total, posting_time, 
                 total_taxes_and_charges, customer, status, mobile_number, 
-                posting_date, rounded_total, order_type,
+                posting_date, rounded_total, order_type, custom_comments,
                 custom_split_group, custom_split_from,
                 custom_merged_pos_invoice, custom_merged_total,
                 additional_discount_percentage, discount_amount
@@ -519,7 +519,7 @@ def getPosInvoice(status, limit, limit_start):
                 name, invoice_printed, grand_total, restaurant_table, custom_merged_tables,
                 cashier, waiter, net_total, posting_time, 
                 total_taxes_and_charges, customer, status, mobile_number, 
-                posting_date, rounded_total, order_type,
+                posting_date, rounded_total, order_type, custom_comments,
                 custom_split_group, custom_split_from,
                 custom_merged_pos_invoice, custom_merged_total,
                 additional_discount_percentage, discount_amount
@@ -541,7 +541,7 @@ def getPosInvoice(status, limit, limit_start):
                 name, invoice_printed, grand_total, restaurant_table, custom_merged_tables,
                 cashier, waiter, net_total, posting_time, 
                 total_taxes_and_charges, customer, status, mobile_number,
-                posting_date, rounded_total, order_type, additional_discount_percentage,
+                posting_date, rounded_total, order_type, custom_comments, additional_discount_percentage,
                 discount_amount, custom_split_group, custom_split_from,
                 custom_merged_pos_invoice, custom_merged_total
             FROM `tabPOS Invoice` 
@@ -561,7 +561,7 @@ def getPosInvoice(status, limit, limit_start):
                 name, invoice_printed, grand_total, restaurant_table, custom_merged_tables,
                 cashier, waiter, net_total, posting_time, 
                 total_taxes_and_charges, customer, status, mobile_number,
-                posting_date, rounded_total, order_type, additional_discount_percentage,
+                posting_date, rounded_total, order_type, custom_comments, additional_discount_percentage,
                 discount_amount, custom_split_group, custom_split_from,
                 custom_merged_pos_invoice, custom_merged_total
             FROM `tabPOS Invoice` 

@@ -31,6 +31,7 @@ class MainActivity : Activity() {
     private val handler = Handler(Looper.getMainLooper())
     private val alarm by lazy { ToneGenerator(AudioManager.STREAM_ALARM, 100) }
     private var checks = 0
+    private var customerScreen: CustomerScreen? = null
 
     private val statusCheck = object : Runnable {
         override fun run() {
@@ -63,7 +64,7 @@ class MainActivity : Activity() {
         webView = WebView(this).apply {
             settings.javaScriptEnabled = true
             settings.domStorageEnabled = true
-            addJavascriptInterface(PrinterBridge(), "FryBirdPrinter")
+            addJavascriptInterface(PrinterBridge(this@MainActivity), "FryBirdPrinter")
             webViewClient = object : WebViewClient() {
                 override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
                     return request.url.host != Uri.parse(prefs.serverUrl).host
@@ -93,6 +94,19 @@ class MainActivity : Activity() {
         webView.loadUrl(prefs.serverUrl + prefs.startPage)
     }
 
+    // Only while this app is in front, so the screen goes back to the old POS when staff switch to it.
+    override fun onStart() {
+        super.onStart()
+        val display = CustomerScreen.findDisplay(this) ?: return
+        customerScreen = CustomerScreen(this, display, Settings(this).serverUrl + CUSTOMER_SCREEN_PAGE).also { it.show() }
+    }
+
+    override fun onStop() {
+        customerScreen?.dismiss()
+        customerScreen = null
+        super.onStop()
+    }
+
     override fun onResume() {
         super.onResume()
         handler.post(statusCheck)
@@ -108,7 +122,18 @@ class MainActivity : Activity() {
         if (webView.canGoBack()) webView.goBack()
     }
 
-    private class PrinterBridge {
+    private class PrinterBridge(private val activity: MainActivity) {
+        @JavascriptInterface
+        fun updateCustomerDisplay(order: String) {
+            activity.runOnUiThread {
+                try {
+                    activity.customerScreen?.showOrder(order)
+                } catch (e: Exception) {
+                    // A bad update must never get in the way of taking the order.
+                }
+            }
+        }
+
         @JavascriptInterface
         fun printReceipt(document: String): String = try {
             CounterPrinter.print(JSONObject(document).getJSONArray("lines"))
@@ -120,5 +145,6 @@ class MainActivity : Activity() {
     companion object {
         private const val CHECK_MS = 1000L
         private const val ALARM_EVERY_CHECKS = 15
+        private const val CUSTOMER_SCREEN_PAGE = "/assets/ury/customer-display.html"
     }
 }

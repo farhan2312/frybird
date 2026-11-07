@@ -9,7 +9,8 @@ import { formatCurrency, parseFrappeError } from '@ury/core';
 import { Spinner } from '@ury/ui';
 import { Textarea } from '@ury/ui';
 import { usePOSStore } from '../store/pos-store';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { carPlateFrom } from '../captain/lib/captain-car-api';
 import PaymentDialog from '../components/PaymentDialog';
 import BillSplitDialog from '../components/BillSplitDialog';
 import BillMergeDialog from '../components/BillMergeDialog';
@@ -72,6 +73,8 @@ export default function Orders() {
 
   const posStore = usePOSStore();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const orderToOpen = searchParams.get('order');
   const mounted = useRef(false);
   const [cancelDialogOpen, setCancelDialogOpen] = React.useState(false);
   const [cancelReason, setCancelReason] = React.useState('');
@@ -139,6 +142,21 @@ export default function Orders() {
   useEffect(() => {
     fetchOrders();
   }, [fetchOrders]);
+
+  // The Cars tab on Tables links here with ?order=<invoice>. Open orders with no table are on the Draft tab.
+  useEffect(() => {
+    if (!orderToOpen) return;
+    if (selectedStatus !== 'Draft') {
+      setSelectedStatus('Draft');
+      return;
+    }
+    const order = orders.find((o) => o.name === orderToOpen);
+    if (order) {
+      selectOrder(order);
+      setSearchParams({}, { replace: true });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [orderToOpen, selectedStatus, orders]);
 
   useEffect(() => {
     if (!mounted.current) {
@@ -440,9 +458,11 @@ export default function Orders() {
                     <div className="flex items-center justify-between gap-2">
                       <div className="min-w-0">
                         <p className="text-xs text-gray-500">
-                          {getOrderTableLabel(order)
-                            ? `Table ${getOrderTableLabel(order)} • `
-                            : ''}{t(`order_types.${order.order_type.toLowerCase().replace(/ /g, '_')}`)}
+                          {carPlateFrom(order.custom_comments)
+                            ? `Car ${carPlateFrom(order.custom_comments)} • `
+                            : getOrderTableLabel(order)
+                              ? `Table ${getOrderTableLabel(order)} • `
+                              : ''}{t(`order_types.${order.order_type.toLowerCase().replace(/ /g, '_')}`)}
                         </p>
                       </div>
                       <div className="flex shrink-0 items-center gap-1">
@@ -671,6 +691,12 @@ export default function Orders() {
                       <UserCheck className="w-4 h-4 text-gray-500" />
                       <span className="text-gray-600">{selectedOrder.waiter}</span>
                     </div>
+                    {carPlateFrom(selectedOrder.custom_comments) && (
+                      <div className="flex items-center gap-3 text-sm">
+                        <Receipt className="w-4 h-4 text-gray-500" />
+                        <span className="text-gray-900 font-semibold">Car {carPlateFrom(selectedOrder.custom_comments)}</span>
+                      </div>
+                    )}
                     {selectedOrder.restaurant_table && (
                       <div className="flex items-center gap-3 text-sm">
                         <Receipt className="w-4 h-4 text-gray-500" />

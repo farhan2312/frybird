@@ -3,7 +3,7 @@ import { X, Percent, Coins } from 'lucide-react';
 import { usePOSStore } from '../store/pos-store';
 import { formatCurrency, call, parseFrappeError } from '@ury/core';
 import { Button, Input, Dialog, DialogContent, showToast } from '@ury/ui';
-import { DEFAULT_PAYMENT_MODE } from '../data/order-types';
+import { COUNTER_PAYMENT_MODES, DEFAULT_PAYMENT_MODE } from '../data/order-types';
 import { t } from '../i18n';
 
 
@@ -107,12 +107,17 @@ const PaymentDialog: React.FC<PaymentDialogProps> = ({
   // Delivery-platform orders (Talabat, Keeta, ...) are settled by the platform, not at the till:
   // default to the mode of payment configured for that aggregator on the branch.
   const [defaultMode, setDefaultMode] = useState<string>(DEFAULT_PAYMENT_MODE);
+  const [platformMode, setPlatformMode] = useState<string | null>(null);
+  const visibleModes = platformMode ? [platformMode] : COUNTER_PAYMENT_MODES;
   useEffect(() => {
     if (!customer) return;
     call.get('ury.ury_pos.api.getAggregatorMOP', { aggregator: customer })
       .then((res: any) => {
         const mop = res?.message?.[0]?.mode_of_payment;
-        if (mop) setDefaultMode(mop);
+        if (mop) {
+          setDefaultMode(mop);
+          setPlatformMode(mop);
+        }
       })
       .catch(() => {});
   }, [customer]);
@@ -140,6 +145,8 @@ const PaymentDialog: React.FC<PaymentDialogProps> = ({
       // Only auto-fill if the field is empty or zero
       if (!inputs[id] || parseFloat(inputs[id]) === 0) {
         const remaining = getRemainingBalance(id);
+        // The other mode already covers the bill: tapping this one switches the whole amount over.
+        if (remaining === 0) return { [id]: String(finalTotal) };
         return { ...inputs, [id]: remaining > 0 ? String(remaining) : '' };
       }
       return inputs;
@@ -221,7 +228,9 @@ const PaymentDialog: React.FC<PaymentDialogProps> = ({
           <div className="space-y-4 mb-6">
             <h3 className="text-lg font-semibold">{t('payment.payment_methods')}</h3>
             <div className="grid grid-cols-1 gap-3">
-              {paymentModes.map((mode: any) => {
+              {paymentModes.filter((mode: any) => visibleModes.includes(typeof mode === 'string' ? mode : mode.id))
+                .sort((a: any, b: any) => visibleModes.indexOf(typeof a === 'string' ? a : a.id) - visibleModes.indexOf(typeof b === 'string' ? b : b.id))
+                .map((mode: any) => {
                 const id = typeof mode === 'string' ? mode : mode.id;
                 return (
                   <div key={id} className="flex items-center gap-3">

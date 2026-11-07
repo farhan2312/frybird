@@ -76,7 +76,8 @@ class SettingsActivity : Activity() {
 
         val webViewVersion = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) WebView.getCurrentWebViewPackage()?.versionName else null
         layout.addView(TextView(this).apply {
-            text = "Android ${Build.VERSION.RELEASE}, ${Build.MODEL}, browser engine ${webViewVersion ?: "unknown"}"
+            val customerScreen = if (CustomerScreen.findDisplay(this@SettingsActivity) != null) "found" else "not found"
+            text = "Android ${Build.VERSION.RELEASE}, ${Build.MODEL}, browser engine ${webViewVersion ?: "unknown"}, customer screen $customerScreen"
         })
         setContentView(ScrollView(this).apply { addView(layout) })
     }

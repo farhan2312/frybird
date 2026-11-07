@@ -15,7 +15,7 @@ import {
 import { printOrder } from '../../lib/print';
 import { resolvePrintFormat } from '../../lib/invoice-api';
 import { getVacantTablesForBranch, Table } from '../../lib/table-api';
-import { DINE_IN } from '../../data/order-types';
+import { DINE_IN, WALK_IN_CUSTOMER } from '../../data/order-types';
 import { useTableOrderContext, OrderDeltaLine } from '../hooks/useTableOrderContext';
 import CaptainMenu from '../components/CaptainMenu';
 import CaptainOrderLine from '../components/CaptainOrderLine';
@@ -25,7 +25,6 @@ import CommentDialog from '../../components/CommentDialog';
 import TableTransferDialog from '../../components/TableTransferDialog';
 import CaptainTransferDialog from '../../components/CaptainTransferDialog';
 
-const WALK_IN_CUSTOMER = 'Walk-In Customer';
 
 type Mode = 'menu' | 'order';
 
