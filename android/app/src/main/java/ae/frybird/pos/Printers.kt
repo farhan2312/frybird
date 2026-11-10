@@ -13,12 +13,13 @@ object KitchenPrinter {
     private const val PORT = 9100
     private const val TIMEOUT_MS = 5000
 
-    fun print(host: String, lines: JSONArray) {
+    fun print(host: String, lines: JSONArray, beep: ByteArray = ByteArray(0)) {
         Socket().use { socket ->
             socket.soTimeout = TIMEOUT_MS
             socket.connect(InetSocketAddress(host, PORT), TIMEOUT_MS)
             socket.getOutputStream().apply {
                 write(EscPos.render(lines, cut = true))
+                write(beep)
                 flush()
             }
         }

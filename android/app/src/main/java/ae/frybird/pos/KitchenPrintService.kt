@@ -84,7 +84,7 @@ class KitchenPrintService : Service() {
             val id = kots.toString()
             if (id !in printedNotConfirmed) {
                 try {
-                    KitchenPrinter.print(settings.kitchenPrinterIp, ticket.getJSONArray("lines"))
+                    KitchenPrinter.print(settings.kitchenPrinterIp, ticket.getJSONArray("lines"), EscPos.fromHex(ticket.optString("beep")))
                 } catch (e: Exception) {
                     throw PrinterError(e)
                 }

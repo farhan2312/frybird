@@ -60,8 +60,8 @@ class SettingsActivity : Activity() {
             result.text = "Printing..."
             Thread {
                 val message = try {
-                    KitchenPrinter.print(settings.kitchenPrinterIp, EscPos.testDocument("KITCHEN PRINTER"))
-                    "Kitchen printer: sent. Check a slip came out and cut."
+                    KitchenPrinter.print(settings.kitchenPrinterIp, EscPos.testDocument("KITCHEN PRINTER"), EscPos.TEST_BEEP)
+                    "Kitchen printer: sent. Check a slip came out, cut and beeped."
                 } catch (e: Exception) {
                     "Kitchen printer failed: ${e.message}"
                 }

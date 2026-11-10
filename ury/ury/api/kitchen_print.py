@@ -4,6 +4,7 @@ The server can't reach printers on the shop network, so the app collects kitchen
 and sends them to the kitchen printer itself. Layout lives here so it can change without a new app.
 
 A print document is a list of lines: {"t": text, "b": bold, "s": 1, 2, 3 or 4 (normal, double, double height, double width), "a": "l", "c" or "r"}.
+A kitchen ticket can also carry "beep": raw printer bytes as hex, sent after the ticket.
 """
 
 import json
@@ -22,6 +23,7 @@ TICKET_HEADER = "FRYBIRD AJMAN"
 TICKET_ITEM_SIZE = 4  # double width at normal height, like the shop's old tickets
 WIDTH = 48  # characters per line at normal size on 80mm paper
 TICKET_ITEM_WIDTH = WIDTH // 2
+TICKET_BEEP = "1b420302"  # ESC B 3 2: the printer's buzzer sounds 3 times, so the kitchen hears a new ticket
 TICKET_MAX_AGE_HOURS = 2  # anything older is stale for the kitchen, so it isn't printed late
 CANCEL_TYPES = ("Partially cancelled", "Cancelled")
 TICKET_TITLES = {"Order Modified": "ADDED TO ORDER", "Partially cancelled": "CANCELLED ITEMS", "Cancelled": "ORDER CANCELLED"}
@@ -63,7 +65,7 @@ def get_pending_tickets():
 	groups = {}
 	for kot in kots:
 		groups.setdefault((kot.invoice, kot.type in CANCEL_TYPES), []).append(kot)
-	return [{"kots": [k.name for k in group], "lines": _ticket_lines(group)} for group in groups.values()]
+	return [{"kots": [k.name for k in group], "lines": _ticket_lines(group), "beep": TICKET_BEEP} for group in groups.values()]
 
 
 @frappe.whitelist(methods=["POST"])

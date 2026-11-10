@@ -37,6 +37,12 @@ class EscPosTest {
     }
 
     @Test
+    fun readsBeepFromHex() {
+        assertArrayEquals(bytes(0x1B, 0x42, 3, 2), EscPos.fromHex("1b420302"))
+        assertArrayEquals(bytes(), EscPos.fromHex(""))
+    }
+
+    @Test
     fun leavesOutCutForBuiltInPrinter() {
         assertArrayEquals(
             bytes(0x1B, 0x40, 0x1B, 0x61, 1, 0x1B, 0x45, 1, 0x1D, 0x21, 0x11, 0x41, 0x0A, 0x1B, 0x64, 5),

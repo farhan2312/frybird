@@ -9,6 +9,13 @@ object EscPos {
     private val FEED = byteArrayOf(0x1B, 0x64, 0x05)
     private val CUT = byteArrayOf(0x1D, 0x56, 0x00)
 
+    /** Matches TICKET_BEEP on the server, which sets the beep for real tickets. */
+    val TEST_BEEP = fromHex("1b420302")
+
+    /** Raw printer bytes sent by the server as hex, such as the kitchen beep. */
+    fun fromHex(hex: String): ByteArray =
+        hex.chunked(2).filter { it.length == 2 }.map { it.toInt(16).toByte() }.toByteArray()
+
     fun render(lines: JSONArray, cut: Boolean): ByteArray {
         val out = ByteArrayOutputStream()
         out.write(INIT)
