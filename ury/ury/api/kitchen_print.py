@@ -23,7 +23,10 @@ TICKET_HEADER = "FRYBIRD AJMAN"
 TICKET_ITEM_SIZE = 4  # double width at normal height, like the shop's old tickets
 WIDTH = 48  # characters per line at normal size on 80mm paper
 TICKET_ITEM_WIDTH = WIDTH // 2
-TICKET_BEEP = "1b420302"  # ESC B 3 2: the printer's buzzer sounds 3 times, so the kitchen hears a new ticket
+# Sounds the buzzer so the kitchen hears a new ticket. Printers differ, so this sends the common ways and each printer
+# ignores the ones it doesn't know: ESC B 3 2 (built-in buzzer, 3 beeps), ESC p on pins 2 and 5 (a buzzer or bell
+# on the drawer socket), and BEL.
+TICKET_BEEP = "1b420302" "1b700019fa" "1b700119fa" "07"
 TICKET_MAX_AGE_HOURS = 2  # anything older is stale for the kitchen, so it isn't printed late
 CANCEL_TYPES = ("Partially cancelled", "Cancelled")
 TICKET_TITLES = {"Order Modified": "ADDED TO ORDER", "Partially cancelled": "CANCELLED ITEMS", "Cancelled": "ORDER CANCELLED"}
