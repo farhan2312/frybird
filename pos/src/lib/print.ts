@@ -15,6 +15,22 @@ declare global {
   }
 }
 
+/** Prints a print document from the server (lines of text) on the terminal's printer, or through the browser. */
+export function printDocument(document: { lines: { t: string; b?: boolean }[] }) {
+  if (window.FryBirdPrinter) {
+    const error = window.FryBirdPrinter.printReceipt(JSON.stringify(document));
+    if (error) throw new Error(error);
+    return;
+  }
+  const page = window.open('', '_blank');
+  if (!page) throw new Error('Allow pop-ups to print');
+  const pre = page.document.createElement('pre');
+  pre.style.cssText = 'font: 12px monospace; width: 80mm; margin: 0';
+  pre.textContent = document.lines.map((line) => line.t).join('\n');
+  page.document.body.appendChild(pre);
+  page.print();
+}
+
 interface PrintOrderParams {
   orderId: string;
   posProfile: PosProfileCombined;

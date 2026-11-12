@@ -8,13 +8,14 @@ import {
   DialogTitle,
 } from '@ury/ui';
 import { Button } from '@ury/ui';
-import { Spinner } from '@ury/ui';
+import { Spinner, showToast } from '@ury/ui';
 import { call, db, formatCurrency } from '@ury/core';
 import { t } from '../i18n';
 import { usePOSStore } from '../store/pos-store';
 import { useRootStore } from '../store/root-store';
 import ClosingPaymentTable from './ClosingPaymentTable';
 import ChecklistGateDialog from './ChecklistGateDialog';
+import { printDocument } from '../lib/print';
 import { getChecklist } from '../lib/checklist-api';
 import {
   getOpenPosOpeningEntries,
@@ -136,11 +137,13 @@ function buildRows(
 ): ClosingPaymentSummary[] {
   const rows = new Map<string, ClosingPaymentSummary>();
 
+  // Expected is what should be there at close: the opening amount (the cash float) plus this shift's takings,
+  // so the cashier counts the whole drawer.
   openingBalances.forEach((detail) => {
     rows.set(detail.mode_of_payment, {
       mode_of_payment: detail.mode_of_payment,
       opening_amount: Number(detail.opening_amount) || 0,
-      expected_amount: 0,
+      expected_amount: Number(detail.opening_amount) || 0,
       closing_amount: 0,
       difference: 0,
     });
@@ -149,7 +152,7 @@ function buildRows(
   Object.entries(expectedByMode).forEach(([mode, expected]) => {
     const existing = rows.get(mode);
     if (existing) {
-      existing.expected_amount = expected;
+      existing.expected_amount = existing.opening_amount + expected;
     } else {
       rows.set(mode, {
         mode_of_payment: mode,
@@ -177,6 +180,7 @@ const POSClosingDialog = ({ open, onOpenChange, onClosingSubmitted }: POSClosing
   const [totals, setTotals] = useState<AggregatedTotals>({ grandTotal: 0, netTotal: 0, totalQty: 0 });
   const [rows, setRows] = useState<ClosingPaymentSummary[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isPrintingSummary, setIsPrintingSummary] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   // Set once the close submission (Sub POS Closing / POS Closing Entry) has
   // succeeded. Per plan decision D8, the Closing checklist gate hangs off
@@ -274,6 +278,24 @@ const POSClosingDialog = ({ open, onOpenChange, onClosingSubmitted }: POSClosing
     setSubmitError(null);
     loadClosingDetails();
   }, [open, loadClosingDetails]);
+
+  // Optional end-of-day slip; it doesn't change the closing.
+  const handlePrintSummary = async () => {
+    if (!openingEntry) return;
+    setIsPrintingSummary(true);
+    try {
+      const res = await call.get<{ message: { lines: { t: string; b?: boolean }[] } }>(
+        'ury.ury.api.kitchen_print.get_shift_summary',
+        { opening_entry: openingEntry.name, end: formatDateTime(periodEndDate), sub_cashier: isSubCashier ? 1 : 0 }
+      );
+      printDocument(res.message);
+      showToast.success(t('success.printed'));
+    } catch (error) {
+      showToast.error(t('errors.print_failed', { reason: extractServerErrorMessage(error, String(error)) }));
+    } finally {
+      setIsPrintingSummary(false);
+    }
+  };
 
   const handleRowChange = (modeOfPayment: string, closingAmount: number) => {
     setRows((prev) =>
@@ -559,6 +581,14 @@ const POSClosingDialog = ({ open, onOpenChange, onClosingSubmitted }: POSClosing
         )}
 
         <DialogFooter>
+          <Button
+            variant="outline"
+            className="sm:me-auto"
+            onClick={handlePrintSummary}
+            disabled={isPrintingSummary || isLoading || !!loadError || !openingEntry}
+          >
+            {isPrintingSummary ? t('common.loading') : t('pos_closing.print_summary')}
+          </Button>
           <Button variant="outline" onClick={() => handleOpenChange(false)} disabled={isSubmitting}>
             {t('common.cancel')}
           </Button>

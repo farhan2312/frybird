@@ -147,6 +147,7 @@
     "session_opened_success": "POS session opened"
   },
   "pos_closing": {
+    "print_summary": "Print summary",
     "title": "Close POS",
     "description": "Review sales for your session and enter the actual closing amounts.",
     "loading": "Loading closing details...",
@@ -162,7 +163,7 @@
     "submit": "Close POS",
     "submit_failed": "Failed to close POS",
     "load_failed": "Failed to load closing details",
-    "help_expected": "The amount the system expects for this payment mode, based on today's invoices.",
+    "help_expected": "What should be there now: the opening amount plus this shift's takings. For Cash, count the whole drawer, float included.",
     "help_closing": "Enter the actual amount you counted for this payment mode.",
     "help_difference": "Counted amount minus expected amount. Positive means an overage, negative means a shortage.",
     "validation_missing_rows": "Enter a closing amount for every payment mode before submitting.",

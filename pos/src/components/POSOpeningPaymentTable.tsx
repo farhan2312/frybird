@@ -3,6 +3,8 @@ import { formatCurrency } from '@ury/core';
 import { t } from '../i18n';
 import type { POSOpeningPayment } from '../lib/pos-opening-api';
 
+const CASH_MODE = 'Cash';
+
 interface POSOpeningPaymentTableProps {
   payments: POSOpeningPayment[];
   onChange: (payments: POSOpeningPayment[]) => void;
@@ -30,6 +32,9 @@ const POSOpeningPaymentTable = ({
   };
 
   const total = payments.reduce((sum, payment) => sum + (payment.opening_amount || 0), 0);
+  // Only the cash drawer starts with money; the other modes still open at 0 so closing lists them.
+  const cashOnly = payments.filter((payment) => payment.mode_of_payment === CASH_MODE);
+  const shownPayments = cashOnly.length ? cashOnly : payments;
 
   return (
     <div className="space-y-3">
@@ -50,7 +55,7 @@ const POSOpeningPaymentTable = ({
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
-            {payments.map((payment) => (
+            {shownPayments.map((payment) => (
               <tr key={payment.mode_of_payment}>
                 <td className="px-4 py-3 text-gray-900">
                   {payment.mode_of_payment}

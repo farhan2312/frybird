@@ -147,7 +147,8 @@
     "session_opened_success": "Session PDV ouverte"
   },
   "pos_closing": {
-    "help_expected": "Le montant attendu par le systeme pour ce mode de paiement, base sur les factures du jour.",
+    "print_summary": "Imprimer le résumé",
+    "help_expected": "Ce qui devrait etre present : le montant d'ouverture plus les encaissements de la session. Pour les especes, comptez tout le tiroir, fonds de caisse inclus.",
     "help_closing": "Saisissez le montant reel compte pour ce mode de paiement.",
     "help_difference": "Montant compte moins montant attendu. Positif signifie un excedent, negatif un manque.",
     "validation_missing_rows": "Saisissez un montant de cloture pour chaque mode de paiement avant de valider.",

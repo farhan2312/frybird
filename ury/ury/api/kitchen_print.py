@@ -13,7 +13,7 @@ import unicodedata
 
 import frappe
 from frappe import _
-from frappe.utils import add_to_date, flt, format_datetime, now_datetime
+from frappe.utils import add_to_date, flt, format_datetime, get_datetime, now_datetime
 
 from ury.ury.api.self_ordering import CURBSIDE_PREFIX
 
@@ -27,6 +27,7 @@ TICKET_ITEM_WIDTH = WIDTH // 2
 # ignores the ones it doesn't know: ESC B 3 2 (built-in buzzer, 3 beeps), ESC p on pins 2 and 5 (a buzzer or bell
 # on the drawer socket), and BEL.
 TICKET_BEEP = "1b420302" "1b700019fa" "1b700119fa" "07"
+CASH_MODE = "Cash"
 TICKET_MAX_AGE_HOURS = 2  # anything older is stale for the kitchen, so it isn't printed late
 CANCEL_TYPES = ("Partially cancelled", "Cancelled")
 TICKET_TITLES = {"Order Modified": "ADDED TO ORDER", "Partially cancelled": "CANCELLED ITEMS", "Cancelled": "ORDER CANCELLED"}
@@ -85,6 +86,81 @@ def get_receipt(invoice):
 	if not frappe.has_permission("POS Invoice", "read", doc=doc):
 		frappe.throw(_("Not permitted to print this invoice"), frappe.PermissionError)
 	return {"lines": _receipt_lines(doc)}
+
+
+@frappe.whitelist()
+def get_shift_summary(opening_entry, end, sub_cashier=0):
+	"""A short end-of-day slip for Close POS: items sold, sales, payments by mode and the cash that should be in the drawer."""
+	opening = frappe.get_doc("POS Opening Entry", opening_entry)
+	if not frappe.has_permission("POS Opening Entry", "read", doc=opening):
+		frappe.throw(_("Not permitted to print this shift"), frappe.PermissionError)
+	# The same invoices Close POS counts, so the slip matches the closing screen.
+	if int(sub_cashier or 0):
+		from ury.ury.doctype.sub_pos_closing.sub_pos_closing import get_pos_invoices
+	else:
+		from erpnext.accounts.doctype.pos_closing_entry.pos_closing_entry import get_pos_invoices
+	rows = get_pos_invoices(opening.period_start_date, end, opening.pos_profile, opening.user)
+	invoices = [frappe.get_doc("POS Invoice", row.get("name")) for row in rows]
+	return {"lines": _summary_lines(opening, invoices, end)}
+
+
+def _summary_lines(opening, invoices, end):
+	company = frappe.db.get_value("POS Profile", opening.pos_profile, "company")
+	items, payments = {}, {}
+	sales = discount = vat = qty = 0
+	for doc in invoices:
+		for item in doc.items:
+			sold = items.setdefault(item.item_name, [0, 0])
+			sold[0] += flt(item.qty)
+			sold[1] += flt(item.amount)
+			qty += flt(item.qty)
+		for payment in doc.payments:
+			payments[payment.mode_of_payment] = payments.get(payment.mode_of_payment, 0) + flt(payment.amount)
+		if flt(doc.change_amount):
+			payments[CASH_MODE] = payments.get(CASH_MODE, 0) - flt(doc.change_amount)
+		sales += flt(doc.rounded_total or doc.grand_total)
+		discount += flt(doc.discount_amount)
+		vat += flt(doc.total_taxes_and_charges)
+	cancelled = frappe.get_all(
+		"POS Invoice",
+		filters={"owner": opening.user, "pos_profile": opening.pos_profile, "docstatus": 2,
+				 "creation": ["between", [opening.period_start_date, end]]},
+		fields=["grand_total"],
+	)
+
+	lines = [
+		_line(frappe.db.get_value("Company", company, "company_name") or company, bold=True, size=2, align="c"),
+		_line("END OF DAY SUMMARY", bold=True, align="c"),
+		_divider(),
+		_line(f"Shift: {format_datetime(opening.period_start_date, 'dd MMM HH:mm')} - {format_datetime(get_datetime(end), 'dd MMM HH:mm')}"),
+		_line(f"Cashier: {frappe.utils.get_fullname(opening.user)}"),
+		_divider(),
+	]
+	for name, (sold_qty, amount) in sorted(items.items(), key=lambda row: (-row[1][0], row[0])):
+		lines.append(_columns(f"{sold_qty:g} x {name}", _money(amount)))
+	if not items:
+		lines.append(_line("No sales"))
+	lines += [
+		_divider(),
+		_columns("Orders", str(len(invoices))),
+		_columns("Items sold", f"{qty:g}"),
+	]
+	if discount:
+		lines.append(_columns("Discounts", f"-{_money(discount)}"))
+	lines += [_columns("VAT", _money(vat)), _columns("TOTAL SALES", _money(sales), bold=True), _divider()]
+	for mode, amount in sorted(payments.items(), key=lambda row: -row[1]):
+		if amount:
+			lines.append(_columns(mode, _money(amount)))
+	opening_cash = sum(flt(row.opening_amount) for row in opening.balance_details if row.mode_of_payment == CASH_MODE)
+	lines += [
+		_divider(),
+		_columns("Opening cash", _money(opening_cash)),
+		_columns("Cash in drawer", _money(opening_cash + payments.get(CASH_MODE, 0)), bold=True),
+	]
+	if cancelled:
+		lines.append(_columns(f"Cancelled orders ({len(cancelled)})", _money(sum(flt(c.grand_total) for c in cancelled))))
+	lines += [_divider(), _line(f"Printed {format_datetime(now_datetime(), 'dd MMM yyyy HH:mm')}", align="c")]
+	return lines
 
 
 def _require_agent():
