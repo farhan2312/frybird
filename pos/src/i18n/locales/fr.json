@@ -208,7 +208,6 @@
     "print_failed": "Échec d'impression : {{reason}}",
     "invalid_discount": "Veuillez entrer une valeur de remise valide",
     "discount_exceeds_max": "La remise en pourcentage ne peut pas dépasser 100 %",
-    "please_print_first": "Veuillez imprimer la facture avant d'effectuer le paiement",
     "enter_cancel_reason": "Veuillez entrer un motif d'annulation.",
     "dine_in_restricted": "La consommation sur place n'est pas disponible pour votre rôle",
     "payment_failed": "Le paiement n'a pas pu être effectué. Veuillez réessayer.",
