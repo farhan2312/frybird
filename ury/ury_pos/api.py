@@ -944,20 +944,24 @@ def getAggregatorMOP(aggregator):
     )
     return modeOfPaymentsList
 @frappe.whitelist()
-def create_customer(customer_name, mobile_number=None, customer_group="Individual", territory="India"):
+def create_customer(customer_name, mobile_number=None, customer_group="Individual", territory=None):
     if not frappe.has_permission("Customer", "create"):
         frappe.throw("Not permitted to create customers", frappe.PermissionError)
         
+    # Staff may know only the name or only the number; the number stands in for a missing name.
+    customer_name = (customer_name or "").strip() or (mobile_number or "").strip()
     if not customer_name:
-        frappe.throw("Customer name is required")
-    if not mobile_number:
-        frappe.throw("Mobile Number is required")
-    try:
-        validate_phone_number(mobile_number, throw=True)
-    except Exception:
-        frappe.throw("Invalid mobile number format")
+        frappe.throw("Enter a name or a mobile number")
+    if mobile_number:
+        try:
+            validate_phone_number(mobile_number, throw=True)
+        except Exception:
+            frappe.throw("Invalid mobile number format")
 
     """Create a new customer"""
+    # The POS form has no territory field; the shop's customers are in the UAE.
+    if not territory and frappe.db.exists("Territory", "United Arab Emirates"):
+        territory = "United Arab Emirates"
     try:
         customer = frappe.get_doc({
             "doctype": "Customer",

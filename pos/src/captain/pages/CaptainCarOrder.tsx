@@ -4,6 +4,7 @@ import { ArrowLeft, ClipboardList, Loader2, Minus, Plus, UtensilsCrossed } from 
 import { Button, cn, showToast, Spinner } from '@ury/ui';
 import { formatCurrency } from '@ury/core';
 import CaptainMenu from '../components/CaptainMenu';
+import { CustomerSelect } from '../../components/CustomerSelect';
 import { CAR_ORDER_PREFIX, carOrderComment, carPlateFrom } from '../lib/captain-car-api';
 import { DEFAULT_ORDER_TYPE, WALK_IN_CUSTOMER } from '../../data/order-types';
 import { syncOrder, type SyncOrderRequest } from '../../lib/order-api';
@@ -12,15 +13,18 @@ import { usePOSStore } from '../../store/pos-store';
 
 
 /**
- * A captain's order for a customer in a car: no table, just the number plate. `/order/car` starts a new
- * one and `/order/car/:invoice` adds to one already sent. Saved as a Take Away order, so the cashier
- * bills it from Orders like any other.
+ * A captain's order with no table: for a customer in a car (`/order/car`, with the number plate) or a walk-in
+ * take away (`/order/takeaway`). Add `/:invoice` to add to one already sent. Saved as a Take Away order, so
+ * the cashier bills it from Orders like any other.
  */
-export default function CaptainCarOrder() {
+export default function CaptainCarOrder({ kind = 'car' }: { kind?: 'car' | 'takeaway' }) {
+  const isCar = kind === 'car';
+  const label = isCar ? 'curbside' : 'take away';
   const { invoice } = useParams<{ invoice: string }>();
   const navigate = useNavigate();
-  // The POS Tables screen opens this page too, and comes back to its own Cars tab.
-  const backTo = (useLocation().state as { backTo?: string } | null)?.backTo ?? '/order?tab=cars';
+  // The POS Tables screen opens the car page too, and comes back to its own Curbside tab.
+  const backTo =
+    (useLocation().state as { backTo?: string } | null)?.backTo ?? `/order?tab=${isCar ? 'cars' : 'takeaway'}`;
   const user = useRootStore((state: RootState) => state.user);
   const {
     activeOrders,
@@ -54,7 +58,7 @@ export default function CaptainCarOrder() {
   }, [invoice]);
 
   const handleSend = async () => {
-    if (!carPlate.trim()) {
+    if (isCar && !carPlate.trim()) {
       showToast.error('Enter the car number plate before sending the order.');
       return;
     }
@@ -88,7 +92,7 @@ export default function CaptainCarOrder() {
         last_modified_time: isUpdatingOrder ? lastModifiedTime || undefined : undefined,
         invoice: isUpdatingOrder ? orderId : null,
         waiter: user.name,
-        comments: carOrderComment(carPlate),
+        comments: isCar ? carOrderComment(carPlate) : undefined,
       };
       const result = await syncOrder(orderData);
       if (result?.message && typeof result.message === 'object' && 'status' in result.message && result.message.status === 'Failure') {
@@ -99,7 +103,7 @@ export default function CaptainCarOrder() {
       showToast.success(isUpdatingOrder ? 'Order updated.' : 'Order sent to kitchen.');
       navigate(backTo);
     } catch (error) {
-      console.error('Failed to send car order:', error);
+      console.error(`Failed to send ${label} order:`, error);
       showToast.error(error instanceof Error ? error.message : 'Failed to send the order.');
     } finally {
       setIsSubmitting(false);
@@ -114,10 +118,12 @@ export default function CaptainCarOrder() {
     <div className="flex h-screen flex-col bg-gray-50">
       <div className="flex items-center justify-between border-b border-gray-200 bg-white p-3">
         <div className="flex items-center">
-          <Button onClick={() => navigate(backTo)} variant="ghost" size="icon" aria-label="Back to curbside">
+          <Button onClick={() => navigate(backTo)} variant="ghost" size="icon" aria-label={`Back to ${label}`}>
             <ArrowLeft className="h-5 w-5" />
           </Button>
-          <h1 className="ml-2 font-semibold text-gray-900">{invoice ? 'Curbside order' : 'New curbside order'}</h1>
+          <h1 className="ml-2 font-semibold text-gray-900">
+            {invoice ? `${isCar ? 'Curbside' : 'Take away'} order` : `New ${label} order`}
+          </h1>
         </div>
         <div className="flex rounded-full bg-gray-100 p-1">
           {(['menu', 'order'] as const).map((tab) => (
@@ -136,6 +142,7 @@ export default function CaptainCarOrder() {
         </div>
       </div>
 
+      {isCar && (
       <div className="bg-white p-3">
         <label htmlFor="car-plate" className="mb-1 block text-sm font-medium text-gray-700">
           Car number plate
@@ -151,12 +158,17 @@ export default function CaptainCarOrder() {
           className="h-11 w-full rounded-lg border border-gray-300 px-3 text-base font-semibold"
         />
       </div>
+      )}
 
       <div className="flex flex-1 flex-col overflow-hidden">
         {mode === 'menu' ? (
           <CaptainMenu canAddItems />
         ) : (
           <div className="flex-1 overflow-y-auto p-3">
+            {/* Optional; an order with no customer is saved as Walk-In Customer. */}
+            <div className="mb-3">
+              <CustomerSelect disabled={isSubmitting} />
+            </div>
             {activeOrders.length === 0 && <p className="py-12 text-center text-gray-500">No items added yet.</p>}
             {activeOrders.map((item) => (
               <div key={item.uniqueId} className="mb-2 flex items-center justify-between rounded-lg bg-white p-3">

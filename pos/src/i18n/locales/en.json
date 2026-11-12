@@ -188,6 +188,7 @@
     "incomplete_error": "All mandatory items must be checked before this checklist can be completed."
   },
   "customer": {
+    "name_or_phone_required": "Enter a name or a mobile number",
     "search_placeholder": "Search customer...",
     "type_to_search": "Please type to search...",
     "no_customers_found": "No customers found",

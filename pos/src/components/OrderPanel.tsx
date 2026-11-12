@@ -14,7 +14,7 @@ import { syncOrder } from '../lib/order-api';
 import { useRootStore } from '../store/root-store';
 import type { RootState } from '../store/root-store';
 import { showToast } from '@ury/ui';
-import { DINE_IN, DEFAULT_ORDER_TYPE, WALK_IN_CUSTOMER } from '../data/order-types';
+import { DINE_IN, WALK_IN_CUSTOMER } from '../data/order-types';
 import { t } from '../i18n';
 
 const OrderPanel = () => {
@@ -91,9 +91,6 @@ const OrderPanel = () => {
           showToast.error(t('errors.select_aggregator'));
           return;
         }
-      } else if (selectedOrderType !== DEFAULT_ORDER_TYPE && !selectedCustomer?.name) {
-        showToast.error(t('errors.select_customer'));
-        return;
       }
 
       // Validate table selection for dine-in orders
@@ -199,9 +196,8 @@ const OrderPanel = () => {
       <div className="p-4 border-b border-gray-200 flex-shrink-0">
         <OrderTabs disabled={isInteractionDisabled} />
         <OrderTypeSelect disabled={isInteractionDisabled} />
-        {selectedOrderType !== DEFAULT_ORDER_TYPE && (
-          <div className="mt-3"><CustomerSelect disabled={isInteractionDisabled} /></div>
-        )}
+        {/* Optional: orders with no customer are saved as Walk-In Customer */}
+        <div className="mt-3"><CustomerSelect disabled={isInteractionDisabled} /></div>
         <div className="mt-3 flex items-center justify-between">
           <span className="text-sm font-medium text-gray-700">{t('cart.pax')}</span>
           <div className="flex items-center gap-2">

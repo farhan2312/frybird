@@ -60,8 +60,9 @@ function NewCustomerForm({
 
   async function handleAddCustomerSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    if (!newCustomerName || !newCustomerPhone) {
+    if (!newCustomerName.trim() && !newCustomerPhone.trim()) {
       setFormError(true);
+      setApiError(t('customer.name_or_phone_required'));
       return;
     }
 
@@ -71,7 +72,7 @@ function NewCustomerForm({
 
     try {
       const customerData: CreateCustomerData = {
-        customer_name: newCustomerName.trim(),
+        customer_name: newCustomerName.trim() || newCustomerPhone.trim(),
         mobile_number: newCustomerPhone.trim(),
       };
       if (newCustomerGroup) customerData.customer_group = newCustomerGroup;
@@ -106,20 +107,19 @@ function NewCustomerForm({
       )}
       <div>
         <label className="mb-1 block text-sm font-medium text-gray-700" htmlFor="new-customer-name">
-          {t('customer.name_label')} <span className="text-red-500">*</span>
+          {t('customer.name_label')}
         </label>
         <Input
           id="new-customer-name"
           type="text"
           value={newCustomerName}
           onChange={(e) => setNewCustomerName(e.target.value)}
-          required
           disabled={isCreatingCustomer}
         />
       </div>
       <div>
         <label className="mb-1 block text-sm font-medium text-gray-700" htmlFor="new-customer-phone">
-          {t('customer.phone_label')} <span className="text-red-500">*</span>
+          {t('customer.phone_label')}
         </label>
         <div className="relative">
           <Input
@@ -127,7 +127,6 @@ function NewCustomerForm({
             type="tel"
             value={newCustomerPhone}
             onChange={(e) => setNewCustomerPhone(e.target.value)}
-            required
             disabled={isCreatingCustomer}
             className="pl-10"
           />

@@ -161,6 +161,7 @@
     "checklist_skip_hint": "La cloture PDV a deja ete soumise. Vous pourrez terminer cette liste de controle plus tard."
   },
   "customer": {
+    "name_or_phone_required": "Saisissez un nom ou un numéro de mobile",
     "search_placeholder": "Rechercher un client...",
     "type_to_search": "Tapez pour rechercher...",
     "no_customers_found": "Aucun client trouvé",

@@ -79,6 +79,14 @@ function App() {
                   }
                 />
                 <Route
+                  path="/order/takeaway/:invoice?"
+                  element={
+                    <CaptainRouteGuard>
+                      <CaptainCarOrder kind="takeaway" />
+                    </CaptainRouteGuard>
+                  }
+                />
+                <Route
                   path="/order/table/:table"
                   element={
                     <CaptainRouteGuard>

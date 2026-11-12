@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef } from 'react';
-import { Clock, User, UserCheck, Receipt, Printer, Pencil, X, GitBranch, GitMerge } from 'lucide-react';
+import { Clock, User, UserCheck, Receipt, Printer, Pencil, Trash2, GitBranch, GitMerge } from 'lucide-react';
 import { Badge, Button, Card, CardContent } from '@ury/ui';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@ury/ui';
 import { showToast } from '@ury/ui';
@@ -582,14 +582,14 @@ export default function Orders() {
                         <Pencil className="w-4 h-4" />
                         {editLoading && <span className="ms-2 text-xs">{t('common.loading')}</span>}
                       </button>
-                      {canCancelInvoice && (
+                      {canCancelInvoice && selectedOrder.status === 'Draft' && (
                         <button
                           type="button"
                           className="inline-flex items-center justify-center rounded-md p-2 bg-gray-100 hover:bg-gray-200 text-red-600 focus:outline-none focus:ring-2 focus:ring-red-500"
                           aria-label="Cancel order"
                           onClick={() => setCancelDialogOpen(true)}
                         >
-                          <X className="w-4 h-4" />
+                          <Trash2 className="w-4 h-4" />
                         </button>
                       )}
                     </>

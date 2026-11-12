@@ -19,6 +19,7 @@ import { DINE_IN, WALK_IN_CUSTOMER } from '../../data/order-types';
 import { useTableOrderContext, OrderDeltaLine } from '../hooks/useTableOrderContext';
 import CaptainMenu from '../components/CaptainMenu';
 import CaptainOrderLine from '../components/CaptainOrderLine';
+import { CustomerSelect } from '../../components/CustomerSelect';
 import CaptainActionsMenu from '../components/CaptainActionsMenu';
 import ProductDialog from '../../components/ProductDialog';
 import CommentDialog from '../../components/CommentDialog';
@@ -346,6 +347,13 @@ export default function CaptainOrder() {
   const MIN_PAX = 1;
   const MAX_PAX = 50;
 
+  // Optional; an order with no customer is saved as Walk-In Customer.
+  const customerBox = canModify && (
+    <div className="px-3 pt-3">
+      <CustomerSelect disabled={isInteractionDisabled} />
+    </div>
+  );
+
   // Render order list content — shared between mobile toggle view and tablet side pane
   const OrderListContent = () => (
     <div className="flex-1 overflow-y-auto p-3 space-y-5 pb-32">
@@ -573,7 +581,10 @@ export default function CaptainOrder() {
         {canModify && mode === 'menu' ? (
           <CaptainMenu canAddItems={canModify} />
         ) : (
-          <OrderListContent />
+          <>
+            {customerBox}
+            <OrderListContent />
+          </>
         )}
       </div>
 
@@ -585,7 +596,8 @@ export default function CaptainOrder() {
               <CaptainMenu canAddItems={canModify} />
             </div>
           )}
-          <div className="flex-1 min-h-0 overflow-hidden rounded-lg border border-gray-200 bg-white">
+          <div className="flex flex-1 min-h-0 flex-col overflow-hidden rounded-lg border border-gray-200 bg-white">
+            {customerBox}
             <OrderListContent />
           </div>
         </div>

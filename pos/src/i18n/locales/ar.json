@@ -98,6 +98,7 @@
         "switch_to_desk": "التبديل إلى لوحة التحكم (Desk)"
     },
     "customer": {
+        "name_or_phone_required": "أدخل الاسم أو رقم الجوال",
         "search_placeholder": "ابحث عن عميل...",
         "type_to_search": "يرجى الكتابة للبحث...",
         "no_customers_found": "لم يتم العثور على عملاء",

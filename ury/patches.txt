@@ -8,3 +8,4 @@ ury.patches.v2_0.fix_waiter_order_slip_print_format
 ury.patches.v2_0.admin_permissions
 ury.patches.v2_0.mark_existing_kots_printed
 ury.patches.v2_0.show_recently_paid_orders
+ury.patches.v2_0.add_noon_food
