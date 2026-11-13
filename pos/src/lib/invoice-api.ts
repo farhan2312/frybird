@@ -69,6 +69,7 @@ interface GetPOSInvoicesResponse {
 
 interface GetPOSInvoicesParams {
   status: POSInvoice['status'];
+  order_kind?: string;
   limit?: number;
   limit_start?: number;
   paid_limit?: number;
@@ -82,7 +83,8 @@ export async function getPOSInvoices({
   status,
   limit,
   limit_start,
-  paid_limit
+  paid_limit,
+  order_kind
 }: GetPOSInvoicesParams) {
   try {
     // Use paid_limit as the limit for Recently Paid status
@@ -93,7 +95,8 @@ export async function getPOSInvoices({
       {
         status,
         limit: actualLimit,
-        limit_start
+        limit_start,
+        order_kind: order_kind || undefined
       }
     );
 

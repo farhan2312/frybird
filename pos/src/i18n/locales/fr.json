@@ -391,7 +391,7 @@
   "order_types": {
     "dine_in": "Sur place",
     "take_away": "À emporter",
-    "delivery": "Livraison",
+    "delivery": "Livraison à domicile",
     "phone_in": "Commande par téléphone",
     "aggregators": "Agrégateurs"
   },

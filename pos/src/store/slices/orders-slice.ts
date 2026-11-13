@@ -1,5 +1,5 @@
 import { StateCreator } from 'zustand';
-import { OrderType } from '../../data/order-types';
+import { OrderType, type OrderKind } from '../../data/order-types';
 import { call } from '@ury/core';
 import { getPOSInvoices, getPOSInvoiceItems, getSplitGroup, mapSplitGroupInvoiceToPOSInvoice, POSInvoiceItem, POSInvoiceTax } from '../../lib/invoice-api';
 import { searchPosInvoice } from '../../lib/invoice-api';
@@ -42,6 +42,7 @@ export interface OrdersState {
     itemsPerPage: number;
   };
   selectedStatus: 'Draft' | 'Recently Paid' | 'Paid' | 'Consolidated' | 'Return';
+  orderKind: OrderKind;
   selectedOrder: POSInvoice | null;
   selectedOrderItems: POSInvoiceItem[];
   selectedOrderTaxes: POSInvoiceTax[];
@@ -56,6 +57,7 @@ export interface OrdersActions {
   goToNextPage: () => Promise<void>;
   goToPreviousPage: () => Promise<void>;
   setSelectedStatus: (status: POSInvoice['status']) => Promise<void>;
+  setOrderKind: (kind: OrderKind) => Promise<void>;
   selectOrder: (order: POSInvoice) => Promise<void>;
   clearSelectedOrder: () => void;
   setOrderSearchQuery: (query: string) => void;
@@ -81,6 +83,7 @@ export const createOrdersSlice: StateCreator<
     itemsPerPage: ITEMS_PER_PAGE,
   },
   selectedStatus: 'Draft',
+  orderKind: '',
   selectedOrder: null,
   selectedOrderItems: [],
   selectedOrderTaxes: [],
@@ -92,7 +95,7 @@ export const createOrdersSlice: StateCreator<
   fetchOrders: async (page = 1) => {
     try {
       set({ orderLoading: true, error: null });
-      const { orderSearchQuery, selectedStatus } = get();
+      const { orderSearchQuery, selectedStatus, orderKind } = get();
       
       // Get POS profile to access paid_limit
       const posProfile = sessionStorage.getItem('posProfile');
@@ -120,7 +123,8 @@ export const createOrdersSlice: StateCreator<
         status,
         limit: ITEMS_PER_PAGE,
         limit_start: limitStart,
-        paid_limit: paidLimit
+        paid_limit: paidLimit,
+        order_kind: orderKind
       });
       set({ 
         orders: invoices,
@@ -151,6 +155,12 @@ export const createOrdersSlice: StateCreator<
     if (!orderLoading && pagination.currentPage > 1) {
       await get().fetchOrders(pagination.currentPage - 1);
     }
+  },
+
+  setOrderKind: async (kind) => {
+    set({ orderKind: kind });
+    get().clearSelectedOrder();
+    await get().fetchOrders(1);
   },
 
   setSelectedStatus: async (status) => {

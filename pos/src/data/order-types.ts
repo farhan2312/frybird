@@ -20,7 +20,7 @@ export const ORDER_TYPES: OrderTypes[] = [
         icon: ShoppingBag
     },
     {
-        label: "Delivery",
+        label: "Home Delivery",
         value: "Delivery",
         icon: Truck
     },
@@ -37,6 +37,17 @@ export const ORDER_TYPES: OrderTypes[] = [
 ]
 
 export const DINE_IN="Dine In"
+
+// Orders page tabs; the server filters by these keys (ORDER_KINDS in ury/ury_pos/api.py).
+export const ORDER_KIND_TABS = [
+    { value: "", label: "All" },
+    { value: "dine_in", label: "Dine In" },
+    { value: "take_away", label: "Take Away" },
+    { value: "curbside", label: "Curbside" },
+    { value: "delivery", label: "Home Delivery" },
+    { value: "apps", label: "Delivery Apps" },
+] as const
+export type OrderKind = (typeof ORDER_KIND_TABS)[number]["value"]
 export const DEFAULT_ORDER_TYPE="Take Away"
 // sync_order requires a customer; orders that don't ask for one go to this.
 export const WALK_IN_CUSTOMER="Walk-In Customer"

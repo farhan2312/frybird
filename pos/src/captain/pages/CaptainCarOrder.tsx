@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, ClipboardList, Loader2, Minus, Plus, UtensilsCrossed } from 'lucide-react';
+import { ArrowLeft, ClipboardList, Loader2, MessageSquare, Minus, Plus, UtensilsCrossed } from 'lucide-react';
 import { Button, cn, showToast, Spinner } from '@ury/ui';
 import { formatCurrency } from '@ury/core';
 import CaptainMenu from '../components/CaptainMenu';
 import { CustomerSelect } from '../../components/CustomerSelect';
+import ProductDialog from '../../components/ProductDialog';
 import { CAR_ORDER_PREFIX, carOrderComment, carPlateFrom } from '../lib/captain-car-api';
 import { DEFAULT_ORDER_TYPE, WALK_IN_CUSTOMER } from '../../data/order-types';
 import { syncOrder, type SyncOrderRequest } from '../../lib/order-api';
@@ -41,10 +42,14 @@ export default function CaptainCarOrder({ kind = 'car' }: { kind?: 'car' | 'take
     orderLoading,
     loadTableOrder,
     clearTableOrder,
+    setSelectedItem,
   } = usePOSStore();
 
   const [mode, setMode] = useState<'menu' | 'order'>('menu');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  // The line whose extras (spice level, add-ons) and special request are being edited, as on the table screen.
+  const [editingItemUniqueId, setEditingItemUniqueId] = useState<string | null>(null);
+  const editingItem = activeOrders.find((item) => item.uniqueId === editingItemUniqueId);
 
   const carPlate = carPlateFrom(orderComment) ?? '';
   const total = activeOrders.reduce((sum, item) => sum + item.price * item.quantity, 0);
@@ -174,9 +179,23 @@ export default function CaptainCarOrder({ kind = 'car' }: { kind?: 'car' | 'take
               <div key={item.uniqueId} className="mb-2 flex items-center justify-between rounded-lg bg-white p-3">
                 <div className="mr-3 min-w-0">
                   <p className="text-sm font-medium text-gray-900">{item.name}</p>
+                  {item.selectedAddons && item.selectedAddons.length > 0 && (
+                    <p className="text-xs text-gray-600">{item.selectedAddons.map((addon) => addon.name).join(', ')}</p>
+                  )}
+                  {item.comment?.trim() && <p className="truncate text-xs italic text-gray-500">"{item.comment.trim()}"</p>}
                   <p className="text-xs text-gray-500">{formatCurrency(item.price * item.quantity)}</p>
                 </div>
                 <div className="flex shrink-0 items-center">
+                  <button
+                    aria-label="Extras and special request"
+                    onClick={() => {
+                      setSelectedItem({ ...item, variants: item.variants, addons: item.addons });
+                      setEditingItemUniqueId(item.uniqueId!);
+                    }}
+                    className="mr-2 flex h-9 w-9 items-center justify-center rounded-full text-primary-600"
+                  >
+                    <MessageSquare className="h-4 w-4" />
+                  </button>
                   <button
                     aria-label="Decrease"
                     onClick={() =>
@@ -200,6 +219,20 @@ export default function CaptainCarOrder({ kind = 'car' }: { kind?: 'car' | 'take
           </div>
         )}
       </div>
+
+      {editingItem && (
+        <ProductDialog
+          onClose={() => {
+            setEditingItemUniqueId(null);
+            setSelectedItem(null);
+          }}
+          editMode
+          initialVariant={editingItem.selectedVariant}
+          initialAddons={editingItem.selectedAddons}
+          initialQuantity={editingItem.quantity}
+          itemToReplace={editingItem}
+        />
+      )}
 
       {mode === 'order' && (
       <div className="border-t border-gray-200 bg-white p-3">

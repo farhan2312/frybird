@@ -418,7 +418,7 @@
   "order_types": {
     "dine_in": "Dine In",
     "take_away": "Take Away",
-    "delivery": "Delivery",
+    "delivery": "Home Delivery",
     "phone_in": "Phone In",
     "aggregators": "Aggregators"
   },

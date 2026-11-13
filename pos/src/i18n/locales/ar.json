@@ -232,7 +232,7 @@
     "order_types": {
         "dine_in": "طلب محلي",
         "take_away": "سفري",
-        "delivery": "توصيل",
+        "delivery": "توصيل للمنزل",
         "phone_in": "طلب هاتفي",
         "aggregators": "منصات تجميع"
     },

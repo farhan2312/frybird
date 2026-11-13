@@ -483,8 +483,24 @@ def getInvoiceForCashier(status, cashier, limit, limit_start):
 
 
 
+# Orders page type tabs. Curbside orders are Take Away orders whose comment holds the car plate.
+CURBSIDE_COMMENT_LIKE = "CURBSIDE - Car: %"
+ORDER_KINDS = {
+    "dine_in": ("AND order_type = %s", ["Dine In"]),
+    "take_away": ("AND order_type = %s AND COALESCE(custom_comments, '') NOT LIKE %s", ["Take Away", CURBSIDE_COMMENT_LIKE]),
+    "curbside": ("AND custom_comments LIKE %s", [CURBSIDE_COMMENT_LIKE]),
+    "delivery": ("AND order_type = %s", ["Delivery"]),
+    "apps": ("AND order_type = %s", ["Aggregators"]),
+}
+
+
+def _order_kind_condition(order_kind):
+    return ORDER_KINDS.get(order_kind or "", ("", []))
+
+
 @frappe.whitelist()
-def getPosInvoice(status, limit, limit_start):
+def getPosInvoice(status, limit, limit_start, order_kind=None):
+    kind_sql, kind_args = _order_kind_condition(order_kind)
     branch = getBranch()
     updatedlist = []
     limit = int(limit)+1
@@ -502,10 +518,11 @@ def getPosInvoice(status, limit, limit_start):
                 additional_discount_percentage, discount_amount
             FROM `tabPOS Invoice` 
             WHERE branch = %s AND status = %s 
+            {kind_sql}
             ORDER BY modified desc
             LIMIT %s OFFSET %s
-            """,
-            (branch, status, limit,limit_start),
+            """.format(kind_sql=kind_sql),
+            (branch, status, *kind_args, limit,limit_start),
             as_dict=True,
         )
         updatedlist.extend(invoices)
@@ -525,10 +542,11 @@ def getPosInvoice(status, limit, limit_start):
             FROM `tabPOS Invoice` 
             WHERE branch = %s AND status = %s 
             AND (invoice_printed = 0 AND restaurant_table IS NOT NULL)
+            {kind_sql}
             ORDER BY modified desc
             LIMIT %s OFFSET %s
-            """,
-            (branch, docstatus, limit, limit_start),
+            """.format(kind_sql=kind_sql),
+            (branch, docstatus, *kind_args, limit, limit_start),
             as_dict=True,
         )
         updatedlist.extend(invoices)
@@ -545,10 +563,11 @@ def getPosInvoice(status, limit, limit_start):
                 custom_merged_pos_invoice, custom_merged_total
             FROM `tabPOS Invoice` 
             WHERE branch = %s AND status = %s 
+            {kind_sql}
             ORDER BY modified desc
             LIMIT %s OFFSET %s
-            """,
-            (branch, docstatus, limit, limit_start),
+            """.format(kind_sql=kind_sql),
+            (branch, docstatus, *kind_args, limit, limit_start),
             as_dict=True,
         )
         updatedlist.extend(invoices)    
@@ -565,10 +584,11 @@ def getPosInvoice(status, limit, limit_start):
                 custom_merged_pos_invoice, custom_merged_total
             FROM `tabPOS Invoice` 
             WHERE branch = %s AND status = %s 
+            {kind_sql}
             ORDER BY modified desc
             LIMIT %s OFFSET %s
-            """,
-            (branch, status, limit, limit_start),
+            """.format(kind_sql=kind_sql),
+            (branch, status, *kind_args, limit, limit_start),
             as_dict=True,
         )
 

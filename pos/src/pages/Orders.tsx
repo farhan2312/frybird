@@ -31,6 +31,7 @@ import {
   type SplitGroupInvoice,
 } from '../lib/invoice-api';
 import { formatMergedTableLabel } from '../lib/table-utils';
+import { ORDER_KIND_TABS } from '../data/order-types';
 import { t } from '../i18n';
 
 function getOrderTableLabel(order: Pick<POSInvoice, 'restaurant_table' | 'custom_merged_tables'>) {
@@ -68,7 +69,9 @@ export default function Orders() {
     goToPreviousPage,
     selectOrder,
     clearSelectedOrder,
-    orderSearchQuery
+    orderSearchQuery,
+    orderKind,
+    setOrderKind
   } = useRootStore();
 
   const posStore = usePOSStore();
@@ -395,6 +398,20 @@ export default function Orders() {
       {/* Middle Section - Order Cards */}
       <div className="flex-1 flex flex-col h-screen overflow-hidden pe-96">
         <div className="flex-1 overflow-y-auto bg-gray-50 p-4 pb-40">
+          <div className="mb-4 flex gap-2 overflow-x-auto max-w-screen-xl mx-auto">
+            {ORDER_KIND_TABS.map((tab) => (
+              <Button
+                key={tab.value}
+                variant="tab"
+                size="sm"
+                data-selected={orderKind === tab.value}
+                onClick={() => setOrderKind(tab.value)}
+                className="h-9 shrink-0"
+              >
+                {tab.label}
+              </Button>
+            ))}
+          </div>
           {orderLoading ? (
             <div className="flex items-center justify-center h-full">
               <Spinner  message={t('common.loading')} />

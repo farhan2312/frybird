@@ -28,6 +28,7 @@ TICKET_ITEM_WIDTH = WIDTH // 2
 # on the drawer socket), and BEL.
 TICKET_BEEP = "1b420302" "1b700019fa" "1b700119fa" "07"
 CASH_MODE = "Cash"
+ORDER_TYPE_LABELS = {"Delivery": "Home Delivery"}
 TICKET_MAX_AGE_HOURS = 2  # anything older is stale for the kitchen, so it isn't printed late
 CANCEL_TYPES = ("Partially cancelled", "Cancelled")
 TICKET_TITLES = {"Order Modified": "ADDED TO ORDER", "Partially cancelled": "CANCELLED ITEMS", "Cancelled": "ORDER CANCELLED"}
@@ -209,7 +210,7 @@ def _ticket_destination(kot, invoice):
 		return kot.aggregator_id
 	if kot.restaurant_table and not kot.table_takeaway:
 		return f"Table {kot.restaurant_table}"
-	return invoice.order_type or "Take Away"
+	return ORDER_TYPE_LABELS.get(invoice.order_type, invoice.order_type) or "Take Away"
 
 
 def _receipt_lines(doc):
@@ -226,7 +227,7 @@ def _receipt_lines(doc):
 		_divider(),
 		_line(f"No: {doc.name}"),
 		_line(f"Date: {format_datetime(doc.creation, 'dd MMM yyyy  HH:mm')}"),
-		_line(f"Order: {doc.get('custom_ury_order_number') or '-'}  {doc.order_type or ''}".rstrip()),
+		_line(f"Order: {doc.get('custom_ury_order_number') or '-'}  {ORDER_TYPE_LABELS.get(doc.order_type, doc.order_type or '')}".rstrip()),
 	]
 	comments = doc.get("custom_comments") or ""
 	if comments.startswith(CURBSIDE_PREFIX):
