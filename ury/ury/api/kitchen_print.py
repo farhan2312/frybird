@@ -187,10 +187,7 @@ def _ticket_lines(kots):
 		lines.append(_line(TICKET_TITLES.get(first.type, first.type), bold=True, align="c"))
 	lines += [_divider(), _line("QTY  ITEM")]
 	total_qty = 0
-	for kot in kots:
-		if len(kots) > 1:
-			station = frappe.db.get_value("URY Production Unit", kot.production, "production") or kot.production or ""
-			lines.append(_line(station.upper()))
+	for kot in kots:  # one printer for every station, so the items print as one list with no station headings
 		for item in frappe.get_all("URY KOT Items", filters={"parent": kot.name}, fields=["item_name", "quantity", "cancelled_qty", "comments"], order_by="idx"):
 			qty = item.cancelled_qty if is_cancel else item.quantity
 			total_qty += flt(qty)
