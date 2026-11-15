@@ -96,11 +96,12 @@ MENU_ITEMS = [
 ]
 # add-on items offered on every burger and on the burger meal
 MENU_ITEMS += [
-	# spice level for fried chicken and tenders: free add-ons, printed on the Fry Station ticket
+	# spice level for fried chicken, tenders and fries: free add-ons, printed on the kitchen ticket
 	("ADD-SPICE-HOT", "Spice Level: Hot", "Add-ons", "FRIED CHICKEN", 0, "Spice level", "SC-HOT"),
 	("ADD-SPICE-XHOT", "Spice Level: Extra Hot", "Add-ons", "FRIED CHICKEN", 0, "Spice level", "SC-HOT"),
 	# paid extra for fried chicken and tenders
 	("ADD-SPICY-SEASONING", "Spicy Seasoning", "Add-ons", "FRIED CHICKEN", 3, "Chicken add-on", "SC-HOT"),
+	("ADD-TENDER-STRIP", "Extra Chicken Strip", "Add-ons", "CHICKEN TENDERS", 5, "One extra tender strip", "real/tenders-original"),
 ]
 CHICKEN_ADDONS = ["ADD-SPICE-HOT", "ADD-SPICE-XHOT", "ADD-SPICY-SEASONING"]
 # menu course -> add-on items offered on every item in that course (POS product dialog and QR ordering)
@@ -108,7 +109,8 @@ ADDONS_BY_COURSE = {
 	"Burgers": ["ADD-CHEESE", "ADD-PICKLE"],
 	"Meals": ["ADD-CHEESE", "ADD-PICKLE"],
 	"Fried Chicken": CHICKEN_ADDONS,
-	"Chicken Tenders": CHICKEN_ADDONS,
+	"Chicken Tenders": CHICKEN_ADDONS + ["ADD-TENDER-STRIP"],
+	"Sides": ["ADD-SPICE-HOT", "ADD-SPICE-XHOT"],  # every fries item
 }
 
 # Checklists sheet (client-edited wording; Halal certificate item removed)
