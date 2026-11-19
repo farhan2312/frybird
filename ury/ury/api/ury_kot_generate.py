@@ -122,41 +122,15 @@ def process_items_for_kot(
     kot_items = create_order_items(items)
     pos_profile = frappe.get_doc("POS Profile", pos_profile_id)
     productions = frappe.db.get_all(
-        "URY Production Unit", filters={"branch": pos_profile.branch}, fields=["name"]
+        "URY Production Unit", filters={"branch": pos_profile.branch}, fields=["name"], order_by="creation"
     )
 
     created_kot_names = []
 
     if productions:
-        all_production_item_groups = get_all_production_item_groups(pos_profile.branch)
-        
-        # Iterate through each item and check if item group belongs to a production unit
-        for item in kot_items:
-            item_group = frappe.db.get_value("Item", item["item_code"], "item_group")
-            item_code = item["item_code"]
-            if item_group not in all_production_item_groups:
-                frappe.msgprint(
-                    f"Item group '{item_group}' for item '{item_code}' is not in any production."
-                )
+        items_by_production = _split_by_production(productions, kot_items)
         for production in productions:
-            productionItemGroupslist = frappe.get_all(
-                "URY Production Item Groups",
-                fields=["item_group"],
-                filters={
-                    "parent": production.name,
-                    "parenttype": "URY Production Unit",
-                },
-                order_by="idx",
-            )
-            productionItemGroups = [
-                item_group.item_group for item_group in productionItemGroupslist
-            ]
-            production_items = [
-                item
-                for item in kot_items
-                if frappe.db.get_value("Item", item["item_code"], "item_group")
-                in productionItemGroups
-            ]
+            production_items = items_by_production[production.name]
 
             if production_items:
                 invoice_exist = frappe.db.exists(
@@ -206,22 +180,14 @@ def process_items_for_cancel_kot(
     kot_items = create_order_items(items)
     pos_profile = frappe.get_doc("POS Profile", pos_profile_id)
     productions = frappe.db.get_all(
-        "URY Production Unit", filters={"branch": pos_profile.branch}, fields=["name"]
+        "URY Production Unit", filters={"branch": pos_profile.branch}, fields=["name"], order_by="creation"
     )
 
     created_kot_names = []
 
+    items_by_production = _split_by_production(productions, kot_items)
     for production in productions:
-        productionDoc = frappe.get_doc("URY Production Unit", production.name)
-        productionItemGroups = [
-            item_group.item_group for item_group in productionDoc.item_groups
-        ]
-        production_items = [
-            item
-            for item in kot_items
-            if frappe.get_doc("Item", item["item_code"]).item_group
-            in productionItemGroups
-        ]
+        production_items = items_by_production[production.name]
 
         if production_items:
             kot_name = create_cancel_kot_doc(
@@ -431,3 +397,20 @@ def get_removed_items(array_1, array_2):
         if obj["item_code"] not in [x["item_code"] for x in array_2]
     ]
     return removed_objects
+
+
+def _split_by_production(productions, kot_items):
+    """Items per production unit. Every item goes to the kitchen: one whose item group no station
+    makes (meal upgrade, dips, a new group) goes on the first station's ticket instead of being dropped."""
+    if not productions:
+        return {}
+    station_of_group = {}
+    for production in productions:
+        for row in frappe.get_all("URY Production Item Groups", fields=["item_group"],
+                                  filters={"parent": production.name, "parenttype": "URY Production Unit"}):
+            station_of_group.setdefault(row.item_group, production.name)
+    split = {production.name: [] for production in productions}
+    for item in kot_items:
+        group = frappe.db.get_value("Item", item["item_code"], "item_group")
+        split[station_of_group.get(group, productions[0].name)].append(item)
+    return split
