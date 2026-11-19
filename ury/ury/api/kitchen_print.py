@@ -20,7 +20,9 @@ from ury.ury.api.self_ordering import CURBSIDE_PREFIX
 PRINT_ROLE = "URY Print Agent"
 PRINT_USER = "printer@frybird.ae"
 TICKET_HEADER = "FRYBIRD AJMAN"
-TICKET_ITEM_SIZE = 4  # double width at normal height, like the shop's old tickets
+TICKET_ITEM_SIZE = 2  # double width and height: the printer's font at its normal shape, just bigger
+# Shorter item names on the kitchen ticket only (the bill keeps the full menu name)
+KITCHEN_NAMES = {"Chicken Tenders": "Tenders"}
 WIDTH = 48  # characters per line at normal size on 80mm paper
 TICKET_ITEM_WIDTH = WIDTH // 2
 # Sounds the buzzer so the kitchen hears a new ticket. Printers differ, so this sends the common ways and each printer
@@ -191,13 +193,19 @@ def _ticket_lines(kots):
 		for item in frappe.get_all("URY KOT Items", filters={"parent": kot.name}, fields=["item_name", "quantity", "cancelled_qty", "comments"], order_by="idx"):
 			qty = item.cancelled_qty if is_cancel else item.quantity
 			total_qty += flt(qty)
-			lines += [_line(text, bold=True, size=TICKET_ITEM_SIZE) for text in _wrap(f"{qty} x {item.item_name}", indent="  ", width=TICKET_ITEM_WIDTH)]
+			lines += [_line(text, bold=True, size=TICKET_ITEM_SIZE) for text in _wrap(f"{qty} x {_kitchen_name(item.item_name)}", indent="  ", width=TICKET_ITEM_WIDTH)]
 			if item.comments:
 				lines += [_line(text, size=TICKET_ITEM_SIZE) for text in _wrap(f"  {item.comments}", indent="  ", width=TICKET_ITEM_WIDTH)]
 	if first.comments and not first.comments.startswith(CURBSIDE_PREFIX):
 		lines += [_divider()] + [_line(text, size=TICKET_ITEM_SIZE) for text in _wrap(f"Note: {first.comments}", indent="  ", width=TICKET_ITEM_WIDTH)]
 	lines += [_divider(), _columns("Waiter", first.user or ""), _columns("TotalQty", f"{total_qty:g}"), _divider()]
 	return lines
+
+
+def _kitchen_name(name):
+	for long, short in KITCHEN_NAMES.items():
+		name = name.replace(long, short)
+	return name
 
 
 def _ticket_destination(kot, invoice):
