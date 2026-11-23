@@ -1,6 +1,7 @@
 import json
 
 import frappe
+from frappe.utils import flt
 from ury.ury_pos.api import getBranch
 
 
@@ -278,19 +279,18 @@ def create_cancel_kot_doc(
         menu = frappe.db.get_value("URY Restaurant", {"branch": branch}, "active_menu")
     for cancelItem in cancel_items:
         course = frappe.db.get_value("URY Menu Item", {"item": cancelItem["item_code"],"parent":menu}, "course")
-        for item in invoiceItems:
-            if cancelItem["item_code"] == item["item_code"]:
-                kot_cancel_doc.append(
-                    "kot_items",
-                    {
-                        "item": cancelItem["item_code"],
-                        "item_name": cancelItem["item_name"],
-                        "cancelled_qty": abs(int(cancelItem["qty"])),
-                        "quantity": item["qty"],
-                        "comments": cancelItem["comments"],
-                        "course":course
-                    },
-                )
+        ordered = sum(flt(item["qty"]) for item in invoiceItems if _line_key(item) == _line_key(cancelItem))
+        kot_cancel_doc.append(
+            "kot_items",
+            {
+                "item": cancelItem["item_code"],
+                "item_name": cancelItem["item_name"],
+                "cancelled_qty": abs(int(flt(cancelItem["qty"]))),
+                "quantity": _whole(ordered or flt(cancelItem["qty"])),
+                "comments": cancelItem["comments"],
+                "course":course
+            },
+        )
 
     kot_cancel_doc.insert()
     kot_cancel_doc.submit()
@@ -318,8 +318,7 @@ def kot_execute(
     new_invoice_items_array = create_order_items(previous_items)
     new_Order_items_array = create_order_items(current_items)
 
-    final_array = compare_two_array(new_Order_items_array, new_invoice_items_array)
-    removed_item = get_removed_items(new_invoice_items_array, new_Order_items_array)
+    positive_qty_items, total_cancel_items = diff_order_items(new_Order_items_array, new_invoice_items_array)
 
     pos_profile_id = pos_invoice.pos_profile
     pos_profile = frappe.get_doc("POS Profile", pos_profile_id)
@@ -334,9 +333,6 @@ def kot_execute(
 
     from ury.ury.api.ury_waiter_print import print_combined_waiter_order_slip
 
-    positive_qty_items = [item for item in final_array if int(item["qty"]) > 0]
-    negative_qty_items = [item for item in final_array if int(item["qty"]) <= 0]
-    total_cancel_items = negative_qty_items + removed_item
     created_kot_names = []
 
     if positive_qty_items:
@@ -371,7 +367,44 @@ def kot_execute(
         print_combined_waiter_order_slip(invoice_id, created_kot_names, restaurant_table)
 
 
-# Compare two arrays and return the items that are different
+def _line_key(item):
+    return (item["item_code"], (item.get("comments") or "").strip())
+
+
+def diff_order_items(current_items, previous_items):
+    """What to send to the kitchen when an order is saved: (added, cancelled).
+
+    Lines are matched by item and comment, with quantities added up, so the same item ordered again with
+    a different comment (a second meal with Pepsi instead of 7 Up, another spice level) counts as new and
+    is never mistaken for the line already sent."""
+    def totals(items):
+        lines = {}
+        for item in items:
+            key = _line_key(item)
+            if key in lines:
+                lines[key]["qty"] = flt(lines[key]["qty"]) + flt(item["qty"])
+            else:
+                lines[key] = dict(item, qty=flt(item["qty"]), comments=key[1])
+        return lines
+
+    current, previous = totals(current_items), totals(previous_items)
+    added, cancelled = [], []
+    for key, item in current.items():
+        change = item["qty"] - (previous[key]["qty"] if key in previous else 0)
+        if change > 0:
+            added.append(dict(item, qty=_whole(change)))
+    for key, item in previous.items():
+        change = item["qty"] - (current[key]["qty"] if key in current else 0)
+        if change > 0:
+            cancelled.append(dict(item, qty=_whole(change)))
+    return added, cancelled
+
+
+def _whole(qty):
+    return int(qty) if flt(qty).is_integer() else qty
+
+
+# Compare two arrays and return the items that are different (no longer used by kot_execute; see diff_order_items)
 def compare_two_array(array_1, array_2):
     finalarray = []
     for index, x in enumerate(array_1):

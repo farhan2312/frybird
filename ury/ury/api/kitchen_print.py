@@ -32,6 +32,7 @@ TICKET_BEEP = "1b420302" "1b700019fa" "1b700119fa" "07"
 CASH_MODE = "Cash"
 ORDER_TYPE_LABELS = {"Delivery": "Home Delivery"}
 TICKET_MAX_AGE_HOURS = 2  # anything older is stale for the kitchen, so it isn't printed late
+TICKET_SETTLE_SECONDS = 2  # one save creates a KOT per station a moment apart; wait so they print as one ticket
 CANCEL_TYPES = ("Partially cancelled", "Cancelled")
 TICKET_TITLES = {"Order Modified": "ADDED TO ORDER", "Partially cancelled": "CANCELLED ITEMS", "Cancelled": "ORDER CANCELLED"}
 
@@ -61,10 +62,12 @@ def setup_print_agent():
 @frappe.whitelist()
 def get_pending_tickets():
 	_require_agent()
-	cutoff = add_to_date(now_datetime(), hours=-TICKET_MAX_AGE_HOURS)
+	now = now_datetime()
+	cutoff = add_to_date(now, hours=-TICKET_MAX_AGE_HOURS)
+	settled = add_to_date(now, seconds=-TICKET_SETTLE_SECONDS)
 	kots = frappe.get_all(
 		"URY KOT",
-		filters={"docstatus": 1, "kitchen_printed": 0, "type": ["!=", "Duplicate"], "creation": [">=", cutoff]},
+		filters={"docstatus": 1, "kitchen_printed": 0, "type": ["!=", "Duplicate"], "creation": ["between", [cutoff, settled]]},
 		fields=["name", "invoice", "type", "production", "order_no", "restaurant_table", "table_takeaway", "aggregator_id", "comments", "creation", "user"],
 		order_by="creation asc, name asc",
 	)
