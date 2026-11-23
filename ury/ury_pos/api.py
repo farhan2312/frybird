@@ -81,7 +81,8 @@ def resolve_restaurant_menu(branch, room=None, order_type=None, cashier=False):
         "URY Menu Item",
         filters={"parent": menu, "disabled": 0},
         fields=["item", "item_name", "rate", "special_dish", "disabled", "course"],
-        order_by="item_name asc"
+        # FryBird: the POS shows items in the row order of the menu, so dragging rows on the menu reorders the POS
+        order_by="idx asc"
     )
 
     menu_items_with_image = [
@@ -121,7 +122,22 @@ def getRestaurantMenu(pos_profile, room=None, order_type=None):
 
 @frappe.whitelist()
 def getMenuCourses():
-    courses = frappe.get_all("URY Menu Course", fields=["name", "icon"])
+    # Categories follow the menu too: each one sits where its first item is in the enabled menus.
+    courses = frappe.db.sql(
+        """
+        SELECT c.name, c.icon
+        FROM `tabURY Menu Course` c
+        LEFT JOIN (
+            SELECT mi.course, MIN(mi.idx) AS first_row
+            FROM `tabURY Menu Item` mi
+            JOIN `tabURY Menu` m ON m.name = mi.parent AND m.enabled = 1
+            WHERE mi.disabled = 0
+            GROUP BY mi.course
+        ) pos ON pos.course = c.name
+        ORDER BY pos.first_row IS NULL, pos.first_row, c.name
+        """,
+        as_dict=True,
+    )
     return [{"name": d.name, "label": _(d.name), "icon": d.icon} for d in courses]
 
 @frappe.whitelist()
