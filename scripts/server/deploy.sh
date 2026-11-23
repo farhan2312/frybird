@@ -35,8 +35,23 @@ git log --oneline "$BEFORE..$AFTER" 2>/dev/null | head -20 || true
 
 echo "== Dependencies and build"
 cd "$BENCH"
-./env/bin/python -m pip install --quiet -e apps/ury
-(cd apps/ury && yarn install --silent --network-timeout 600000)
+# The app is installed in editable mode, so the server already runs the pulled code. Reinstalling only matters
+# when the dependency files change, and it downloads build tools from pypi, which often times out from this VM.
+changed() { [ "$BEFORE" = "$AFTER" ] && return 1; ! git -C apps/ury diff --quiet "$BEFORE" "$AFTER" -- "$@"; }
+if changed pyproject.toml setup.py requirements.txt; then
+  for try in 1 2 3; do
+    ./env/bin/python -m pip install --quiet --timeout 60 -e apps/ury && break
+    [ "$try" = 3 ] && { echo "pip install failed 3 times"; exit 1; }
+    echo "   pip install failed, retrying ($try/3)"; sleep 10
+  done
+else
+  echo "   Python dependencies unchanged, skipping pip install"
+fi
+if changed package.json yarn.lock '*/package.json' '*/yarn.lock'; then
+  (cd apps/ury && yarn install --silent --network-timeout 600000)
+else
+  echo "   Node dependencies unchanged, skipping yarn install"
+fi
 bench build --app ury
 
 echo "== Migrate"
