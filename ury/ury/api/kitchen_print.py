@@ -189,18 +189,28 @@ def _ticket_lines(kots):
 		_line(_ticket_destination(first, invoice), bold=True, size=2, align="c"),
 	]
 	if first.type != "New Order":
-		lines.append(_line(TICKET_TITLES.get(first.type, first.type), bold=True, align="c"))
+		# Same size as the table name so the kitchen can't miss a change or a cancellation.
+		title = TICKET_TITLES.get(first.type, first.type)
+		if is_cancel:
+			lines.append(_line("*" * TICKET_ITEM_WIDTH, bold=True, size=2, align="c"))
+		lines += [_line(text, bold=True, size=2, align="c") for text in _wrap(title, width=TICKET_ITEM_WIDTH)]
+		if is_cancel:
+			lines.append(_line("*" * TICKET_ITEM_WIDTH, bold=True, size=2, align="c"))
 	lines += [_divider(), _line("QTY  ITEM")]
 	total_qty = 0
+	# On a cancelled ticket only the title is big, so the items can't be mistaken for a new order.
+	item_size, item_width = (1, WIDTH) if is_cancel else (TICKET_ITEM_SIZE, TICKET_ITEM_WIDTH)
 	for kot in kots:  # one printer for every station, so the items print as one list with no station headings
 		for item in frappe.get_all("URY KOT Items", filters={"parent": kot.name}, fields=["item_name", "quantity", "cancelled_qty", "comments"], order_by="idx"):
 			qty = item.cancelled_qty if is_cancel else item.quantity
 			total_qty += flt(qty)
-			lines += [_line(text, bold=True, size=TICKET_ITEM_SIZE) for text in _wrap(f"{qty} x {_kitchen_name(item.item_name)}", indent="  ", width=TICKET_ITEM_WIDTH)]
+			lines += [_line(text, bold=True, size=item_size) for text in _wrap(f"{qty} x {_kitchen_name(item.item_name)}", indent="  ", width=item_width)]
 			if item.comments:
-				lines += [_line(text, size=TICKET_ITEM_SIZE) for text in _wrap(f"  {item.comments}", indent="  ", width=TICKET_ITEM_WIDTH)]
+				lines += [_line(text, size=item_size) for text in _wrap(f"  {item.comments}", indent="  ", width=item_width)]
 	if first.comments and not first.comments.startswith(CURBSIDE_PREFIX):
 		lines += [_divider()] + [_line(text, size=TICKET_ITEM_SIZE) for text in _wrap(f"Note: {first.comments}", indent="  ", width=TICKET_ITEM_WIDTH)]
+	if is_cancel:
+		lines += [_divider(), _line("CANCELLED - DO NOT MAKE", bold=True, align="c")]
 	lines += [_divider(), _columns("Waiter", first.user or ""), _columns("TotalQty", f"{total_qty:g}"), _divider()]
 	return lines
 
