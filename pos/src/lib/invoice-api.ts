@@ -5,6 +5,8 @@ import type { Filter } from 'frappe-js-sdk/lib/db/types';
 
 export interface POSInvoice {
   name: string;
+  /** Daily order number, printed as KOT# on the kitchen ticket. */
+  custom_ury_order_number?: string | number | null;
   invoice_printed: number;
   grand_total: number;
   restaurant_table: string | null;

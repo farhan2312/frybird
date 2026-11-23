@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
+import { showToast } from '@ury/ui';
 import { usePOSStore } from '../store/pos-store';
 import { useRootStore } from '../store/root-store';
 import { cn } from '@ury/ui';
@@ -15,7 +16,9 @@ interface OrderTypeSelectProps {
 }
 
 const OrderTypeSelect = ({ disabled }: OrderTypeSelectProps) => {
-  const { selectedOrderType, setSelectedOrderType, selectedTable, tableOrder, posProfile, isUpdatingOrder } = usePOSStore();
+  const { selectedOrderType, setSelectedOrderType, setSelectedTable, selectedTable, tableOrder, posProfile, isUpdatingOrder, activeOrders } = usePOSStore();
+  // While a saved order is open, the first tap on another order type with items in the cart only warns.
+  const pendingSwitch = useRef<{ type: OrderType; at: number } | null>(null);
   const { user } = useRootStore();
   const [showTableDialog, setShowTableDialog] = useState(false);
 
@@ -28,11 +31,33 @@ const OrderTypeSelect = ({ disabled }: OrderTypeSelectProps) => {
       return;
     }
     
+    if (type === selectedOrderType && type !== DINE_IN) return;
+
+    if (isUpdatingOrder && !isInPlaceToggle(type)) {
+      // A saved order is open in this tab. It stays saved on the server (Tables / Orders),
+      // so the tab can start a new order of the chosen type instead of needing a new tab.
+      const pending = pendingSwitch.current;
+      const confirmed = pending?.type === type && Date.now() - pending.at < 5000;
+      if (activeOrders.length > 0 && !confirmed) {
+        pendingSwitch.current = { type, at: Date.now() };
+        showToast.info('Tap again to start a new order. The current order stays saved; items not yet sent are removed.');
+        return;
+      }
+      pendingSwitch.current = null;
+      if (selectedTable) setSelectedTable(null, null);
+    }
+
     setSelectedOrderType(type);
     if (type === DINE_IN) {
       setShowTableDialog(true);
     }
   };
+
+  // Take Away <-> Delivery can change on the saved order itself when the profile allows it.
+  function isInPlaceToggle(type: OrderType) {
+    const toggleable = (v: string) => v === 'Take Away' || v === 'Delivery';
+    return Boolean(posProfile?.edit_order_type) && toggleable(selectedOrderType) && toggleable(type);
+  }
 
   const handleTableDialogClose = () => {
     setShowTableDialog(false);
@@ -59,16 +84,7 @@ const OrderTypeSelect = ({ disabled }: OrderTypeSelectProps) => {
         {ORDER_TYPES.map(({ value, icon: Icon }) => {
           const isDineIn = value === DINE_IN;
           
-          let isUpdatingDisabled = isUpdatingOrder;
-          if (isUpdatingOrder && posProfile?.edit_order_type) {
-            const isCurrentTypeToggleable = selectedOrderType === 'Take Away' || selectedOrderType === 'Delivery';
-            const isValueToggleable = value === 'Take Away' || value === 'Delivery';
-            if (isCurrentTypeToggleable && isValueToggleable) {
-              isUpdatingDisabled = false;
-            }
-          }
-
-          const isDisabled = disabled || (isDineIn && isRestrictedFromTableOrders) || isUpdatingDisabled;
+          const isDisabled = disabled || (isDineIn && isRestrictedFromTableOrders);
           
           return (
             <Button

@@ -4,6 +4,7 @@ import { AlertTriangle, Car, Layout, Plus, Square } from 'lucide-react';
 import { usePOSStore } from '../store/pos-store';
 import { useRootStore } from '../store/root-store';
 import { getRooms, getTables, getTableCount, getVacantTablesForBranch, mergeTablesBatch, unmergeTables, type Room, type Table } from '../lib/table-api';
+import { useAutoRefresh } from '../lib/use-auto-refresh';
 import { getMergeGroupMembers, formatMergedTableLabelFromGroup, getTableRenderGroups, sortTablesByMergeGroups } from '../lib/table-utils';
 import { Spinner } from '@ury/ui';
 import { Button } from '@ury/ui';
@@ -140,9 +141,10 @@ const TableView = () => {
   }, [branch, rooms, persistRoomCounts]);
 
   const loadTables = useCallback(
-    async (roomName: string, options?: { useCache?: boolean }) => {
+    async (roomName: string, options?: { useCache?: boolean; silent?: boolean }) => {
       if (!roomName) return;
-      setError(null);
+      const silent = options?.silent === true;
+      if (!silent) setError(null);
 
       const shouldUseCache = options?.useCache !== false;
       if (shouldUseCache && tablesCache[roomName]) {
@@ -151,18 +153,22 @@ const TableView = () => {
         return;
       }
 
-      setLoadingTables(true);
+      if (!silent) setLoadingTables(true);
       try {
         const fetchedTables = await getTables(roomName);
         const sortedTables = sortTablesByMergeGroups(fetchedTables);
         setTables(sortedTables);
         setTablesCache((prev) => ({ ...prev, [roomName]: sortedTables }));
+        if (silent) setError(null);
       } catch (e) {
         console.error(e);
-        setError('Failed to load tables');
-        setTables([]);
+        // A failed background refresh keeps the tables already on screen.
+        if (!silent) {
+          setError('Failed to load tables');
+          setTables([]);
+        }
       } finally {
-        setLoadingTables(false);
+        if (!silent) setLoadingTables(false);
       }
     },
     [tablesCache]
@@ -172,6 +178,14 @@ const TableView = () => {
     if (!selectedRoom) return;
     loadTables(selectedRoom);
   }, [selectedRoom, loadTables]);
+
+  // Tables opened or closed on the captain tablet show up here without a manual refresh.
+  useAutoRefresh(() =>
+    Promise.all([
+      selectedRoom ? loadTables(selectedRoom, { useCache: false, silent: true }) : null,
+      showCars && branch ? getActiveCarOrders(branch).then(setCarOrders) : null,
+    ])
+  );
 
   const handleNavigateToPOS = (tableName: string) => {
     if (!selectedRoom) return;

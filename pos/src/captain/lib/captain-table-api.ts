@@ -28,6 +28,7 @@ import { parseMergedWith } from '../../lib/table-utils';
  */
 export interface ActiveTableOrder {
   invoiceName: string;
+  orderNo: string | number | null;
   waiter: string;
   grandTotal: number;
   invoicePrinted: boolean;
@@ -35,6 +36,7 @@ export interface ActiveTableOrder {
 
 interface ActiveInvoiceRow {
   name: string;
+  custom_ury_order_number: string | number | null;
   restaurant_table: string | null;
   custom_merged_tables: string | null;
   waiter: string;
@@ -48,6 +50,7 @@ export async function getActiveTableOrders(
   const rows = (await db.getDocList(DOCTYPES.POS_INVOICE, {
     fields: [
       'name',
+      'custom_ury_order_number',
       'restaurant_table',
       'custom_merged_tables',
       'waiter',
@@ -67,6 +70,7 @@ export async function getActiveTableOrders(
   for (const row of rows) {
     const info: ActiveTableOrder = {
       invoiceName: row.name,
+      orderNo: row.custom_ury_order_number,
       waiter: row.waiter,
       grandTotal: row.grand_total,
       invoicePrinted: row.invoice_printed === 1,

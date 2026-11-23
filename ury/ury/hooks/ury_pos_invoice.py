@@ -18,7 +18,7 @@ def validate(doc, method):
 
 def before_submit(doc, method):
     calculate_and_set_times(doc, method)
-    validate_invoice_print(doc, method)
+    # FryBird: payment no longer requires the bill to be printed first.
     ro_reload_submit(doc, method)
 
 

@@ -1,4 +1,6 @@
 import React, { useEffect, useMemo, useRef } from 'react';
+import { kotLabel } from '../lib/kot-label';
+import { useAutoRefresh } from '../lib/use-auto-refresh';
 import { Clock, User, UserCheck, Receipt, Printer, Pencil, Trash2, GitBranch, GitMerge } from 'lucide-react';
 import { Badge, Button, Card, CardContent } from '@ury/ui';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@ury/ui';
@@ -64,6 +66,7 @@ export default function Orders() {
     selectedOrderLoading,
     selectedOrderError,
     fetchOrders,
+    refreshOrders,
     setSelectedStatus,
     goToNextPage,
     goToPreviousPage,
@@ -145,6 +148,9 @@ export default function Orders() {
   useEffect(() => {
     fetchOrders();
   }, [fetchOrders]);
+
+  // New orders from the captain tablet or the counter appear without a manual refresh.
+  useAutoRefresh(refreshOrders);
 
   // The Curbside tab on Tables links here with ?order=<invoice>.
   useEffect(() => {
@@ -441,7 +447,10 @@ export default function Orders() {
                     <div className="p-3 bg-gray-50 border-b">
                     <div className="mb-1 flex items-center justify-between gap-2">
                       <h3 className="font-medium text-gray-900 text-sm truncate" title={order.name}>
-                        {order.name}
+                        {kotLabel(order.custom_ury_order_number, order.name)}
+                        {order.custom_ury_order_number ? (
+                          <span className="ms-2 text-xs font-normal text-gray-500">{order.name}</span>
+                        ) : null}
                       </h3>
                       <div className="flex shrink-0 items-center gap-1">
                         {mergedBill && (
@@ -576,7 +585,10 @@ export default function Orders() {
             <div className="sticky top-0 start-0 end-0 z-20 border-b border-gray-200 bg-white px-6 py-4">
               <div className="flex items-center justify-between gap-2">
                 <h2 className="min-w-0 flex-1 truncate text-xl font-semibold text-gray-900">
-                  {selectedOrder.name}
+                  {kotLabel(selectedOrder.custom_ury_order_number, selectedOrder.name)}
+                  {selectedOrder.custom_ury_order_number ? (
+                    <span className="ms-2 text-sm font-normal text-gray-500">{selectedOrder.name}</span>
+                  ) : null}
                 </h2>
                 <div className="flex shrink-0 items-center gap-2">
                   {isOrderEditable(selectedOrder.status) && (

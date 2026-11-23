@@ -13,6 +13,7 @@ export const carPlateFrom = (comment: string | null | undefined) =>
 
 export interface ActiveCarOrder {
   invoiceName: string;
+  orderNo: string | number | null;
   carPlate: string;
   createdAt: string;
   waiter: string;
@@ -22,6 +23,7 @@ export interface ActiveCarOrder {
 
 interface CarInvoiceRow {
   name: string;
+  custom_ury_order_number: string | number | null;
   custom_comments: string | null;
   creation: string;
   waiter: string;
@@ -32,7 +34,7 @@ interface CarInvoiceRow {
 /** Open orders matching the filters, oldest first so the longest wait is on top. */
 async function getOpenOrders(filters: unknown[][]): Promise<ActiveCarOrder[]> {
   const rows = (await db.getDocList(DOCTYPES.POS_INVOICE, {
-    fields: ['name', 'custom_comments', 'creation', 'waiter', 'grand_total', 'invoice_printed'],
+    fields: ['name', 'custom_ury_order_number', 'custom_comments', 'creation', 'waiter', 'grand_total', 'invoice_printed'],
     filters: [['docstatus', '=', 0], ...filters],
     orderBy: { field: 'creation', order: 'asc' },
     limit: '*' as unknown as number,
@@ -41,6 +43,7 @@ async function getOpenOrders(filters: unknown[][]): Promise<ActiveCarOrder[]> {
 
   return rows.map((row) => ({
     invoiceName: row.name,
+    orderNo: row.custom_ury_order_number,
     carPlate: carPlateFrom(row.custom_comments) ?? '',
     createdAt: row.creation,
     waiter: row.waiter,

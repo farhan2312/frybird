@@ -53,6 +53,8 @@ export interface OrdersState {
 
 export interface OrdersActions {
   fetchOrders: (page?: number) => Promise<void>;
+  /** Re-reads the current page in the background, without the loading spinner. */
+  refreshOrders: () => Promise<void>;
   updateOrderStatus: (orderId: string, status: POSInvoice['status']) => Promise<void>;
   goToNextPage: () => Promise<void>;
   goToPreviousPage: () => Promise<void>;
@@ -140,6 +142,41 @@ export const createOrdersSlice: StateCreator<
         error: error instanceof Error ? error.message : 'Failed to fetch orders',
         orderLoading: false 
       });
+    }
+  },
+
+  refreshOrders: async () => {
+    const { orderLoading, orderSearchQuery, selectedStatus, orderKind, pagination } = get();
+    if (orderLoading) return;
+    const page = orderSearchQuery?.trim() ? 1 : pagination.currentPage;
+    try {
+      const profile = JSON.parse(sessionStorage.getItem('posProfile') || 'null');
+      const res = orderSearchQuery?.trim()
+        ? { invoices: (await searchPosInvoice(orderSearchQuery, selectedStatus)).data || [], hasMore: false }
+        : await getPOSInvoices({
+            status: selectedStatus,
+            limit: ITEMS_PER_PAGE,
+            limit_start: (page - 1) * ITEMS_PER_PAGE,
+            paid_limit: profile?.paid_limit,
+            order_kind: orderKind,
+          });
+      const now = get();
+      // Drop the result if the cashier switched tab, filter, search or page meanwhile.
+      if (
+        now.orderLoading ||
+        now.selectedStatus !== selectedStatus ||
+        now.orderKind !== orderKind ||
+        now.orderSearchQuery !== orderSearchQuery ||
+        now.pagination.currentPage !== pagination.currentPage
+      ) {
+        return;
+      }
+      set({
+        orders: res.invoices,
+        pagination: { ...now.pagination, hasNextPage: res.hasMore },
+      });
+    } catch (error) {
+      console.error('Background order refresh failed', error);
     }
   },
 

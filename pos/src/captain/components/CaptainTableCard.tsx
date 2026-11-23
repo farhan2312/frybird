@@ -1,4 +1,5 @@
 import { Lock, User, Users } from 'lucide-react';
+import { kotLabel } from '../../lib/kot-label';
 import { cn } from '@ury/ui';
 import { Badge } from '@ury/ui';
 import { formatCurrency } from '@ury/core';
@@ -109,6 +110,10 @@ const CaptainTableCard = ({
         <Badge variant={statusBadgeVariant} size="sm" className="w-fit truncate max-w-full">
           {statusLabel}
         </Badge>
+
+        {isOccupied && order && (
+          <span className="truncate text-xs font-semibold">{kotLabel(order.orderNo, order.invoiceName)}</span>
+        )}
 
         {isOccupied && ownership !== 'mine' && ownerName && (
           <span className="flex items-center gap-1 truncate text-xs font-medium opacity-80">

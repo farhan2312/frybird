@@ -1,4 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useAutoRefresh } from '../../lib/use-auto-refresh';
+import { kotLabel } from '../../lib/kot-label';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { AlertTriangle, Car, Plus, ShoppingBag, Square } from 'lucide-react';
 import { Badge, Button, Spinner, showToast } from '@ury/ui';
@@ -93,18 +95,24 @@ export default function CaptainTables() {
     setSelectedRoom(defaultRoom.name);
   }, [branchRooms, rooms, selectedRoom]);
 
-  const loadTables = useCallback(async (roomName: string) => {
-    setTablesLoading(true);
-    setTablesError(null);
+  const loadTables = useCallback(async (roomName: string, silent = false) => {
+    if (!silent) {
+      setTablesLoading(true);
+      setTablesError(null);
+    }
     try {
       const fetchedTables = await getTables(roomName);
       setTables(sortTablesByMergeGroups(fetchedTables));
+      setTablesError(null);
     } catch (err) {
       console.error(err);
-      setTablesError('Failed to load tables');
-      setTables([]);
+      // A failed background refresh keeps the tables already on screen.
+      if (!silent) {
+        setTablesError('Failed to load tables');
+        setTables([]);
+      }
     } finally {
-      setTablesLoading(false);
+      if (!silent) setTablesLoading(false);
     }
   }, []);
 
@@ -135,7 +143,7 @@ export default function CaptainTables() {
     }
   }, [branch, loadActiveOrders]);
 
-  const loadCarOrders = useCallback(async () => {
+  const loadCarOrders = useCallback(async (silent = false) => {
     if (!branch || !orderTab) return;
     try {
       const orders = await (orderTab === 'cars' ? getActiveCarOrders : getActiveTakeawayOrders)(branch);
@@ -143,7 +151,7 @@ export default function CaptainTables() {
       setOwnerNames(await getUserFullNames(orders.map((order) => order.waiter)));
     } catch (err) {
       console.error(err);
-      showToast.error(`Failed to load ${orderTab === 'cars' ? 'curbside' : 'take away'} orders`);
+      if (!silent) showToast.error(`Failed to load ${orderTab === 'cars' ? 'curbside' : 'take away'} orders`);
     }
   }, [branch, orderTab]);
 
@@ -167,6 +175,15 @@ export default function CaptainTables() {
     if (selectedRoom) loadTables(selectedRoom);
     if (branch) loadActiveOrders(branch);
   }, [selectedRoom, branch, loadTables, loadActiveOrders, loadCarOrders]);
+
+  // Orders placed on the POS or another tablet appear without tapping Refresh.
+  useAutoRefresh(() =>
+    Promise.all([
+      loadCarOrders(true),
+      selectedRoom ? loadTables(selectedRoom, true) : null,
+      branch ? loadActiveOrders(branch) : null,
+    ])
+  );
 
   const tableGroups = useMemo(() => sortTablesByMergeGroups(tables), [tables]);
 
@@ -295,7 +312,7 @@ export default function CaptainTables() {
                       ? order.carPlate
                       : new Date(order.createdAt.replace(' ', 'T')).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}
                   </span>
-                  {orderTab === 'takeaway' && <span className="block truncate text-xs">{order.invoiceName}</span>}
+                  <span className="block truncate text-xs font-semibold">{kotLabel(order.orderNo, order.invoiceName)}</span>
                   <Badge variant={order.invoicePrinted ? 'secondary' : 'info'}>
                     {order.invoicePrinted
                       ? 'Billed'
