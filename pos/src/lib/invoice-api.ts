@@ -52,6 +52,8 @@ export interface SplitGroupResponse {
 export interface POSInvoiceItem {
   name: string;
   item_name: string;
+  /** Kitchen note on the line, e.g. "cut in half". */
+  comment?: string;
   qty: number;
   rate: number;
   amount: number;

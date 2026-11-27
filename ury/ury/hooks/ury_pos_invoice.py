@@ -324,6 +324,13 @@ def release_merged_tables(doc):
         if not invoice.restaurant_table:
             continue
 
+        # A split table keeps its other bills open: free it only when the last one is paid.
+        if frappe.db.exists(
+            "POS Invoice",
+            {"restaurant_table": invoice.restaurant_table, "docstatus": 0, "name": ["!=", invoice.name]},
+        ):
+            continue
+
         frappe.db.set_value(
             "URY Table",
             invoice.restaurant_table,

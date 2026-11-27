@@ -397,7 +397,17 @@ def diff_order_items(current_items, previous_items):
         change = item["qty"] - (current[key]["qty"] if key in current else 0)
         if change > 0:
             cancelled.append(dict(item, qty=_whole(change)))
-    return added, cancelled
+
+    # A line that comes back with its note missing is the line already sent, not a cancel plus a new
+    # item: a screen that loses notes on reload must not send the kitchen a false "CANCELLED" ticket.
+    for new in added:
+        if new["comments"]:
+            continue
+        for old in cancelled:
+            if old["item_code"] == new["item_code"] and old["comments"] and flt(new["qty"]) > 0 and flt(old["qty"]) > 0:
+                same = min(flt(new["qty"]), flt(old["qty"]))
+                new["qty"], old["qty"] = _whole(flt(new["qty"]) - same), _whole(flt(old["qty"]) - same)
+    return [i for i in added if flt(i["qty"]) > 0], [i for i in cancelled if flt(i["qty"]) > 0]
 
 
 def _whole(qty):

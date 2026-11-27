@@ -30,3 +30,19 @@ class TestDiffOrderItems(FrappeTestCase):
 	def test_removed_line_is_cancelled(self):
 		before = [line("MEAL", comments="7 up"), line("MEAL", comments="Pepsi")]
 		self.assertEqual(diff_order_items(before[:1], before), ([], [line("MEAL", comments="Pepsi")]))
+
+	def test_lost_note_is_not_a_cancel(self):
+		# FB-00283: "Cut" burgers reloaded without the note, plus a Cola added.
+		before = [line("BIGCHEESE", 4, "Cut"), line("SANDO", 2, "Cut"), line("FRIES")]
+		after = [line("BIGCHEESE", 4), line("SANDO", 2), line("FRIES"), line("COLA")]
+		self.assertEqual(diff_order_items(after, before), ([line("COLA")], []))
+
+	def test_lost_note_with_more_quantity_sends_only_the_extra(self):
+		added, cancelled = diff_order_items([line("FRIES", 3)], [line("FRIES", 2, "Cheese fries")])
+		self.assertEqual((added, cancelled), ([line("FRIES", 1)], []))
+
+	def test_new_note_on_sent_item_still_counts_as_new(self):
+		# Adding a note to a line already sent stays a cancel plus a new line, so the kitchen sees the note.
+		added, cancelled = diff_order_items([line("MEAL", comments="Pepsi")], [line("MEAL")])
+		self.assertEqual((added, cancelled), ([line("MEAL", comments="Pepsi")], [line("MEAL")]))
+

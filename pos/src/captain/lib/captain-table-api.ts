@@ -29,6 +29,8 @@ import { parseMergedWith } from '../../lib/table-utils';
 export interface ActiveTableOrder {
   invoiceName: string;
   orderNo: string | number | null;
+  /** Open bills on the table: more than 1 after a bill split. grandTotal adds them all up. */
+  billCount: number;
   waiter: string;
   grandTotal: number;
   invoicePrinted: boolean;
@@ -61,6 +63,8 @@ export async function getActiveTableOrders(
       ['branch', '=', branch],
       ['docstatus', '=', 0],
     ],
+    // Oldest first, so a split table shows its first bill's KOT number.
+    orderBy: { field: 'creation', order: 'asc' },
     limit: '*' as unknown as number,
     asDict: true,
   } as unknown as Parameters<typeof db.getDocList>[1])) as ActiveInvoiceRow[];
@@ -71,12 +75,20 @@ export async function getActiveTableOrders(
     const info: ActiveTableOrder = {
       invoiceName: row.name,
       orderNo: row.custom_ury_order_number,
+      billCount: 1,
       waiter: row.waiter,
       grandTotal: row.grand_total,
       invoicePrinted: row.invoice_printed === 1,
     };
 
     if (row.restaurant_table) {
+      const existing = map.get(row.restaurant_table);
+      if (existing) {
+        existing.billCount += 1;
+        existing.grandTotal += row.grand_total;
+        existing.invoicePrinted = existing.invoicePrinted && info.invoicePrinted;
+        continue;
+      }
       map.set(row.restaurant_table, info);
     }
     for (const partnerTable of parseMergedWith(row.custom_merged_tables)) {
@@ -115,4 +127,31 @@ export async function getUserFullNames(
     map.set(row.name, row.full_name || row.name);
   }
   return map;
+}
+
+export interface TableBill {
+  name: string;
+  orderNo: string | number | null;
+  grandTotal: number;
+  customer: string;
+}
+
+/** The open bills on one table, oldest first: one normally, more after a bill split. */
+export async function getTableBills(table: string): Promise<TableBill[]> {
+  const rows = (await db.getDocList(DOCTYPES.POS_INVOICE, {
+    fields: ['name', 'custom_ury_order_number', 'grand_total', 'customer'],
+    filters: [
+      ['restaurant_table', '=', table],
+      ['docstatus', '=', 0],
+    ],
+    orderBy: { field: 'creation', order: 'asc' },
+    limit: 50,
+    asDict: true,
+  } as unknown as Parameters<typeof db.getDocList>[1])) as Array<{
+    name: string;
+    custom_ury_order_number: string | number | null;
+    grand_total: number;
+    customer: string;
+  }>;
+  return rows.map((r) => ({ name: r.name, orderNo: r.custom_ury_order_number, grandTotal: r.grand_total, customer: r.customer }));
 }

@@ -1,4 +1,5 @@
 import { Lock, User, Users } from 'lucide-react';
+import { clockLabel, elapsedLabel, elapsedTone, parseOrderTime, useNow } from '../../lib/order-time';
 import { kotLabel } from '../../lib/kot-label';
 import { cn } from '@ury/ui';
 import { Badge } from '@ury/ui';
@@ -17,19 +18,6 @@ export interface CaptainTableCardProps {
   mergePartners?: string[];
   onTap: () => void;
 }
-
-const elapsedLabel = (isoTimestamp: string | null): string | null => {
-  if (!isoTimestamp) return null;
-  const started = new Date(isoTimestamp).getTime();
-  if (Number.isNaN(started)) return null;
-
-  const minutes = Math.max(0, Math.round((Date.now() - started) / 60000));
-  if (minutes < 1) return 'just now';
-  if (minutes < 60) return `${minutes}m`;
-  const hours = Math.floor(minutes / 60);
-  const remainder = minutes % 60;
-  return remainder ? `${hours}h ${remainder}m` : `${hours}h`;
-};
 
 /**
  * Large, touch-friendly table card for the Captain's mobile "Tables" home
@@ -53,7 +41,9 @@ const CaptainTableCard = ({
   const isOccupied = table.occupied === 1;
   const isBilled = Boolean(order?.invoicePrinted);
   const hasMergePartners = Boolean(mergePartners && mergePartners.length > 0);
-  const elapsed = isOccupied ? elapsedLabel(table.latest_invoice_time) : null;
+  const now = useNow();
+  const started = isOccupied ? parseOrderTime(table.latest_invoice_time) : null;
+  const elapsed = started ? `${clockLabel(started)} · ${elapsedLabel(started, now)}` : null;
 
   const colorClasses = isBilled
     ? 'border-slate-400 bg-slate-100 text-slate-900'
@@ -112,7 +102,10 @@ const CaptainTableCard = ({
         </Badge>
 
         {isOccupied && order && (
-          <span className="truncate text-xs font-semibold">{kotLabel(order.orderNo, order.invoiceName)}</span>
+          <span className="truncate text-xs font-semibold">
+            {kotLabel(order.orderNo, order.invoiceName)}
+            {order.billCount > 1 && ` · ${order.billCount} bills`}
+          </span>
         )}
 
         {isOccupied && ownership !== 'mine' && ownerName && (
@@ -124,7 +117,7 @@ const CaptainTableCard = ({
 
         {isOccupied && (elapsed || typeof order?.grandTotal === 'number') && (
           <div className="flex items-center justify-between text-xs font-medium opacity-80">
-            <span>{elapsed ?? '—'}</span>
+            <span className={elapsedTone(started, now)}>{elapsed ?? '—'}</span>
             {typeof order?.grandTotal === 'number' && (
               <span>{formatCurrency(order.grandTotal)}</span>
             )}

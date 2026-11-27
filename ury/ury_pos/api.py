@@ -885,6 +885,7 @@ def getPosInvoiceItems(invoice):
                 "qty": items.qty,
                 "rate": items.rate,
                 "amount": items.amount,
+                "comment": items.get("comment") or "",
             }
         )
     taxDetail = orderdItems.taxes

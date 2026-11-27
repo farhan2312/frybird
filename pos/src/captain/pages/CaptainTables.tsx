@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useAutoRefresh } from '../../lib/use-auto-refresh';
 import { kotLabel } from '../../lib/kot-label';
+import { clockLabel, elapsedLabel, elapsedTone, parseOrderTime, useNow } from '../../lib/order-time';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { AlertTriangle, Car, Plus, ShoppingBag, Square } from 'lucide-react';
 import { Badge, Button, Spinner, showToast } from '@ury/ui';
@@ -185,6 +186,8 @@ export default function CaptainTables() {
     ])
   );
 
+  const now = useNow();
+
   const tableGroups = useMemo(() => sortTablesByMergeGroups(tables), [tables]);
 
   const resolveOwnership = useCallback(
@@ -310,7 +313,11 @@ export default function CaptainTables() {
                   <span className="block truncate text-lg font-bold">
                     {orderTab === 'cars'
                       ? order.carPlate
-                      : new Date(order.createdAt.replace(' ', 'T')).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}
+                      : clockLabel(parseOrderTime(order.createdAt))}
+                  </span>
+                  <span className={`block text-xs ${elapsedTone(parseOrderTime(order.createdAt), now)}`}>
+                    {orderTab === 'cars' && `${clockLabel(parseOrderTime(order.createdAt))} · `}
+                    {elapsedLabel(parseOrderTime(order.createdAt), now)}
                   </span>
                   <span className="block truncate text-xs font-semibold">{kotLabel(order.orderNo, order.invoiceName)}</span>
                   <Badge variant={order.invoicePrinted ? 'secondary' : 'info'}>

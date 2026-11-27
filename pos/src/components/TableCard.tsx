@@ -1,4 +1,5 @@
 import { type MouseEvent } from 'react';
+import { elapsedLabel, elapsedTone, parseOrderTime, useNow } from '../lib/order-time';
 import { Eye, Loader2, Printer, Users } from 'lucide-react';
 import { cn } from '@ury/ui';
 import { formatInvoiceTime } from '@ury/core';
@@ -119,7 +120,10 @@ const TableCard = ({
           </div>
           <div className="flex min-h-[1.25rem] items-center justify-between">
             <span className="font-medium">{t('tables.started_at')}</span>
-            <span>{isOccupied ? formatInvoiceTime(table.latest_invoice_time) : '—'}</span>
+            <span>
+              {isOccupied ? formatInvoiceTime(table.latest_invoice_time) : '—'}
+              {isOccupied && <TableElapsed time={table.latest_invoice_time} />}
+            </span>
           </div>
           {typeof table.no_of_seats === 'number' && (
             <div className="flex items-center justify-between">
@@ -182,3 +186,11 @@ const TableCard = ({
 };
 
 export default TableCard;
+
+/** "· 12 min" since the table's order was started, counting up while the card is on screen. */
+function TableElapsed({ time }: { time: string | null }) {
+  const now = useNow();
+  const start = parseOrderTime(time);
+  const label = elapsedLabel(start, now);
+  return label ? <span className={`ms-1 ${elapsedTone(start, now)}`}>· {label}</span> : null;
+}

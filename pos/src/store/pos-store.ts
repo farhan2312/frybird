@@ -197,6 +197,8 @@ interface POSStore extends POSState {
     table: string | null;
     room: string | null;
     items: OrderItem[];
+    /** The order's own note (custom_comments), e.g. the curbside car plate. */
+    orderComment?: string;
   }) => void;
   reorderTabs: (sourceIndex: number, destinationIndex: number) => void;
   setNoOfPax: (pax: number) => void;
@@ -1112,8 +1114,8 @@ export const usePOSStore = create<POSStore>((set, get) => ({
       selectedAggregator: null,
       orderId: draft.orderId,
       isUpdatingOrder: true,
-      orderComment: '',
-      originalCartHash: generateCartHash({ activeOrders: draft.items, selectedCustomer: draft.customer, orderComment: '' }),
+      orderComment: draft.orderComment || '',
+      originalCartHash: generateCartHash({ activeOrders: draft.items, selectedCustomer: draft.customer, orderComment: draft.orderComment || '' }),
       selectedItem: null,
       error: null,
     });

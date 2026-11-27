@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useRef } from 'react';
+import { elapsedLabel, elapsedTone, parseOrderTime, useNow } from '../lib/order-time';
 import { kotLabel } from '../lib/kot-label';
 import { useAutoRefresh } from '../lib/use-auto-refresh';
 import { Clock, User, UserCheck, Receipt, Printer, Pencil, Trash2, GitBranch, GitMerge } from 'lucide-react';
@@ -77,6 +78,7 @@ export default function Orders() {
     setOrderKind
   } = useRootStore();
 
+  const now = useNow();
   const posStore = usePOSStore();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -266,6 +268,9 @@ export default function Orders() {
         description: item.description || '',
         special_dish: 0,
         tax_rate: 0,
+        // Keep the kitchen note: without it, saving the order reads each noted line as
+        // cancelled and re-added, and the kitchen gets a false "CANCELLED" ticket.
+        comment: item.comment || '',
       }));
 
       // Open the draft order as a new tab without disturbing existing tabs.
@@ -277,6 +282,7 @@ export default function Orders() {
         table: order.restaurant_table || null,
         room: order.custom_restaurant_room || null,
         items,
+        orderComment: order.custom_comments || '',
       });
 
       // Redirect to POS page
@@ -515,6 +521,7 @@ export default function Orders() {
                       <div className="flex items-center gap-2 text-xs text-gray-500">
                         <Clock className="w-3.5 h-3.5" />
                         <span>{formatDateTime(order.posting_date, order.posting_time)}</span>
+                        <OrderElapsed order={order} now={now} />
                       </div>
 
                       {/* Total - pushed to bottom like MenuCard */}
@@ -709,6 +716,7 @@ export default function Orders() {
                     <div className="flex items-center gap-3 text-sm">
                       <Clock className="w-4 h-4 text-gray-500" />
                       <span className="text-gray-600">{formatDateTime(selectedOrder.posting_date, selectedOrder.posting_time)}</span>
+                      <OrderElapsed order={selectedOrder} now={now} />
                     </div>
                   </div>
                   {/* Second column: waiter and table */}
@@ -741,6 +749,7 @@ export default function Orders() {
                     <div key={index} className="flex justify-between items-start py-2 border-b border-gray-100">
                       <div className="flex-1">
                         <p className="text-sm font-medium text-gray-900">{item.item_name}</p>
+                        {item.comment && <p className="text-sm italic text-primary-700">{item.comment}</p>}
                         <p className="text-xs text-gray-500">Qty: {item.qty}</p>
                       </div>
                       <div className="text-right">
@@ -853,3 +862,11 @@ export default function Orders() {
     </div>
   );
 };
+
+/** How long an open order has been waiting, e.g. "· 12 min"; nothing once it is paid. */
+function OrderElapsed({ order, now }: { order: { status?: string; posting_date: string; posting_time: string }; now: number }) {
+  if (order.status !== 'Draft') return null;
+  const start = parseOrderTime(order.posting_date, order.posting_time);
+  const label = elapsedLabel(start, now);
+  return label ? <span className={elapsedTone(start, now)}>· {label}</span> : null;
+}

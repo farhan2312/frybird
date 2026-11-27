@@ -1,5 +1,5 @@
 import { useEffect, useRef, type MouseEvent as ReactMouseEvent } from 'react';
-import { ArrowRightLeft, Loader2, MoreVertical, Printer, Receipt, UserRound } from 'lucide-react';
+import { ArrowRightLeft, Loader2, MoreVertical, Printer, Receipt, SplitSquareHorizontal, UserRound } from 'lucide-react';
 import { Button } from '@ury/ui';
 
 /**
@@ -31,6 +31,8 @@ interface CaptainActionsMenuProps {
   showPrintBill?: boolean;
   onPrintBill?: () => void;
   isPrintingBill?: boolean;
+  showSplitBill?: boolean;
+  onSplitBill?: () => void;
 }
 
 const CaptainActionsMenu = ({
@@ -46,6 +48,8 @@ const CaptainActionsMenu = ({
   showPrintBill = false,
   onPrintBill,
   isPrintingBill = false,
+  showSplitBill = false,
+  onSplitBill,
 }: CaptainActionsMenuProps) => {
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -62,7 +66,7 @@ const CaptainActionsMenu = ({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [isOpen, onOpenChange]);
 
-  if (!showReprintKot && !showTransferTable && !showTransferCaptain && !showPrintBill) {
+  if (!showReprintKot && !showTransferTable && !showTransferCaptain && !showPrintBill && !showSplitBill) {
     return null;
   }
 
@@ -89,6 +93,12 @@ const CaptainActionsMenu = ({
     onTransferCaptain?.();
   };
 
+  const handleSplitBill = (event: ReactMouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+    onOpenChange(false);
+    onSplitBill?.();
+  };
+
   const handlePrintBill = (event: ReactMouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
     onOpenChange(false);
@@ -110,6 +120,16 @@ const CaptainActionsMenu = ({
 
       {isOpen && (
         <div className="absolute right-0 top-full z-50 mt-1 w-56 rounded-lg border border-gray-200 bg-white py-1 shadow-lg">
+          {showSplitBill && (
+            <Button
+              variant="ghost"
+              className="flex h-auto w-full justify-start gap-2 rounded-none px-4 py-2.5 text-sm font-normal text-gray-700 hover:bg-gray-100"
+              onClick={handleSplitBill}
+            >
+              <SplitSquareHorizontal className="h-4 w-4 shrink-0" />
+              Split bill
+            </Button>
+          )}
           {showReprintKot && (
             <Button
               variant="ghost"

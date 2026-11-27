@@ -51,6 +51,7 @@ export interface UseTableOrderContextResult {
   reductionPendingLines: OrderDeltaLine[];
   /** Re-fetches the per-table permission context (does not reload the order). */
   refetchContext: () => Promise<void>;
+  reload: () => void;
 }
 
 /**
@@ -68,7 +69,7 @@ export interface UseTableOrderContextResult {
  * cart model unchanged. See CaptainOrder.tsx's report notes for why this
  * was kept local instead of adding baseline/working state to the store.
  */
-export const useTableOrderContext = (table: string | undefined): UseTableOrderContextResult => {
+export const useTableOrderContext = (table: string | undefined, invoice?: string): UseTableOrderContextResult => {
   const [context, setContext] = useState<TableOrderContext | null>(null);
   const [isContextLoading, setIsContextLoading] = useState(true);
   const [contextError, setContextError] = useState<string | null>(null);
@@ -80,6 +81,9 @@ export const useTableOrderContext = (table: string | undefined): UseTableOrderCo
   const clearTableOrder = usePOSStore((s) => s.clearTableOrder);
 
   const prevOrderLoadingRef = useRef(true);
+  const [reloadCount, setReloadCount] = useState(0);
+  /** Reloads the order from the server and takes a fresh baseline (after a bill split). */
+  const reload = useCallback(() => setReloadCount((n) => n + 1), []);
   const baselineCapturedForRef = useRef<string | null>(null);
 
   const fetchContext = useCallback(async () => {
@@ -116,7 +120,13 @@ export const useTableOrderContext = (table: string | undefined): UseTableOrderCo
         setContext(result);
         if (result.permissions.view) {
           const room = result.table?.restaurant_room ?? null;
-          setSelectedTable(table, room);
+          if (invoice) {
+            // A table with split bills: open the bill the captain picked.
+            setSelectedTable(table, room, true);
+            usePOSStore.getState().loadTableOrder(table, invoice);
+          } else {
+            setSelectedTable(table, room);
+          }
         }
       } catch (err) {
         if (cancelled) return;
@@ -132,7 +142,7 @@ export const useTableOrderContext = (table: string | undefined): UseTableOrderCo
       clearTableOrder();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [table]);
+  }, [table, invoice, reloadCount]);
 
   // Capture the baseline snapshot on the falling edge of orderLoading, i.e.
   // right after loadTableOrder() (triggered by setSelectedTable above)
@@ -196,6 +206,7 @@ export const useTableOrderContext = (table: string | undefined): UseTableOrderCo
     newOrChangedLines: deltaLines.filter((l) => l.delta > 0),
     reductionPendingLines: deltaLines.filter((l) => l.delta < 0),
     refetchContext: fetchContext,
+    reload,
   };
 };
 

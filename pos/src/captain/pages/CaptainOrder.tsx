@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { ChevronLeft, ClipboardList, Loader2, UtensilsCrossed } from 'lucide-react';
 import { Button, Spinner, cn, showToast } from '@ury/ui';
 import { formatCurrency } from '@ury/core';
@@ -8,12 +8,16 @@ import { useRootStore, RootState } from '../../store/root-store';
 import {
   captainTransfer,
   reprintKot,
+  splitBill,
   syncOrder,
   SyncOrderRequest,
   tableTransfer,
 } from '../../lib/order-api';
 import { printOrder } from '../../lib/print';
-import { resolvePrintFormat } from '../../lib/invoice-api';
+import { getPOSInvoiceItems, resolvePrintFormat, type POSInvoiceItem } from '../../lib/invoice-api';
+import BillSplitDialog from '../../components/BillSplitDialog';
+import { getTableBills, type TableBill } from '../lib/captain-table-api';
+import { kotLabel } from '../../lib/kot-label';
 import { getVacantTablesForBranch, Table } from '../../lib/table-api';
 import { DINE_IN, WALK_IN_CUSTOMER } from '../../data/order-types';
 import { useTableOrderContext, OrderDeltaLine } from '../hooks/useTableOrderContext';
@@ -43,6 +47,9 @@ type Mode = 'menu' | 'order';
  */
 export default function CaptainOrder() {
   const { table } = useParams<{ table: string }>();
+  const [searchParams] = useSearchParams();
+  // After a bill split a table has several bills; ?bill= picks which one is open.
+  const bill = searchParams.get('bill') || undefined;
   const navigate = useNavigate();
   const user = useRootStore((state: RootState) => state.user);
 
@@ -55,7 +62,8 @@ export default function CaptainOrder() {
     alreadyOrderedLines,
     newOrChangedLines,
     reductionPendingLines,
-  } = useTableOrderContext(table);
+    reload,
+  } = useTableOrderContext(table, bill);
 
   const {
     activeOrders,
@@ -92,6 +100,21 @@ export default function CaptainOrder() {
   const [transferDestinations, setTransferDestinations] = useState<Table[]>([]);
   const [isTransferDestinationsLoading, setIsTransferDestinationsLoading] = useState(false);
   const [isTransferCaptainOpen, setIsTransferCaptainOpen] = useState(false);
+  const [tableBills, setTableBills] = useState<TableBill[]>([]);
+  const [splitItems, setSplitItems] = useState<POSInvoiceItem[] | null>(null);
+
+  const loadTableBills = useCallback(async () => {
+    if (!table) return;
+    try {
+      setTableBills(await getTableBills(table));
+    } catch (error) {
+      console.error('Failed to load table bills', error);
+    }
+  }, [table]);
+
+  useEffect(() => {
+    loadTableBills();
+  }, [loadTableBills, orderId]);
 
   const editingItem = useMemo(
     () => (editingItemUniqueId ? activeOrders.find((i) => i.uniqueId === editingItemUniqueId) ?? null : null),
@@ -324,6 +347,45 @@ export default function CaptainOrder() {
     clearTableOrder();
     showToast.success('Table transferred.');
     navigate('/order');
+  };
+
+  const hasPendingChanges = newOrChangedLines.length > 0 || reductionPendingLines.length > 0;
+  const savedQty = alreadyOrderedLines.reduce((sum, line) => sum + line.confirmedQty, 0);
+  // Split works on what is already saved, so unsent changes must be sent first.
+  const canSplitBill = canModify && isUpdatingOrder && Boolean(invoiceId) && savedQty >= 2;
+
+  const handleOpenSplitBill = async () => {
+    if (!invoiceId) return;
+    if (hasPendingChanges) {
+      showToast.error('Send the new items to the kitchen first, then split the bill.');
+      return;
+    }
+    try {
+      const { items } = await getPOSInvoiceItems(invoiceId);
+      setSplitItems(items);
+    } catch (error) {
+      showToast.error(error instanceof Error ? error.message : 'Failed to load the bill items.');
+    }
+  };
+
+  const handleSplitBill = async (payload: { itemsToMove: Array<{ name: string; qty: number }>; customer?: string }) => {
+    if (!invoiceId) return;
+    const result = await splitBill(invoiceId, payload.itemsToMove, payload.customer);
+    showToast.success('Bill split. The selected items are on a new bill for this table.');
+    setSplitItems(null);
+    // Stay on this bill (now with fewer items) so the next person's items can be split off too.
+    await loadTableBills();
+    if (bill === result.source_invoice) reload();
+    else navigate(`/order/table/${encodeURIComponent(table!)}?bill=${encodeURIComponent(result.source_invoice)}`, { replace: true });
+  };
+
+  const handleOpenBill = (name: string) => {
+    if (name === invoiceId) return;
+    if (hasPendingChanges) {
+      showToast.error('Send or remove the unsent items before switching bills.');
+      return;
+    }
+    navigate(`/order/table/${encodeURIComponent(table!)}?bill=${encodeURIComponent(name)}`, { replace: true });
   };
 
   const currentCaptain = context?.assignment?.waiter ?? '';
@@ -564,9 +626,30 @@ export default function CaptainOrder() {
             showPrintBill={canPrintBill}
             onPrintBill={handlePrintBill}
             isPrintingBill={isPrintingBill}
+            showSplitBill={canSplitBill}
+            onSplitBill={handleOpenSplitBill}
           />
         </div>
       </div>
+
+      {tableBills.length > 1 && (
+        <div className="flex gap-2 overflow-x-auto border-b border-gray-200 bg-white px-3 py-2">
+          {tableBills.map((b, index) => (
+            <Button
+              key={b.name}
+              variant={b.name === invoiceId ? 'default' : 'outline'}
+              size="sm"
+              className="h-auto shrink-0 flex-col items-start gap-0 px-3 py-1.5"
+              onClick={() => handleOpenBill(b.name)}
+            >
+              <span className="text-xs font-semibold">Bill {index + 1}</span>
+              <span className="text-[11px] opacity-80">
+                {kotLabel(b.orderNo, b.name)} · {formatCurrency(b.grandTotal)}
+              </span>
+            </Button>
+          ))}
+        </div>
+      )}
 
       {!canModify && (
         <div className="px-3 pt-3">
@@ -680,6 +763,16 @@ export default function CaptainOrder() {
         initialComment={noteEditingLine?.comment || ''}
       />
 
+      {splitItems && invoiceId && (
+        <BillSplitDialog
+          open
+          onOpenChange={(open) => !open && setSplitItems(null)}
+          invoiceName={invoiceId}
+          items={splitItems}
+          sourceCustomer={selectedCustomer ? { id: selectedCustomer.id, name: selectedCustomer.name, phone: selectedCustomer.phone } : null}
+          onConfirm={handleSplitBill}
+        />
+      )}
       <TableTransferDialog
         open={isTransferTableOpen}
         onOpenChange={(open) => {
