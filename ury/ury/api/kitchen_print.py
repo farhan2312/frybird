@@ -35,6 +35,8 @@ TICKET_MAX_AGE_HOURS = 2  # anything older is stale for the kitchen, so it isn't
 TICKET_SETTLE_SECONDS = 2  # one save creates a KOT per station a moment apart; wait so they print as one ticket
 PAYMENT_LABELS = {"Credit Card": "Card"}
 CAR_PHONE_SEPARATOR = " | Phone: "  # same as CAR_PHONE_SEPARATOR in pos/src/captain/lib/captain-car-api.ts
+INSTAGRAM_URL = "https://www.instagram.com/frybird.ae"
+INSTAGRAM_HANDLE = "@frybird.ae"
 CANCEL_TYPES = ("Partially cancelled", "Cancelled")
 TICKET_TITLES = {"Order Modified": "ADDED TO ORDER", "Partially cancelled": "CANCELLED ITEMS", "Cancelled": "ORDER CANCELLED"}
 
@@ -284,7 +286,14 @@ def _receipt_lines(doc):
 				lines.append(_columns(payment.mode_of_payment, _money(payment.amount)))
 		if flt(doc.change_amount):
 			lines.append(_columns("Change", _money(doc.change_amount)))
-	lines += [_divider(), _line("Thank you for choosing FryBird!", align="c")]
+	lines += [
+		_divider(),
+		_line("Follow us on Instagram", bold=True, align="c"),
+		_qr_line(INSTAGRAM_URL),
+		_line(INSTAGRAM_HANDLE, align="c"),
+		_divider(),
+		_line("Thank you for choosing FryBird!", align="c"),
+	]
 	return lines
 
 
@@ -302,6 +311,30 @@ def _bill_label(invoice_name, split_group):
 def _car_plate(comments):
 	# "CURBSIDE - Car: A 12345 | Phone: 050..." -> "A 12345"; the phone is for the counter, not the slip.
 	return comments[len(CURBSIDE_PREFIX):].split(CAR_PHONE_SEPARATOR)[0]
+
+
+def _qr_line(data, size=6):
+	"""A centred QR code on the receipt.
+
+	The POS app writes each line's text straight to the printer, so the printer's own QR commands
+	(ESC/POS "GS ( k": model 2, module size, error correction M, store, print) go in as the text.
+	Every byte stays below 0x80 for a short link, so it passes through the app's ASCII encoding."""
+	data = data.encode("ascii")
+	length = len(data) + 3
+	if length > 127:
+		raise ValueError("QR link too long for the receipt")
+
+	def gs_k(*body):
+		return bytes([0x1D, 0x28, 0x6B]) + bytes(body)
+
+	commands = (
+		gs_k(0x04, 0x00, 0x31, 0x41, 0x32, 0x00)  # model 2
+		+ gs_k(0x03, 0x00, 0x31, 0x43, size)  # module size (dots)
+		+ gs_k(0x03, 0x00, 0x31, 0x45, 0x31)  # error correction M
+		+ gs_k(length, 0x00, 0x31, 0x50, 0x30) + data  # store the link
+		+ gs_k(0x03, 0x00, 0x31, 0x51, 0x30)  # print it
+	)
+	return {"t": commands.decode("ascii"), "b": False, "s": 1, "a": "c"}
 
 
 def _company_address(company):
