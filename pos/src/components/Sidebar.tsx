@@ -64,7 +64,8 @@ const Sidebar = ({ disabled }: SidebarProps) => {
 
           {/* Category Items */}
           <div className="space-y-1">
-            {categories.map((category) => {
+            {/* Only categories with items on the menu, so retired ones don't clutter the list. */}
+            {categories.filter((category) => getCategoryCount(category.name) > 0).map((category) => {
               const count = getCategoryCount(category.name);
               const isActive = selectedCategory === category.name;
               return (

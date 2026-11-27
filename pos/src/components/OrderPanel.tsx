@@ -112,8 +112,9 @@ const OrderPanel = () => {
         no_of_pax: noOfPax,
         pos_profile: posProfile.name,
         order_type: selectedOrderType,
-        table: selectedTable || undefined,
-        room: selectedRoom || undefined,
+        // Only Dine In orders sit on a table; a table left selected must not catch a takeaway.
+        table: (selectedOrderType === DINE_IN || isUpdatingOrder) ? selectedTable || undefined : undefined,
+        room: (selectedOrderType === DINE_IN || isUpdatingOrder) ? selectedRoom || undefined : undefined,
         customer: selectedOrderType === 'Aggregators' ? selectedAggregator?.customer : selectedCustomer?.name || WALK_IN_CUSTOMER,
         aggregator_id: selectedOrderType === 'Aggregators' ? selectedAggregator?.customer : undefined,
         cashier: posProfile.cashier,

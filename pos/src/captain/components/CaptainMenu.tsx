@@ -89,7 +89,7 @@ const CaptainMenu: React.FC<CaptainMenuProps> = ({ canAddItems }) => {
           >
             All
           </button>
-          {categories.map((category) => (
+          {categories.filter((category) => menuItems.some((item) => item.course === category.name)).map((category) => (
             <button
               key={category.name}
               onClick={() => setSelectedCategory(category.name)}

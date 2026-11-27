@@ -43,13 +43,13 @@ OLD_STATION_GROUPS = ["FRIED CHICKEN", "WINGS", "TENDERS", "NUGGETS", "SIDES", "
 IMG = "/assets/ury/Images/menu/"  # real/ = product photos from the FryBird flyer
 # code, name, course (menu category), item group (decides kitchen station), price AED, description, image
 MENU_ITEMS = [
-	("FCH-OS-2", "2 PCS Original Spicy Fried Chicken", "Fried Chicken", "FRIED CHICKEN", 10, "", "real/fried-chicken-original"),
-	("FCH-OS-4", "4 PCS Original Spicy Fried Chicken", "Fried Chicken", "FRIED CHICKEN", 19, "", "real/fried-chicken-original"),
-	("FCH-OS-9", "9 PCS Original Spicy Fried Chicken", "Fried Chicken", "FRIED CHICKEN", 39, "", "real/fried-chicken-original"),
-	("FCH-NH-2", "2 PCS Nash Hot Fried Chicken", "Fried Chicken", "FRIED CHICKEN", 16, "", "real/fried-chicken-nash-hot"),
-	("FCH-NH-4", "4 PCS Nash Hot Fried Chicken", "Fried Chicken", "FRIED CHICKEN", 29, "", "real/fried-chicken-nash-hot"),
-	("FCH-LH-2", "2 PCS Lemon Hot Fried Chicken", "Fried Chicken", "FRIED CHICKEN", 16, "", "real/fried-chicken-lemon-hot"),
-	("FCH-LH-4", "4 PCS Lemon Hot Fried Chicken", "Fried Chicken", "FRIED CHICKEN", 29, "", "real/fried-chicken-lemon-hot"),
+	("FCH-OS-2", "2 PCS Original Spicy Fried Chicken", "Fryd Pieces", "FRIED CHICKEN", 10, "", "real/fried-chicken-original"),
+	("FCH-OS-4", "4 PCS Original Spicy Fried Chicken", "Fryd Pieces", "FRIED CHICKEN", 19, "", "real/fried-chicken-original"),
+	("FCH-OS-9", "9 PCS Original Spicy Fried Chicken", "Fryd Pieces", "FRIED CHICKEN", 39, "", "real/fried-chicken-original"),
+	("FCH-NH-2", "2 PCS Nash Hot Fried Chicken", "Fryd Pieces", "FRIED CHICKEN", 16, "", "real/fried-chicken-nash-hot"),
+	("FCH-NH-4", "4 PCS Nash Hot Fried Chicken", "Fryd Pieces", "FRIED CHICKEN", 29, "", "real/fried-chicken-nash-hot"),
+	("FCH-LH-2", "2 PCS Lemon Hot Fried Chicken", "Fryd Pieces", "FRIED CHICKEN", 16, "", "real/fried-chicken-lemon-hot"),
+	("FCH-LH-4", "4 PCS Lemon Hot Fried Chicken", "Fryd Pieces", "FRIED CHICKEN", 29, "", "real/fried-chicken-lemon-hot"),
 	("TND-OS-2", "2 PCS Original Spicy Chicken Tenders", "Chicken Tenders", "CHICKEN TENDERS", 10, "", "real/tenders-original"),
 	("TND-OS-4", "4 PCS Original Spicy Chicken Tenders", "Chicken Tenders", "CHICKEN TENDERS", 19, "", "real/tenders-original"),
 	("TND-OS-6", "6 PCS Original Spicy Chicken Tenders", "Chicken Tenders", "CHICKEN TENDERS", 28, "", "real/tenders-original"),
@@ -59,46 +59,46 @@ MENU_ITEMS = [
 	("TND-LH-2", "2 PCS Lemon Hot Chicken Tenders", "Chicken Tenders", "CHICKEN TENDERS", 16, "", "real/tenders-lemon-hot"),
 	("TND-LH-4", "4 PCS Lemon Hot Chicken Tenders", "Chicken Tenders", "CHICKEN TENDERS", 29, "", "real/tenders-lemon-hot"),
 	("TND-LH-6", "6 PCS Lemon Hot Chicken Tenders", "Chicken Tenders", "CHICKEN TENDERS", 42, "", "real/tenders-lemon-hot"),
-	("NUG-10", "Chicken Nuggets", "Chicken Nuggets", "SIDES", 10, "", "nuggets"),
+	("NUG-10", "Chicken Nuggets", "Fryd Pieces", "SIDES", 10, "", "nuggets-plate"),
 	("BRG-CLASSIC", "Classic Burger", "Burgers", "BURGERS", 10, "Crispy chicken burger", "real/burger-classic"),
 	("BRG-RANCHY", "Ranchy Burger", "Burgers", "BURGERS", 15, "Crispy chicken burger", "real/burger-ranchy"),
 	("BRG-NASH", "Nash Burger", "Burgers", "BURGERS", 15, "Crispy chicken burger", "real/burger-nash"),
 	("BRG-CHEESY", "Cheesy Classic Burger", "Burgers", "BURGERS", 15, "Crispy chicken burger", "real/burger-cheesy-classic"),
-	("BRG-SANDO", "Sando", "Burgers", "BURGERS", 20, "Crispy chicken sandwich", "real/sando"),
+	("BRG-SANDO", "Sando", "Sandwiches", "BURGERS", 20, "Crispy chicken sandwich", "real/sando"),
 	("BRG-BUFFALO", "Buffalo Ranch", "Burgers", "BURGERS", 25, "Crispy chicken burger", "real/buffalo-ranch"),
 	("BRG-CHEESE", "Cheese Burger", "Burgers", "BURGERS", 16, "Beef burger", "real/burger-cheese"),
 	("BRG-BIGCHEESE", "Big Cheese", "Burgers", "BURGERS", 20, "Beef burger", "real/burger-big-cheese"),
 	("BRG-PRIME", "Prime House", "Burgers", "BURGERS", 25, "Beef burger", "real/burger-prime-house"),
-	("WRP-MINI", "Mini Wrap", "Wraps", "WRAPS", 6, "", "real/wrap"),
-	("WRP-SUPREME", "Supreme Wrap", "Wraps", "WRAPS", 10, "", "real/wrap"),
-	("WRP-RANCHY", "Ranchy Wrap", "Wraps", "WRAPS", 15, "", "real/wrap"),
-	("SIDE-FRIES", "Fries", "Sides", "SIDES", 5, "", "ADD-MEAL"),
-	("SIDE-SPICY", "Spicy Fries", "Sides", "SIDES", 8, "", "ADD-MEAL"),
-	("SIDE-LOADED", "Loaded Fries", "Sides", "SIDES", 15, "", "ADD-CHS"),
-	("SIDE-FRYBIRD", "FryBird Fries", "Sides", "SIDES", 20, "", "ADD-CHS"),
-	("SIDE-CHEESE", "Cheese Fries", "Sides", "SIDES", 10, "", "cheese-fries"),
-	("ADD-MEAL-FD", "Meal with Fries & Drink", "Add-ons", "ADD-ONS", 7, "Upgrade any item to a meal", "addon-meal"),
-	("ADD-BUN", "Brioche Bun", "Add-ons", "BURGERS", 2, "", "addon-brioche-bun"),  # grill makes it, so it shares the burger group
-	("ADD-BUN-PLAIN", "Normal Bun", "Add-ons", "BURGERS", 1, "", "bun-plain"),
-	("DRK-PEPSI", "Pepsi", "Drinks", "DRINKS", 4, "", "drink-pepsi"),
-	("DRK-MDEW", "Mountain Dew", "Drinks", "DRINKS", 4, "", "drink-mountain-dew"),
-	("DRK-MDEW-DIET", "Mountain Dew Diet", "Drinks", "DRINKS", 4, "", "drink-mountain-dew-diet"),
-	("DRK-7UP", "7UP", "Drinks", "DRINKS", 4, "", "drink-7up"),
-	("DRK-COLA", "Cola", "Drinks", "DRINKS", 4, "", "drink-coca-cola"),
+	("WRP-MINI", "Mini Wrap", "Sandwiches", "WRAPS", 6, "", "real/wrap"),
+	("WRP-SUPREME", "Supreme Wrap", "Sandwiches", "WRAPS", 10, "", "real/wrap"),
+	("WRP-RANCHY", "Ranchy Wrap", "Sandwiches", "WRAPS", 15, "", "real/wrap"),
+	("SIDE-FRIES", "Fries", "Add On", "SIDES", 5, "", "ADD-MEAL"),
+	("SIDE-SPICY", "Spicy Fries", "Add On", "SIDES", 8, "", "ADD-MEAL"),
+	("SIDE-LOADED", "Loaded Fries", "Add On", "SIDES", 15, "", "ADD-CHS"),
+	("SIDE-FRYBIRD", "FryBird Fries", "Add On", "SIDES", 20, "", "ADD-CHS"),
+	("SIDE-CHEESE", "Cheese Fries", "Add On", "SIDES", 10, "", "cheese-fries-plate"),
+	("ADD-MEAL-FD", "Meal with Fries & Drink", "Add On", "ADD-ONS", 7, "Upgrade any item to a meal", "addon-meal"),
+	("ADD-BUN", "Brioche Bun", "Add On", "BURGERS", 2, "", "addon-brioche-bun"),  # grill makes it, so it shares the burger group
+	("ADD-BUN-PLAIN", "Normal Bun", "Add On", "BURGERS", 1, "", "bun-plain"),
+	("DRK-PEPSI", "Pepsi", "Drinks", "DRINKS", 4, "", "drink-pepsi-can"),
+	("DRK-MDEW", "Mountain Dew", "Drinks", "DRINKS", 4, "", "drink-mountain-dew-can"),
+	("DRK-MDEW-DIET", "Mountain Dew Diet", "Drinks", "DRINKS", 4, "", "drink-mountain-dew-diet-can"),
+	("DRK-7UP", "7UP", "Drinks", "DRINKS", 4, "", "drink-7up-can"),
+	("DRK-COLA", "Cola", "Drinks", "DRINKS", 4, "", "drink-cola-can"),
 	("DRK-LEMONADE", "Lemonade", "Drinks", "DRINKS", 4, "", "drink-lemonade"),
 	("DRK-SHAKE-OREO", "Milkshake - Oreo", "Drinks", "DRINKS", 10, "", "shake-oreo"),
 	("DRK-SHAKE-KINDER", "Milkshake - Kinder", "Drinks", "DRINKS", 10, "", "shake-kinder"),
 	("DRK-SHAKE-LOTUS", "Milkshake - Lotus", "Drinks", "DRINKS", 10, "", "shake-lotus"),
 	("DRK-SHAKE-PB", "Peanut Butter Shake", "Drinks", "DRINKS", 15, "", "shake-peanut-butter"),
 	("DRK-WATER", "Water", "Drinks", "DRINKS", 1, "", "drink-water-glass"),
-	("DIP-GARLIC", "Garlic Dip", "Dips", "DIPS", 2, "", "dip-garlic"),
-	("DIP-RANCHY", "Ranchy Dip", "Dips", "DIPS", 2, "", "dip-ranchy"),
-	("DIP-DYNAMITE", "Dynamite Dip", "Dips", "DIPS", 2, "", "dip-dynamite"),
+	("DIP-GARLIC", "Garlic Dip", "Add On", "DIPS", 2, "", "dip-garlic"),
+	("DIP-RANCHY", "Ranchy Dip", "Add On", "DIPS", 2, "", "dip-ranchy"),
+	("DIP-DYNAMITE", "Dynamite Dip", "Add On", "DIPS", 2, "", "dip-dynamite"),
 	# Options and Add-ons sheet: burger extras (ticked in the burger's product dialog, printed on the Grill ticket)
-	("ADD-CHEESE", "Extra Cheese", "Add-ons", "BURGERS", 2, "Burger add-on", "addon-cheese"),
-	("ADD-PICKLE", "Add Pickle", "Add-ons", "BURGERS", 2, "Burger add-on", "addon-pickle"),
+	("ADD-CHEESE", "Extra Cheese", "Add On", "BURGERS", 2, "Burger add-on", "addon-cheese"),
+	("ADD-PICKLE", "Add Pickle", "Add On", "BURGERS", 2, "Burger add-on", "addon-pickle"),
 	# Combos and Meals sheet
-	("MEAL-CHK-BURGER", "Chicken Burger Meal", "Meals", "BURGERS", 17,
+	("MEAL-CHK-BURGER", "Chicken Burger Meal", "Burgers", "BURGERS", 17,
 	 "Classic Burger + fries + soft drink (Pepsi, 7Up, Mirinda or water)", "real/burger-classic"),
 ]
 # add-on items offered on every burger and on the burger meal
@@ -111,13 +111,30 @@ MENU_ITEMS += [
 	("ADD-TENDER-STRIP", "Extra Chicken Strip", "Add-ons", "CHICKEN TENDERS", 5, "One extra tender strip", "real/tenders-original"),
 ]
 CHICKEN_ADDONS = ["ADD-SPICE-HOT", "ADD-SPICE-XHOT", "ADD-SPICY-SEASONING"]
-# menu course -> add-on items offered on every item in that course (POS product dialog and QR ordering)
+# Menu categories, in the order the POS shows them
+MENU_COURSES = ["Fryd Pieces", "Chicken Tenders", "Burgers", "Sandwiches", "Add On", "Drinks"]
+
+# item code prefix -> add-on items offered on those items (POS product dialog and QR ordering)
+ADDONS_BY_PREFIX = {
+	"BRG-": ["ADD-CHEESE", "ADD-PICKLE"],
+	"MEAL-": ["ADD-CHEESE", "ADD-PICKLE"],
+	"FCH-": CHICKEN_ADDONS,
+	"TND-": CHICKEN_ADDONS + ["ADD-TENDER-STRIP"],
+	"SIDE-": ["ADD-SPICE-HOT", "ADD-SPICE-XHOT"],  # every fries item
+}
+
+
+def addons_for(code):
+	return next((addons for prefix, addons in ADDONS_BY_PREFIX.items() if code.startswith(prefix)), [])
+
+
+# Old category names, kept only for patches written before the menu moved to MENU_COURSES (they have already run).
 ADDONS_BY_COURSE = {
 	"Burgers": ["ADD-CHEESE", "ADD-PICKLE"],
 	"Meals": ["ADD-CHEESE", "ADD-PICKLE"],
 	"Fried Chicken": CHICKEN_ADDONS,
 	"Chicken Tenders": CHICKEN_ADDONS + ["ADD-TENDER-STRIP"],
-	"Sides": ["ADD-SPICE-HOT", "ADD-SPICE-XHOT"],  # every fries item
+	"Sides": ["ADD-SPICE-HOT", "ADD-SPICE-XHOT"],
 }
 
 # Checklists sheet (client-edited wording; Halal certificate item removed)
@@ -264,7 +281,7 @@ def _menu():
 	new_codes = {i[0] for i in MENU_ITEMS}
 	old_codes = [r.item for r in menu.items if r.item not in new_codes]
 	menu.set("items", [])
-	for code, name, course, _, price, _, _ in MENU_ITEMS:
+	for code, name, course, _, price, _, _ in sorted(MENU_ITEMS, key=lambda i: MENU_COURSES.index(i[2])):
 		menu.append("items", {"item": code, "item_name": name, "rate": price, "course": course})
 	menu.branch = BRANCH
 	menu.save(ignore_permissions=True)  # also rebuilds the menu's selling price list
@@ -288,10 +305,10 @@ def _stations():
 
 
 def _addons():
-	for code, _, course, *_ in MENU_ITEMS:
-		if course in ADDONS_BY_COURSE:
+	for code, *_ in MENU_ITEMS:
+		if addons_for(code):
 			item = frappe.get_doc("Item", code)
-			item.set("custom_pos_add_on_items", [{"item": a} for a in ADDONS_BY_COURSE[course]])
+			item.set("custom_pos_add_on_items", [{"item": a} for a in addons_for(code)])
 			item.save(ignore_permissions=True)
 
 

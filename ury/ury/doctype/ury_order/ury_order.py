@@ -1305,7 +1305,13 @@ def sync_order(
     room=None,
     merged_tables=None
 ):
-    
+    # FryBird: a new Take Away / Delivery / app order never sits on a table, even if the POS
+    # still has the last table selected; otherwise it occupies that table and shows up there.
+    if not invoice and order_type and order_type != "Dine In":
+        table = None
+        merged_tables = None
+        room = None
+
     user_role = frappe.get_roles()
     posprofile = frappe.get_doc("POS Profile", pos_profile)
     

@@ -33,6 +33,7 @@ CASH_MODE = "Cash"
 ORDER_TYPE_LABELS = {"Delivery": "Home Delivery"}
 TICKET_MAX_AGE_HOURS = 2  # anything older is stale for the kitchen, so it isn't printed late
 TICKET_SETTLE_SECONDS = 2  # one save creates a KOT per station a moment apart; wait so they print as one ticket
+PAYMENT_LABELS = {"Credit Card": "Card"}
 CANCEL_TYPES = ("Partially cancelled", "Cancelled")
 TICKET_TITLES = {"Order Modified": "ADDED TO ORDER", "Partially cancelled": "CANCELLED ITEMS", "Cancelled": "ORDER CANCELLED"}
 
@@ -112,7 +113,7 @@ def get_shift_summary(opening_entry, end, sub_cashier=0):
 
 def _summary_lines(opening, invoices, end):
 	company = frappe.db.get_value("POS Profile", opening.pos_profile, "company")
-	items, payments = {}, {}
+	items, payments, payment_orders = {}, {}, {}
 	sales = discount = vat = qty = 0
 	for doc in invoices:
 		for item in doc.items:
@@ -122,6 +123,8 @@ def _summary_lines(opening, invoices, end):
 			qty += flt(item.qty)
 		for payment in doc.payments:
 			payments[payment.mode_of_payment] = payments.get(payment.mode_of_payment, 0) + flt(payment.amount)
+			if flt(payment.amount):
+				payment_orders[payment.mode_of_payment] = payment_orders.get(payment.mode_of_payment, 0) + 1
 		if flt(doc.change_amount):
 			payments[CASH_MODE] = payments.get(CASH_MODE, 0) - flt(doc.change_amount)
 		sales += flt(doc.rounded_total or doc.grand_total)
@@ -154,9 +157,16 @@ def _summary_lines(opening, invoices, end):
 	if discount:
 		lines.append(_columns("Discounts", f"-{_money(discount)}"))
 	lines += [_columns("VAT", _money(vat)), _columns("TOTAL SALES", _money(sales), bold=True), _divider()]
-	for mode, amount in sorted(payments.items(), key=lambda row: -row[1]):
-		if amount:
-			lines.append(_columns(mode, _money(amount)))
+	# Cash and card on separate lines with their order counts, then the total taken.
+	lines.append(_line("PAYMENTS", bold=True, align="c"))
+	modes = sorted(payments, key=lambda m: (m != CASH_MODE, m))  # Cash first, then card and the rest
+	for mode in modes:
+		count = payment_orders.get(mode, 0)
+		label = f"{PAYMENT_LABELS.get(mode, mode)} ({count} order{'s' if count != 1 else ''})"
+		lines.append(_columns(label, _money(payments[mode]), bold=True))
+	if not modes:
+		lines.append(_line("No payments"))
+	lines += [_line("-" * WIDTH), _columns("TOTAL", _money(sum(payments.values())), bold=True, size=3)]
 	opening_cash = sum(flt(row.opening_amount) for row in opening.balance_details if row.mode_of_payment == CASH_MODE)
 	lines += [
 		_divider(),
@@ -287,7 +297,7 @@ def _money(value):
 
 
 def _columns(left, right, bold=False, size=1):
-	width = WIDTH // size
+	width = WIDTH // 2 if size in (2, 4) else WIDTH  # sizes 2 and 4 are double width; 3 is double height only
 	left, right = _ascii(left), _ascii(right)
 	if len(left) + len(right) + 1 > width:
 		left = left[: width - len(right) - 1]

@@ -613,6 +613,10 @@ export const usePOSStore = create<POSStore>((set, get) => ({
         orderId: null
       });
     }
+    // Leaving Dine In drops the table, so a takeaway or delivery order never lands on it.
+    if (type !== 'Dine In' && get().selectedTable && !get().isUpdatingOrder) {
+      set({ selectedTable: null, selectedRoom: null, tableOrder: null });
+    }
     
     if (type !== 'Aggregators') {
       fetchMenuItems();
