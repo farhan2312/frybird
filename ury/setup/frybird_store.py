@@ -91,9 +91,9 @@ MENU_ITEMS = [
 	("DRK-SHAKE-LOTUS", "Milkshake - Lotus", "Drinks", "DRINKS", 10, "", "shake-lotus"),
 	("DRK-SHAKE-PB", "Peanut Butter Shake", "Drinks", "DRINKS", 15, "", "shake-peanut-butter"),
 	("DRK-WATER", "Water", "Drinks", "DRINKS", 1, "", "drink-water-glass"),
-	("DIP-GARLIC", "Garlic Dip", "Add On", "DIPS", 2, "", "dip-garlic"),
-	("DIP-RANCHY", "Ranchy Dip", "Add On", "DIPS", 2, "", "dip-ranchy"),
-	("DIP-DYNAMITE", "Dynamite Dip", "Add On", "DIPS", 2, "", "dip-dynamite"),
+	("DIP-GARLIC", "Dip Garlic", "Add On", "DIPS", 2, "", "dip-garlic"),
+	("DIP-RANCHY", "Dip Ranch", "Add On", "DIPS", 2, "", "dip-ranchy"),
+	("DIP-DYNAMITE", "Dip Dynamite", "Add On", "DIPS", 2, "", "dip-dynamite"),
 	# Options and Add-ons sheet: burger extras (ticked in the burger's product dialog, printed on the Grill ticket)
 	("ADD-CHEESE", "Extra Cheese", "Add On", "BURGERS", 2, "Burger add-on", "addon-cheese"),
 	("ADD-PICKLE", "Add Pickle", "Add On", "BURGERS", 2, "Burger add-on", "addon-pickle"),

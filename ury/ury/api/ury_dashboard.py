@@ -1,4 +1,5 @@
 import frappe
+from frappe.utils import flt
 
 from frappe.utils import get_datetime, datetime, add_to_date, today
 
@@ -63,16 +64,65 @@ def get_dashboard_stats(branch=None):
 		occupied_count = frappe.db.count("URY Table", {"occupied": 1})
 		total_count = frappe.db.count("URY Table", {})
 
+	cash, card = _payment_split(branch)
+
 	result_dict = {
 		"todays_sales": grand_total,
 		"orders_today": total_invoices,
 		"avg_order_value": avg_order_value,
 		"active_tables": occupied_count,
 		"total_tables": total_count,
+		"cash_sales": cash,
+		"card_sales": card,
 	}
 
 	frappe.cache().set_value(cache_key, result_dict, expires_in_sec=30)
 	return result_dict
+
+
+def _payment_split(branch):
+	"""Cash and card taken on today's paid orders (the same orders as Today's Sales). Cash is net of
+	change given back; every mode other than Cash counts as card."""
+	rows = frappe.db.sql(
+		"""
+		SELECT p.`mode_of_payment` AS mode, SUM(p.`amount`) AS amount
+		FROM `tabSales Invoice Payment` p
+		JOIN `tabPOS Invoice` b ON b.`name` = p.`parent` AND p.`parenttype` = 'POS Invoice'
+		LEFT JOIN `tabURY Report Settings` rs ON ((%(branch)s IS NULL AND rs.`branch` IS NULL) OR rs.`branch` = %(branch)s)
+		WHERE
+			(%(branch)s IS NULL OR b.`branch` = %(branch)s)
+			AND b.`docstatus` = 1
+			AND b.`status` IN ("Consolidated", "Paid")
+			AND (
+				((rs.`hours` IS NULL OR rs.`hours` = 0) AND b.`posting_date` = curdate())
+				OR (rs.`hours` > 0 AND TIMESTAMP(b.`posting_date`, b.`posting_time`) <= TIMESTAMP(DATE_ADD(DATE(DATE_SUB(NOW(), INTERVAL rs.`hours` HOUR)), INTERVAL 1 DAY), CONCAT(LPAD(rs.`hours`, 2, '0'), ':00:00')) AND TIMESTAMP(b.`posting_date`, b.`posting_time`) >= TIMESTAMP(DATE(DATE_SUB(NOW(), INTERVAL rs.`hours` HOUR)), CONCAT(LPAD(rs.`hours`, 2, '0'), ':00:00')))
+				OR (rs.`branch` IS NULL AND b.`posting_date` = curdate())
+			)
+		GROUP BY p.`mode_of_payment`
+		""",
+		{"branch": branch or None},
+		as_dict=True,
+	)
+	change = frappe.db.sql(
+		"""
+		SELECT COALESCE(SUM(b.`change_amount`), 0)
+		FROM `tabPOS Invoice` b
+		LEFT JOIN `tabURY Report Settings` rs ON ((%(branch)s IS NULL AND rs.`branch` IS NULL) OR rs.`branch` = %(branch)s)
+		WHERE
+			(%(branch)s IS NULL OR b.`branch` = %(branch)s)
+			AND b.`docstatus` = 1
+			AND b.`status` IN ("Consolidated", "Paid")
+			AND (
+				((rs.`hours` IS NULL OR rs.`hours` = 0) AND b.`posting_date` = curdate())
+				OR (rs.`hours` > 0 AND TIMESTAMP(b.`posting_date`, b.`posting_time`) <= TIMESTAMP(DATE_ADD(DATE(DATE_SUB(NOW(), INTERVAL rs.`hours` HOUR)), INTERVAL 1 DAY), CONCAT(LPAD(rs.`hours`, 2, '0'), ':00:00')) AND TIMESTAMP(b.`posting_date`, b.`posting_time`) >= TIMESTAMP(DATE(DATE_SUB(NOW(), INTERVAL rs.`hours` HOUR)), CONCAT(LPAD(rs.`hours`, 2, '0'), ':00:00')))
+				OR (rs.`branch` IS NULL AND b.`posting_date` = curdate())
+			)
+		""",
+		{"branch": branch or None},
+	)[0][0]
+	cash = sum(flt(r.amount) for r in rows if r.mode == "Cash") - flt(change)
+	card = sum(flt(r.amount) for r in rows if r.mode != "Cash")
+	return round(cash, 2), round(card, 2)
 
 
 @frappe.whitelist(methods=["GET"])

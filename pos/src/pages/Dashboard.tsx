@@ -1,4 +1,4 @@
-import { TrendingUp, ShoppingCart, Clock, Users, AlertTriangle, Bell } from 'lucide-react';
+import { TrendingUp, ShoppingCart, Clock, Users, AlertTriangle, Bell, Banknote, CreditCard } from 'lucide-react';
 import { Card, CardContent } from '@ury/ui';
 import { useState, useEffect } from 'react';
 import { usePOSStore } from '../store/pos-store';
@@ -73,6 +73,19 @@ export default function Dashboard() {
             value: formatCurrency(statsData.todays_sales),
             icon: TrendingUp,
             color: 'text-green-600'
+          },
+          // Today's Sales split by how customers paid (Cash + Card = Today's Sales)
+          {
+            label: 'Cash',
+            value: formatCurrency(statsData.cash_sales ?? 0),
+            icon: Banknote,
+            color: 'text-emerald-600'
+          },
+          {
+            label: 'Card',
+            value: formatCurrency(statsData.card_sales ?? 0),
+            icon: CreditCard,
+            color: 'text-sky-600'
           },
           {
             label: 'Orders Today',
@@ -234,7 +247,7 @@ export default function Dashboard() {
     <div className="h-full overflow-y-auto p-6 bg-gray-50 space-y-6">
       {/* 1. Stat Cards Row (Aligned with Core UI & Icons Preserved) */}
       <section className="w-full">
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
           {statsError ? (
             <div className="col-span-full text-red-600 text-sm">Failed to load stats</div>
           ) : statsLoading ? (

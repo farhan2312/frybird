@@ -16,3 +16,4 @@ ury.patches.v2_0.update_drink_and_side_photos
 ury.patches.v2_0.six_menu_categories
 ury.patches.v2_0.move_sando_to_burgers
 ury.patches.v2_0.remove_chicken_burger_meal
+ury.patches.v2_0.rename_dip_ranch
