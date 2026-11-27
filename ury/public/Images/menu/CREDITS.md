@@ -51,3 +51,14 @@ Add-ons and water (Unsplash, free to use):
 - addon-pickle: photo-1650072395437-223b4906207d
 - addon-cheese: photo-1683314573422-649a3c6ad784
 - addon-meal: photo-1495753379358-73c76ccd644b
+
+Photos from Wikimedia Commons, each under the licence shown (resized and cropped to 800x600):
+
+- drink-pepsi: https://commons.wikimedia.org/wiki/File:Pepsi_Bottle.jpg (CC BY-SA 4.0, by Ayakln)
+- drink-mountain-dew: https://commons.wikimedia.org/wiki/File:Mountain_Dew_Flasche_(cropped).jpg (CC BY-SA 4.0, by DYVER)
+- drink-mountain-dew-diet: https://commons.wikimedia.org/wiki/File:Diet_Mtn_Dew.jpg (CC BY-SA 4.0, by Thanksolotl)
+- drink-7up: https://commons.wikimedia.org/wiki/File:Can_of_Seven_Up.jpg (CC BY 3.0, by IBERZA)
+- drink-coca-cola: https://commons.wikimedia.org/wiki/File:Coca-cola_50cl_can_-_Italia.jpg (CC BY-SA 3.0, by M0tty)
+- nuggets: https://commons.wikimedia.org/wiki/File:Chicken_nuggets_on_a_plate.jpg (CC0, by Jiafei Slay Queen)
+- cheese-fries: https://commons.wikimedia.org/wiki/File:Cheese_Fries.jpg (CC BY 2.0, by David Goehring)
+- bun-plain: https://commons.wikimedia.org/wiki/File:Bun_Bread.jpg (CC BY-SA 4.0, by Gaurav Dhwaj Khadka)

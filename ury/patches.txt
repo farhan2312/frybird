@@ -11,3 +11,4 @@ ury.patches.v2_0.show_recently_paid_orders
 ury.patches.v2_0.add_noon_food
 ury.patches.v2_0.add_spicy_seasoning
 ury.patches.v2_0.sync_menu_addons
+ury.patches.v2_0.add_drinks_nuggets_cheese_fries_bun
