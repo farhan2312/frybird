@@ -1,4 +1,4 @@
-import { Globe, Phone, ShoppingBag, Truck, Utensils } from "lucide-react";
+import { ShoppingBag, Utensils } from "lucide-react";
 
 export type OrderType = "Dine In" | "Take Away" | "Delivery" | "Phone In" | "Aggregators";
 
@@ -8,6 +8,7 @@ export type OrderTypes= {
     icon: React.ElementType;
 }
 
+// FryBird takes Dine In, Take Away and Curbside (a Take Away with the car plate, added by OrderTypeSelect).
 export const ORDER_TYPES: OrderTypes[] = [
     {
         label: "Dine In",
@@ -19,21 +20,6 @@ export const ORDER_TYPES: OrderTypes[] = [
         value: "Take Away",
         icon: ShoppingBag
     },
-    {
-        label: "Home Delivery",
-        value: "Delivery",
-        icon: Truck
-    },
-    {
-        label: "Phone In",
-        value: "Phone In",
-        icon: Phone
-    },
-    {
-        label: "Aggregators",
-        value: "Aggregators",
-        icon: Globe
-    }
 ]
 
 export const DINE_IN="Dine In"
@@ -44,7 +30,6 @@ export const ORDER_KIND_TABS = [
     { value: "dine_in", label: "Dine In" },
     { value: "take_away", label: "Take Away" },
     { value: "curbside", label: "Curbside" },
-    { value: "delivery", label: "Home Delivery" },
     { value: "apps", label: "Delivery Apps" },
 ] as const
 export type OrderKind = (typeof ORDER_KIND_TABS)[number]["value"]

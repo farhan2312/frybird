@@ -180,6 +180,10 @@ interface POSStore extends POSState {
   getItemQuantityFromCart: (item: MenuItem) => number;
   loadTableOrder: (table: string, invoice?: string) => Promise<void>;
   clearTableOrder: () => void;
+  /** Starts a separate, empty bill on the selected table (someone at the table paying on their own). */
+  startNewBill: () => void;
+  /** True when the cart has items not yet sent: a new order with items, or changes to a saved one. */
+  hasUnsentChanges: () => boolean;
   isMenuInteractionDisabled: () => boolean;
   isOrderInteractionDisabled: () => boolean;
   initializeApp: () => Promise<void>;
@@ -605,13 +609,17 @@ export const usePOSStore = create<POSStore>((set, get) => ({
       set({ 
         selectedOrderType: type,
       });
-    } else {
+    } else if (isUpdatingOrder) {
+      // Leaving a saved order starts a new one in this tab.
       set({ 
         activeOrders: [],
         selectedOrderType: type,
         isUpdatingOrder: false,
         orderId: null
       });
+    } else {
+      // A new order keeps its items when the customer changes their mind (Take Away -> Dine In).
+      set({ selectedOrderType: type });
     }
     // Leaving Dine In drops the table, so a takeaway or delivery order never lands on it.
     if (type !== 'Dine In' && get().selectedTable && !get().isUpdatingOrder) {
@@ -773,11 +781,14 @@ export const usePOSStore = create<POSStore>((set, get) => ({
           } : null,
           isUpdatingOrder: true,
           orderId: order.name,
-          originalCartHash: generateCartHash({ activeOrders: orderItems, selectedCustomer: order.customer ? { id: order.customer } as any : null, orderComment: '' }),
+          originalCartHash: generateCartHash({ activeOrders: orderItems, selectedCustomer: order.customer ? { id: order.customer } as any : null, orderComment: order.custom_comments || '' }),
           noOfPax: order.no_of_pax || 1,
           lastModifiedTime: order.modified || null,
           orderComment: order.custom_comments || '',
         });
+      } else if (!get().isUpdatingOrder) {
+        // A free table for a new order: keep the items already in the cart.
+        set({ tableOrder: null, orderId: null, lastModifiedTime: null });
       } else {
         set({
           tableOrder: null,
@@ -805,6 +816,27 @@ export const usePOSStore = create<POSStore>((set, get) => ({
     } finally {
       set({ orderLoading: false });
     }
+  },
+
+  startNewBill: () => {
+    set({
+      tableOrder: null,
+      activeOrders: [],
+      selectedCustomer: null,
+      isUpdatingOrder: false,
+      orderId: null,
+      noOfPax: 1,
+      lastModifiedTime: null,
+      orderComment: '',
+      originalCartHash: '',
+      selectedOrderType: 'Dine In',
+    });
+  },
+
+  hasUnsentChanges: () => {
+    const state = get();
+    if (!state.isUpdatingOrder) return state.activeOrders.length > 0;
+    return generateCartHash(state) !== state.originalCartHash;
   },
 
   clearTableOrder: () => {

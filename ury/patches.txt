@@ -14,3 +14,5 @@ ury.patches.v2_0.sync_menu_addons
 ury.patches.v2_0.add_drinks_nuggets_cheese_fries_bun
 ury.patches.v2_0.update_drink_and_side_photos
 ury.patches.v2_0.six_menu_categories
+ury.patches.v2_0.move_sando_to_burgers
+ury.patches.v2_0.remove_chicken_burger_meal

@@ -64,7 +64,7 @@ MENU_ITEMS = [
 	("BRG-RANCHY", "Ranchy Burger", "Burgers", "BURGERS", 15, "Crispy chicken burger", "real/burger-ranchy"),
 	("BRG-NASH", "Nash Burger", "Burgers", "BURGERS", 15, "Crispy chicken burger", "real/burger-nash"),
 	("BRG-CHEESY", "Cheesy Classic Burger", "Burgers", "BURGERS", 15, "Crispy chicken burger", "real/burger-cheesy-classic"),
-	("BRG-SANDO", "Sando", "Sandwiches", "BURGERS", 20, "Crispy chicken sandwich", "real/sando"),
+	("BRG-SANDO", "Sando", "Burgers", "BURGERS", 20, "Crispy chicken sandwich", "real/sando"),
 	("BRG-BUFFALO", "Buffalo Ranch", "Burgers", "BURGERS", 25, "Crispy chicken burger", "real/buffalo-ranch"),
 	("BRG-CHEESE", "Cheese Burger", "Burgers", "BURGERS", 16, "Beef burger", "real/burger-cheese"),
 	("BRG-BIGCHEESE", "Big Cheese", "Burgers", "BURGERS", 20, "Beef burger", "real/burger-big-cheese"),
@@ -97,9 +97,6 @@ MENU_ITEMS = [
 	# Options and Add-ons sheet: burger extras (ticked in the burger's product dialog, printed on the Grill ticket)
 	("ADD-CHEESE", "Extra Cheese", "Add On", "BURGERS", 2, "Burger add-on", "addon-cheese"),
 	("ADD-PICKLE", "Add Pickle", "Add On", "BURGERS", 2, "Burger add-on", "addon-pickle"),
-	# Combos and Meals sheet
-	("MEAL-CHK-BURGER", "Chicken Burger Meal", "Burgers", "BURGERS", 17,
-	 "Classic Burger + fries + soft drink (Pepsi, 7Up, Mirinda or water)", "real/burger-classic"),
 ]
 # add-on items offered on every burger and on the burger meal
 MENU_ITEMS += [

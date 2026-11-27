@@ -34,6 +34,7 @@ ORDER_TYPE_LABELS = {"Delivery": "Home Delivery"}
 TICKET_MAX_AGE_HOURS = 2  # anything older is stale for the kitchen, so it isn't printed late
 TICKET_SETTLE_SECONDS = 2  # one save creates a KOT per station a moment apart; wait so they print as one ticket
 PAYMENT_LABELS = {"Credit Card": "Card"}
+CAR_PHONE_SEPARATOR = " | Phone: "  # same as CAR_PHONE_SEPARATOR in pos/src/captain/lib/captain-car-api.ts
 CANCEL_TYPES = ("Partially cancelled", "Cancelled")
 TICKET_TITLES = {"Order Modified": "ADDED TO ORDER", "Partially cancelled": "CANCELLED ITEMS", "Cancelled": "ORDER CANCELLED"}
 
@@ -187,7 +188,7 @@ def _require_agent():
 
 def _ticket_lines(kots):
 	first = kots[0]
-	invoice = frappe.db.get_value("POS Invoice", first.invoice, ["order_type", "custom_comments"], as_dict=True) or frappe._dict()
+	invoice = frappe.db.get_value("POS Invoice", first.invoice, ["order_type", "custom_comments", "custom_split_group"], as_dict=True) or frappe._dict()
 	is_cancel = first.type in CANCEL_TYPES
 	lines = [
 		_line(TICKET_HEADER, align="c"),
@@ -198,6 +199,9 @@ def _ticket_lines(kots):
 		_divider(),
 		_line(_ticket_destination(first, invoice), bold=True, size=2, align="c"),
 	]
+	bill_label = _bill_label(first.invoice, invoice.custom_split_group)
+	if bill_label:  # the table has separate bills: say which one this ticket belongs to
+		lines.append(_line(bill_label, bold=True, size=2, align="c"))
 	if first.type != "New Order":
 		# Same size as the table name so the kitchen can't miss a change or a cancellation.
 		title = TICKET_TITLES.get(first.type, first.type)
@@ -233,7 +237,7 @@ def _kitchen_name(name):
 
 def _ticket_destination(kot, invoice):
 	if (kot.comments or "").startswith(CURBSIDE_PREFIX):
-		return "Car " + kot.comments[len(CURBSIDE_PREFIX):]
+		return "Car " + _car_plate(kot.comments)
 	if kot.aggregator_id:
 		return kot.aggregator_id
 	if kot.restaurant_table and not kot.table_takeaway:
@@ -259,7 +263,7 @@ def _receipt_lines(doc):
 	]
 	comments = doc.get("custom_comments") or ""
 	if comments.startswith(CURBSIDE_PREFIX):
-		lines.append(_line(f"Car: {comments[len(CURBSIDE_PREFIX):]}"))
+		lines.append(_line(f"Car: {_car_plate(comments)}"))
 	elif doc.get("restaurant_table"):
 		lines.append(_line(f"Table: {doc.restaurant_table}"))
 	lines.append(_divider())
@@ -282,6 +286,22 @@ def _receipt_lines(doc):
 			lines.append(_columns("Change", _money(doc.change_amount)))
 	lines += [_divider(), _line("Thank you for choosing FryBird!", align="c")]
 	return lines
+
+
+def _bill_label(invoice_name, split_group):
+	"""'Bill 2' when the table has more than one bill (people paying separately), else ''."""
+	if not split_group:
+		return ""
+	bills = frappe.get_all("POS Invoice", filters={"custom_split_group": split_group, "docstatus": ["!=", 2]},
+						   pluck="name", order_by="creation asc")
+	if len(bills) < 2 or invoice_name not in bills:
+		return ""
+	return f"Bill {bills.index(invoice_name) + 1}"
+
+
+def _car_plate(comments):
+	# "CURBSIDE - Car: A 12345 | Phone: 050..." -> "A 12345"; the phone is for the counter, not the slip.
+	return comments[len(CURBSIDE_PREFIX):].split(CAR_PHONE_SEPARATOR)[0]
 
 
 def _company_address(company):

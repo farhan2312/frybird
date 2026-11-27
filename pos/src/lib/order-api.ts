@@ -92,6 +92,8 @@ export interface SyncOrderRequest {
   order_type: string;
   last_invoice: string | null;
   last_modified_time?: string;
+  /** 1 = open a separate bill on the table instead of adding to its bill (people paying separately). */
+  new_bill?: number;
   comments?: string | null;
   room?: string;
 }

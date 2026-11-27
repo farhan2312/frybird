@@ -15,6 +15,8 @@ import { useRootStore } from '../store/root-store';
 import type { RootState } from '../store/root-store';
 import { showToast } from '@ury/ui';
 import { DINE_IN, WALK_IN_CUSTOMER } from '../data/order-types';
+import { carPlateFrom } from '../captain/lib/captain-car-api';
+import TableBillBar from './TableBillBar';
 import { t } from '../i18n';
 
 const OrderPanel = () => {
@@ -40,8 +42,30 @@ const OrderPanel = () => {
     setOrderComment,
     noOfPax,
     setNoOfPax,
-    lastModifiedTime
+    lastModifiedTime,
+    startNewBill,
+    hasUnsentChanges,
+    loadTableOrder,
   } = usePOSStore();
+  const [billsRefresh, setBillsRefresh] = useState(0);
+  const isTableOrder = selectedOrderType === DINE_IN && Boolean(selectedTable);
+
+  const handleOpenBill = (invoice: string) => {
+    if (invoice === orderId) return;
+    if (hasUnsentChanges()) {
+      showToast.error('Send or clear the items on this bill first.');
+      return;
+    }
+    if (selectedTable) loadTableOrder(selectedTable, invoice);
+  };
+
+  const handleNewBill = () => {
+    if (hasUnsentChanges()) {
+      showToast.error('Send or clear the items on this bill first.');
+      return;
+    }
+    startNewBill();
+  };
   const user = useRootStore((state: RootState) => state.user);
   const [editingItem, setEditingItem] = useState<typeof activeOrders[0] | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -75,7 +99,8 @@ const OrderPanel = () => {
     setOrderComment(comment);
   };
 
-  const handleSubmit = async () => {
+  /** sendNext: after sending, open a fresh bill on the same table for the next person. */
+  const handleSubmit = async (sendNext = false) => {
     try {
       if (!posProfile) {
         throw new Error(t('errors.pos_profile_not_found'));
@@ -91,6 +116,12 @@ const OrderPanel = () => {
           showToast.error(t('errors.select_aggregator'));
           return;
         }
+      }
+
+      // A curbside order needs the car plate, so staff know which car to take it to.
+      if (selectedOrderType === 'Take Away' && carPlateFrom(orderComment) === '') {
+        showToast.error('Enter the car number plate for the curbside order.');
+        return;
       }
 
       // Validate table selection for dine-in orders
@@ -124,7 +155,9 @@ const OrderPanel = () => {
         last_modified_time: isUpdatingOrder ? (lastModifiedTime || undefined) : undefined,
         invoice: isUpdatingOrder ? orderId : null,
         waiter: user.name,
-        comments: orderComment || undefined
+        comments: orderComment || undefined,
+        // A new Dine In order is its own bill, even when the table already has one.
+        new_bill: !isUpdatingOrder && selectedOrderType === DINE_IN && selectedTable ? 1 : 0,
       };
 
       const result = await syncOrder(orderData);
@@ -137,6 +170,13 @@ const OrderPanel = () => {
         return;
       }
 
+      if (sendNext) {
+        // Stay on the table with an empty bill for the next person.
+        startNewBill();
+        setBillsRefresh((n) => n + 1);
+        showToast.success('Bill sent to the kitchen. Now taking the next bill.');
+        return;
+      }
       // Reset all states after successful order submission
       resetOrderState();
       showToast.success(isUpdatingOrder ? t('success.order_updated') : t('success.order_created'));
@@ -197,6 +237,16 @@ const OrderPanel = () => {
       <div className="p-4 border-b border-gray-200 flex-shrink-0">
         <OrderTabs disabled={isInteractionDisabled} />
         <OrderTypeSelect disabled={isInteractionDisabled} />
+        {isTableOrder && (
+          <TableBillBar
+            table={selectedTable!}
+            currentInvoice={isUpdatingOrder ? orderId : null}
+            onOpenBill={handleOpenBill}
+            onNewBill={handleNewBill}
+            refreshKey={billsRefresh}
+            disabled={isInteractionDisabled}
+          />
+        )}
         {/* Optional: orders with no customer are saved as Walk-In Customer */}
         <div className="mt-3"><CustomerSelect disabled={isInteractionDisabled} /></div>
         <div className="mt-3 flex items-center justify-between">
@@ -347,8 +397,20 @@ const OrderPanel = () => {
               </div>
               <span className="text-lg font-semibold">{formatCurrency(total)}</span>
             </div>
+            {isTableOrder && (
+              <Button
+                onClick={() => handleSubmit(true)}
+                variant="outline"
+                size="default"
+                className="mb-2 w-full border-primary-600 text-primary-700"
+                disabled={isInteractionDisabled}
+                title="Send this bill to the kitchen and start the next person's bill on the same table"
+              >
+                Send &amp; next bill
+              </Button>
+            )}
             <Button
-              onClick={handleSubmit}
+              onClick={() => handleSubmit()}
               variant="default"
               size="default"
               className="w-full"

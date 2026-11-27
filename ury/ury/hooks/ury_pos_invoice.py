@@ -196,8 +196,8 @@ def restrict_existing_order(doc, event):
     if not doc.restaurant_table:
         return
 
-    if getattr(frappe.flags, "ury_bill_split", False):
-        return
+    if getattr(frappe.flags, "ury_bill_split", False) or getattr(frappe.flags, "ury_new_bill", False):
+        return  # a bill split or a new bill for someone paying separately
 
     if doc.get("custom_split_from"):
         source = frappe.db.get_value(

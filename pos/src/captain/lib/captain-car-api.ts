@@ -6,10 +6,21 @@ import { DEFAULT_ORDER_TYPE } from '../../data/order-types';
 // so the kitchen ticket and receipt show the plate for both.
 export const CAR_ORDER_PREFIX = 'CURBSIDE - Car: ';
 
-export const carOrderComment = (plate: string) => CAR_ORDER_PREFIX + plate.trim();
+// An optional customer phone number follows the plate: "CURBSIDE - Car: A 12345 | Phone: 0501234567".
+export const CAR_PHONE_SEPARATOR = ' | Phone: ';
+
+export const carOrderComment = (plate: string, phone = '') =>
+  CAR_ORDER_PREFIX + plate.trim() + (phone.trim() ? CAR_PHONE_SEPARATOR + phone.trim() : '');
+
+/** The note while staff are still typing: nothing is trimmed, so spaces in the plate survive. */
+export const carOrderDraft = (plate: string, phone: string) =>
+  CAR_ORDER_PREFIX + plate + (phone ? CAR_PHONE_SEPARATOR + phone : '');
 
 export const carPlateFrom = (comment: string | null | undefined) =>
-  comment?.startsWith(CAR_ORDER_PREFIX) ? comment.slice(CAR_ORDER_PREFIX.length) : null;
+  comment?.startsWith(CAR_ORDER_PREFIX) ? comment.slice(CAR_ORDER_PREFIX.length).split(CAR_PHONE_SEPARATOR)[0] : null;
+
+export const carPhoneFrom = (comment: string | null | undefined) =>
+  comment?.startsWith(CAR_ORDER_PREFIX) ? comment.split(CAR_PHONE_SEPARATOR)[1] ?? '' : '';
 
 export interface ActiveCarOrder {
   invoiceName: string;

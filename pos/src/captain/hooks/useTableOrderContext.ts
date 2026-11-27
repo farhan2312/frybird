@@ -120,7 +120,13 @@ export const useTableOrderContext = (table: string | undefined, invoice?: string
         setContext(result);
         if (result.permissions.view) {
           const room = result.table?.restaurant_room ?? null;
-          if (invoice) {
+          if (invoice === 'new') {
+            // A separate bill on this table for someone paying on their own: starts empty.
+            setSelectedTable(table, room, true);
+            usePOSStore.getState().startNewBill();
+            baselineCapturedForRef.current = table;
+            setBaselineItems([]);
+          } else if (invoice) {
             // A table with split bills: open the bill the captain picked.
             setSelectedTable(table, room, true);
             usePOSStore.getState().loadTableOrder(table, invoice);

@@ -687,7 +687,7 @@ def split_bill(source_invoice, items_to_move, customer=None):
 
 
 
-def _resolve_or_create_pos_invoice(table, invoiceNo, order_type, is_payment, check_permission=True, override_branch=None):
+def _resolve_or_create_pos_invoice(table, invoiceNo, order_type, is_payment, check_permission=True, override_branch=None, new_bill=False):
     """Find an existing draft POS Invoice or build a new (unsaved) one.
 
     Contains the same lookup/creation logic that used to live inline in
@@ -737,7 +737,8 @@ def _resolve_or_create_pos_invoice(table, invoiceNo, order_type, is_payment, che
         }
 
         # After a bill split a table has several drafts: open the oldest (the original bill) by default.
-        invoices = frappe.get_all("POS Invoice", filters=filters, or_filters=or_filters, order_by="creation asc", limit=1)
+        # A new bill (new_bill) never reuses one of them.
+        invoices = [] if new_bill else frappe.get_all("POS Invoice", filters=filters, or_filters=or_filters, order_by="creation asc", limit=1)
         invoice_name = invoices[0].name if invoices else None
         branch, menu_name, restaurant = get_restaurant_and_menu_name(table)
 
@@ -833,13 +834,13 @@ def _resolve_or_create_pos_invoice(table, invoiceNo, order_type, is_payment, che
 
 
 @frappe.whitelist()
-def get_order_invoice(table=None, invoiceNo=None, order_type=None, is_payment=None):
+def get_order_invoice(table=None, invoiceNo=None, order_type=None, is_payment=None, new_bill=False):
     """returns the active invoice linked to the given table"""
 
     # check_permission defaults to True: read-permission and branch-match
     # checks run inside the helper, immediately after an existing invoice is
     # loaded — the same point they ran at before this function was split.
-    invoice, invoice_name = _resolve_or_create_pos_invoice(table, invoiceNo, order_type, is_payment)
+    invoice, invoice_name = _resolve_or_create_pos_invoice(table, invoiceNo, order_type, is_payment, new_bill=new_bill)
     return invoice
 
 
@@ -1303,7 +1304,8 @@ def sync_order(
     order_type=None,
     aggregator_id=None,
     room=None,
-    merged_tables=None
+    merged_tables=None,
+    new_bill=0,
 ):
     # FryBird: a new Take Away / Delivery / app order never sits on a table, even if the POS
     # still has the last table selected; otherwise it occupies that table and shows up there.
@@ -1332,7 +1334,10 @@ def sync_order(
         )
         return {"status": "Failure"}
 
-    invoice = get_order_invoice(table, invoice,order_type)
+    # FryBird: a new Dine In order sent with new_bill opens its own bill on the table, next to any
+    # bills already there (people paying separately), instead of being added to the table's bill.
+    new_bill = bool(frappe.utils.cint(new_bill) and table and not invoice)
+    invoice = get_order_invoice(table, invoice, order_type, new_bill=new_bill)
 
     if invoice.name and not frappe.has_permission("POS Invoice", "write", doc=invoice):
         frappe.throw(_("Not permitted to modify this order"), frappe.PermissionError)
@@ -1582,9 +1587,15 @@ def sync_order(
         invoice.append("items", item_dict)
 
     try:
+        frappe.flags.ury_new_bill = new_bill
         invoice.save()
     except Exception as e:
         frappe.throw(f"Error while updating order: {e}")   
+    finally:
+        frappe.flags.ury_new_bill = False
+
+    if new_bill:
+        link_table_bills(invoice.restaurant_table)
 
 
     try:
@@ -1607,6 +1618,25 @@ def sync_order(
                 )
 
     return invoice.as_dict()
+
+
+def link_table_bills(table):
+    """Put every open bill on a table in one group, like a bill split, so the POS shows them together
+    and the kitchen ticket can say which bill it is."""
+    if not table:
+        return
+    bills = frappe.get_all(
+        "POS Invoice",
+        filters={"restaurant_table": table, "docstatus": 0},
+        fields=["name", "custom_split_group"],
+        order_by="creation asc",
+    )
+    if len(bills) < 2:
+        return
+    group = next((b.custom_split_group for b in bills if b.custom_split_group), None) or frappe.generate_hash(length=10)
+    for b in bills:
+        if b.custom_split_group != group:
+            frappe.db.set_value("POS Invoice", b.name, "custom_split_group", group, update_modified=False)
 
 
 @frappe.whitelist()

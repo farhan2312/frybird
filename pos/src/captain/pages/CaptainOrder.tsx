@@ -16,6 +16,7 @@ import {
 import { printOrder } from '../../lib/print';
 import { getPOSInvoiceItems, resolvePrintFormat, type POSInvoiceItem } from '../../lib/invoice-api';
 import BillSplitDialog from '../../components/BillSplitDialog';
+import TableBillBar from '../../components/TableBillBar';
 import { getTableBills, type TableBill } from '../lib/captain-table-api';
 import { kotLabel } from '../../lib/kot-label';
 import { getVacantTablesForBranch, Table } from '../../lib/table-api';
@@ -50,6 +51,8 @@ export default function CaptainOrder() {
   const [searchParams] = useSearchParams();
   // After a bill split a table has several bills; ?bill= picks which one is open.
   const bill = searchParams.get('bill') || undefined;
+  // ?bill=new: an empty, separate bill on this table for the next person paying on their own.
+  const isNewBill = bill === 'new';
   const navigate = useNavigate();
   const user = useRootStore((state: RootState) => state.user);
 
@@ -102,6 +105,7 @@ export default function CaptainOrder() {
   const [isTransferCaptainOpen, setIsTransferCaptainOpen] = useState(false);
   const [tableBills, setTableBills] = useState<TableBill[]>([]);
   const [splitItems, setSplitItems] = useState<POSInvoiceItem[] | null>(null);
+  const [billsRefresh, setBillsRefresh] = useState(0);
 
   const loadTableBills = useCallback(async () => {
     if (!table) return;
@@ -183,7 +187,8 @@ export default function CaptainOrder() {
     setNoteEditingLine(null);
   };
 
-  const handleSend = async () => {
+  /** sendNext: after sending, open a fresh bill on this table for the next person. */
+  const handleSend = async (sendNext = false) => {
     if (!table) return;
     try {
       if (!posProfile) {
@@ -225,6 +230,8 @@ export default function CaptainOrder() {
         last_invoice: isUpdatingOrder ? orderId : null,
         last_modified_time: isUpdatingOrder ? (lastModifiedTime || undefined) : undefined,
         invoice: isUpdatingOrder ? orderId : null,
+        // A new order on the table is its own bill, even when the table already has one.
+        new_bill: isUpdatingOrder ? 0 : 1,
         waiter: user.name,
         comments: orderComment || undefined,
       };
@@ -240,6 +247,13 @@ export default function CaptainOrder() {
         return;
       }
 
+      if (sendNext) {
+        setBillsRefresh((n) => n + 1);
+        showToast.success('Bill sent to the kitchen. Now taking the next bill.');
+        if (isNewBill) reload();
+        else navigate(`/order/table/${encodeURIComponent(table)}?bill=new`, { replace: true });
+        return;
+      }
       clearTableOrder();
       showToast.success(isUpdatingOrder ? 'Order updated.' : 'Order sent to kitchen.');
       navigate('/order');
@@ -271,7 +285,7 @@ export default function CaptainOrder() {
   // table (not the in-progress working cart) — `orderId` from `pos-store`
   // (kept in sync with `context.order.name` by `useTableOrderContext`) is
   // the source of truth, matching what `handleSend`'s `last_invoice` uses.
-  const invoiceId = orderId ?? context?.order?.name ?? null;
+  const invoiceId = isNewBill ? orderId : (orderId ?? context?.order?.name ?? null);
   const canReprintKot = permissions?.reprint_kot ?? false;
   const canTransferTable = permissions?.transfer_table ?? false;
   const canTransferCaptain = permissions?.transfer_captain ?? false;
@@ -377,6 +391,14 @@ export default function CaptainOrder() {
     await loadTableBills();
     if (bill === result.source_invoice) reload();
     else navigate(`/order/table/${encodeURIComponent(table!)}?bill=${encodeURIComponent(result.source_invoice)}`, { replace: true });
+  };
+
+  const handleNewBill = () => {
+    if (hasPendingChanges) {
+      showToast.error('Send or remove the unsent items before starting a new bill.');
+      return;
+    }
+    navigate(`/order/table/${encodeURIComponent(table!)}?bill=new`, { replace: true });
   };
 
   const handleOpenBill = (name: string) => {
@@ -632,22 +654,16 @@ export default function CaptainOrder() {
         </div>
       </div>
 
-      {tableBills.length > 1 && (
-        <div className="flex gap-2 overflow-x-auto border-b border-gray-200 bg-white px-3 py-2">
-          {tableBills.map((b, index) => (
-            <Button
-              key={b.name}
-              variant={b.name === invoiceId ? 'default' : 'outline'}
-              size="sm"
-              className="h-auto shrink-0 flex-col items-start gap-0 px-3 py-1.5"
-              onClick={() => handleOpenBill(b.name)}
-            >
-              <span className="text-xs font-semibold">Bill {index + 1}</span>
-              <span className="text-[11px] opacity-80">
-                {kotLabel(b.orderNo, b.name)} · {formatCurrency(b.grandTotal)}
-              </span>
-            </Button>
-          ))}
+      {table && (
+        <div className="border-b border-gray-200 bg-white px-3 pb-2">
+          <TableBillBar
+            table={table}
+            currentInvoice={isNewBill ? null : invoiceId}
+            onOpenBill={handleOpenBill}
+            onNewBill={handleNewBill}
+            refreshKey={`${tableBills.length}-${billsRefresh}`}
+            disabled={isInteractionDisabled}
+          />
         </div>
       )}
 
@@ -693,7 +709,16 @@ export default function CaptainOrder() {
               <span className="text-lg font-semibold text-gray-900">{formatCurrency(total)}</span>
             </div>
             <Button
-              onClick={handleSend}
+              onClick={() => handleSend(true)}
+              variant="outline"
+              size="lg"
+              className="mb-2 w-full h-11 text-base border-primary-600 text-primary-700"
+              disabled={isInteractionDisabled || activeOrders.length === 0}
+            >
+              Send &amp; next bill
+            </Button>
+            <Button
+              onClick={() => handleSend()}
               variant="default"
               size="lg"
               className="w-full h-12 text-base"
@@ -722,7 +747,16 @@ export default function CaptainOrder() {
             <span className="text-lg font-semibold text-gray-900">{formatCurrency(total)}</span>
           </div>
           <Button
-            onClick={handleSend}
+            onClick={() => handleSend(true)}
+            variant="outline"
+            size="lg"
+            className="mb-2 w-full h-11 text-base border-primary-600 text-primary-700"
+            disabled={isInteractionDisabled || activeOrders.length === 0}
+          >
+            Send &amp; next bill
+          </Button>
+          <Button
+            onClick={() => handleSend()}
             variant="default"
             size="lg"
             className="w-full h-12 text-base"

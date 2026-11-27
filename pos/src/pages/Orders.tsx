@@ -13,7 +13,7 @@ import { Spinner } from '@ury/ui';
 import { Textarea } from '@ury/ui';
 import { usePOSStore } from '../store/pos-store';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { carPlateFrom } from '../captain/lib/captain-car-api';
+import { carPhoneFrom, carPlateFrom } from '../captain/lib/captain-car-api';
 import PaymentDialog from '../components/PaymentDialog';
 import BillSplitDialog from '../components/BillSplitDialog';
 import BillMergeDialog from '../components/BillMergeDialog';
@@ -729,6 +729,14 @@ export default function Orders() {
                       <div className="flex items-center gap-3 text-sm">
                         <Receipt className="w-4 h-4 text-gray-500" />
                         <span className="text-gray-900 font-semibold">Car {carPlateFrom(selectedOrder.custom_comments)}</span>
+                      </div>
+                    )}
+                    {carPhoneFrom(selectedOrder.custom_comments) && (
+                      <div className="flex items-center gap-3 text-sm">
+                        <Receipt className="w-4 h-4 text-gray-500" />
+                        <a className="text-gray-900" href={`tel:${carPhoneFrom(selectedOrder.custom_comments)}`}>
+                          {carPhoneFrom(selectedOrder.custom_comments)}
+                        </a>
                       </div>
                     )}
                     {selectedOrder.restaurant_table && (
